@@ -1,1 +1,4 @@
 project_id = "jcxsnyutdowkdclxdsph"
+
+[functions.consulta-margem]
+verify_jwt = true
