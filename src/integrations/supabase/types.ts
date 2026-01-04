@@ -14,7 +14,137 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      contract_requests: {
+        Row: {
+          banco_id: string
+          banco_nome: string
+          created_at: string
+          id: string
+          margin_query_id: string | null
+          parcelas: number
+          status: string | null
+          taxa_mensal: number
+          user_id: string
+          valor_parcela: number
+          valor_solicitado: number
+          valor_total: number
+        }
+        Insert: {
+          banco_id: string
+          banco_nome: string
+          created_at?: string
+          id?: string
+          margin_query_id?: string | null
+          parcelas: number
+          status?: string | null
+          taxa_mensal: number
+          user_id: string
+          valor_parcela: number
+          valor_solicitado: number
+          valor_total: number
+        }
+        Update: {
+          banco_id?: string
+          banco_nome?: string
+          created_at?: string
+          id?: string
+          margin_query_id?: string | null
+          parcelas?: number
+          status?: string | null
+          taxa_mensal?: number
+          user_id?: string
+          valor_parcela?: number
+          valor_solicitado?: number
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_requests_margin_query_id_fkey"
+            columns: ["margin_query_id"]
+            isOneToOne: false
+            referencedRelation: "margin_queries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      margin_queries: {
+        Row: {
+          api_response: Json | null
+          cpf: string
+          created_at: string
+          data_admissao: string | null
+          elegivel: boolean | null
+          id: string
+          motivo_inelegibilidade: string | null
+          nome_empregador: string | null
+          nome_trabalhador: string | null
+          user_id: string
+          valor_base_margem: number | null
+          valor_margem_disponivel: number | null
+          valor_total_vencimentos: number | null
+        }
+        Insert: {
+          api_response?: Json | null
+          cpf: string
+          created_at?: string
+          data_admissao?: string | null
+          elegivel?: boolean | null
+          id?: string
+          motivo_inelegibilidade?: string | null
+          nome_empregador?: string | null
+          nome_trabalhador?: string | null
+          user_id: string
+          valor_base_margem?: number | null
+          valor_margem_disponivel?: number | null
+          valor_total_vencimentos?: number | null
+        }
+        Update: {
+          api_response?: Json | null
+          cpf?: string
+          created_at?: string
+          data_admissao?: string | null
+          elegivel?: boolean | null
+          id?: string
+          motivo_inelegibilidade?: string | null
+          nome_empregador?: string | null
+          nome_trabalhador?: string | null
+          user_id?: string
+          valor_base_margem?: number | null
+          valor_margem_disponivel?: number | null
+          valor_total_vencimentos?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          nome: string
+          telefone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          nome: string
+          telefone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          nome?: string
+          telefone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
