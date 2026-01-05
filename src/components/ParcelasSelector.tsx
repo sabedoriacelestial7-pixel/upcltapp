@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { getParcelasDisponiveis } from '@/utils/calculos';
 
 interface ParcelasSelectorProps {
   value: number;
@@ -6,7 +7,8 @@ interface ParcelasSelectorProps {
   options?: number[];
 }
 
-const DEFAULT_OPTIONS = [12, 24, 36, 48, 60, 72, 84];
+// Opções padrão baseadas nos fatores da Facta (máximo 36x)
+const DEFAULT_OPTIONS = [6, 12, 18, 24, 30, 36];
 
 export function ParcelasSelector({ 
   value, 
@@ -16,7 +18,7 @@ export function ParcelasSelector({
   return (
     <div className="w-full">
       <label className="block text-sm font-medium text-foreground mb-3">
-        Em quantas vezes?
+        Em quantas vezes? <span className="text-white/50 font-normal">(máx. 36x)</span>
       </label>
       <div className="flex flex-wrap gap-2">
         {options.map((parcela) => (
@@ -24,11 +26,11 @@ export function ParcelasSelector({
             key={parcela}
             onClick={() => onChange(parcela)}
             className={cn(
-              'px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200',
-              'active:scale-95',
+              'px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300',
+              'active:scale-95 touch-manipulation',
               value === parcela
-                ? 'bg-secondary text-secondary-foreground shadow-button'
-                : 'bg-card text-card-foreground hover:bg-secondary/20'
+                ? 'bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white shadow-lg shadow-green-500/25'
+                : 'bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-[#22c55e]/50'
             )}
           >
             {parcela}x

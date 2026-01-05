@@ -1,18 +1,20 @@
 import { BANCOS_ORDENADOS } from '@/data/bancos';
 
-// Fatores de cálculo por número de parcelas
-// Fator = usado para calcular valor liberado a partir da parcela
+// Fatores de cálculo Facta Financeira - CLT NOVO GOLD SB
+// Prazo máximo: 36x para todos os bancos
 const FATORES_PARCELAS: Record<number, number> = {
-  6: 0.178526,
-  12: 0.095024,
-  18: 0.067020,
-  24: 0.052871,
-  30: 0.044321,
+  5: 0.258812,
+  6: 0.258812,
+  8: 0.205558,
+  10: 0.173927,
+  12: 0.153060,
+  14: 0.138306,
+  15: 0.132458,
+  18: 0.119019,
+  20: 0.112470,
+  24: 0.102963,
+  30: 0.083036,
   36: 0.077260,
-  48: 0.030430,
-  60: 0.025393,
-  72: 0.022014,
-  84: 0.019557,
 };
 
 // Calcula o valor da parcela baseado na margem disponível (15% da margem)
@@ -56,23 +58,25 @@ export interface BancoCalculado {
 
 // Calcular para todos os bancos baseado na margem disponível
 export function calcularTodosBancos(margemDisponivel: number, parcelas: number): BancoCalculado[] {
+  // Limitar parcelas ao máximo de 36x
+  const parcelasLimitadas = Math.min(parcelas, 36);
   const valorParcela = calcularParcelaDaMargem(margemDisponivel);
-  const valorLiberado = calcularValorLiberado(valorParcela, parcelas);
+  const valorLiberado = calcularValorLiberado(valorParcela, parcelasLimitadas);
   
   return BANCOS_ORDENADOS.map(banco => {
-    const valorTotal = calcularTotal(valorParcela, parcelas);
+    const valorTotal = calcularTotal(valorParcela, parcelasLimitadas);
     
     return {
       ...banco,
       valorParcela,
       valorLiberado,
       valorTotal,
-      parcelas
+      parcelas: parcelasLimitadas
     };
   });
 }
 
-// Obter fatores disponíveis para o seletor de parcelas
+// Obter fatores disponíveis para o seletor de parcelas (máximo 36x)
 export function getParcelasDisponiveis(): number[] {
   return Object.keys(FATORES_PARCELAS).map(Number).sort((a, b) => a - b);
 }
@@ -81,3 +85,6 @@ export function getParcelasDisponiveis(): number[] {
 export function getFator(parcelas: number): number {
   return FATORES_PARCELAS[parcelas] || 0.077260;
 }
+
+// Prazo máximo permitido
+export const PRAZO_MAXIMO = 36;
