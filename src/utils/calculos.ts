@@ -58,21 +58,20 @@ export interface BancoCalculado {
 }
 
 // Calcular para todos os bancos baseado na margem disponível
-export function calcularTodosBancos(margemDisponivel: number, parcelas: number): BancoCalculado[] {
-  // Limitar parcelas ao máximo de 36x
-  const parcelasLimitadas = Math.min(parcelas, 36);
+// IMPORTANTE: O valor máximo liberado é sempre em 36x para todos os bancos
+export function calcularTodosBancos(margemDisponivel: number, parcelas: number = PRAZO_MAXIMO): BancoCalculado[] {
   const valorParcela = calcularParcelaDaMargem(margemDisponivel);
-  const valorLiberado = calcularValorLiberado(valorParcela, parcelasLimitadas);
+  // Valor liberado sempre calculado em 36x (máximo)
+  const valorLiberado = calcularValorLiberado(valorParcela, PRAZO_MAXIMO);
+  const valorTotal = calcularTotal(valorParcela, PRAZO_MAXIMO);
   
   return BANCOS_ORDENADOS.map(banco => {
-    const valorTotal = calcularTotal(valorParcela, parcelasLimitadas);
-    
     return {
       ...banco,
       valorParcela,
       valorLiberado,
       valorTotal,
-      parcelas: parcelasLimitadas
+      parcelas: PRAZO_MAXIMO
     };
   });
 }

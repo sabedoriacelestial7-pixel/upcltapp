@@ -22,8 +22,8 @@ export default function ResultadoPage() {
 
   if (!consulta) return null;
 
-  // Calcula baseado na margem disponível
-  const bancosCalculados = calcularTodosBancos(consulta.valorMargemDisponivel, simulacao.parcelas);
+  // Calcula baseado na margem disponível - sempre 36x (máximo)
+  const bancosCalculados = calcularTodosBancos(consulta.valorMargemDisponivel);
   const melhorBanco = bancosCalculados[0];
 
   const handleContratar = (bancoId: string) => {
@@ -62,7 +62,7 @@ export default function ResultadoPage() {
             {formatarMoeda(melhorBanco.valorLiberado)}
           </p>
           <p className="text-white/70 text-xs mt-1.5">
-            Valor liberado em {simulacao.parcelas}x de {formatarMoeda(melhorBanco.valorParcela)}
+            Valor liberado em {melhorBanco.parcelas}x de {formatarMoeda(melhorBanco.valorParcela)}
           </p>
         </div>
 
@@ -131,7 +131,7 @@ export default function ResultadoPage() {
             Compare e escolha o melhor banco
           </h3>
           <p className="text-xs text-muted-foreground mb-3">
-            Parcela de {formatarMoeda(melhorBanco.valorParcela)} em {simulacao.parcelas}x
+            Parcela de {formatarMoeda(melhorBanco.valorParcela)} em {melhorBanco.parcelas}x
           </p>
 
           <div className="space-y-3">
