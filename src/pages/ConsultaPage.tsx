@@ -60,23 +60,23 @@ export default function ConsultaPage() {
   };
 
   return (
-    <div className="min-h-screen gradient-primary pb-24">
+    <div className="min-h-screen min-h-[100dvh] gradient-primary pb-20">
       <Header title="Consultar Margem" />
 
-      <main className="max-w-md mx-auto px-4 py-8 animate-fade-in">
+      <main className="max-w-md mx-auto px-4 py-6 animate-fade-in">
         {state === 'idle' && (
           <div className="text-center">
-            <div className="w-20 h-20 rounded-3xl bg-secondary/10 mx-auto mb-6 flex items-center justify-center">
-              <Search size={40} className="text-secondary" />
+            <div className="w-16 h-16 rounded-2xl bg-secondary/10 mx-auto mb-5 flex items-center justify-center">
+              <Search size={32} className="text-secondary" />
             </div>
-            <h2 className="text-xl font-bold text-foreground mb-2">
+            <h2 className="text-lg font-bold text-foreground mb-1.5">
               Informe seu CPF
             </h2>
-            <p className="text-muted-foreground mb-8">
+            <p className="text-sm text-muted-foreground mb-6">
               Vamos verificar sua margem disponível
             </p>
 
-            <div className="bg-card rounded-3xl p-6 shadow-card">
+            <div className="bg-card rounded-2xl p-5 shadow-card">
               <InputMask
                 label="CPF"
                 placeholder="000.000.000-00"
@@ -89,20 +89,20 @@ export default function ConsultaPage() {
               <Button
                 onClick={handleConsulta}
                 disabled={!isValidCPF}
-                className="w-full h-14 mt-6 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold text-lg shadow-button disabled:opacity-50 disabled:shadow-none"
+                className="w-full h-12 mt-5 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold text-base shadow-button disabled:opacity-50 disabled:shadow-none touch-manipulation"
               >
                 Consultar
               </Button>
             </div>
 
-            <p className="text-xs text-muted-foreground mt-6">
+            <p className="text-xs text-muted-foreground mt-5">
               CPFs de teste: 123.456.789-01, 987.654.321-00, 111.222.333-44
             </p>
           </div>
         )}
 
         {state === 'loading' && (
-          <div className="text-center py-16">
+          <div className="text-center py-12">
             <LoadingSpinner
               size="lg"
               text="Consultando sua margem..."
@@ -113,19 +113,19 @@ export default function ConsultaPage() {
 
         {state === 'not-found' && (
           <div className="text-center">
-            <div className="w-20 h-20 rounded-3xl bg-accent/10 mx-auto mb-6 flex items-center justify-center">
-              <AlertTriangle size={40} className="text-accent" />
+            <div className="w-16 h-16 rounded-2xl bg-accent/10 mx-auto mb-5 flex items-center justify-center">
+              <AlertTriangle size={32} className="text-accent" />
             </div>
-            <h2 className="text-xl font-bold text-foreground mb-2">
+            <h2 className="text-lg font-bold text-foreground mb-1.5">
               CPF não encontrado
             </h2>
-            <p className="text-muted-foreground mb-8 max-w-xs mx-auto">
-              Seu CPF ainda não está em nossa base de dados. Entre em contato com um consultor para realizar a consulta completa.
+            <p className="text-sm text-muted-foreground mb-6 max-w-xs mx-auto">
+              Seu CPF ainda não está em nossa base. Entre em contato para consulta completa.
             </p>
 
             <Button
               onClick={handleWhatsApp}
-              className="w-full h-14 bg-whatsapp hover:bg-whatsapp/90 text-whatsapp-foreground font-semibold shadow-button"
+              className="w-full h-12 bg-whatsapp hover:bg-whatsapp/90 text-whatsapp-foreground font-semibold shadow-button touch-manipulation"
             >
               <MessageCircle size={20} />
               Falar com Consultor
@@ -134,7 +134,7 @@ export default function ConsultaPage() {
             <Button
               onClick={handleRetry}
               variant="ghost"
-              className="w-full mt-4 text-foreground"
+              className="w-full mt-3 text-foreground touch-manipulation"
             >
               Tentar outro CPF
             </Button>
@@ -143,19 +143,19 @@ export default function ConsultaPage() {
 
         {state === 'ineligible' && (
           <div className="text-center">
-            <div className="w-20 h-20 rounded-3xl bg-destructive/10 mx-auto mb-6 flex items-center justify-center">
-              <XCircle size={40} className="text-destructive" />
+            <div className="w-16 h-16 rounded-2xl bg-destructive/10 mx-auto mb-5 flex items-center justify-center">
+              <XCircle size={32} className="text-destructive" />
             </div>
-            <h2 className="text-xl font-bold text-foreground mb-2">
+            <h2 className="text-lg font-bold text-foreground mb-1.5">
               Margem não disponível
             </h2>
-            <p className="text-muted-foreground mb-8 max-w-xs mx-auto">
+            <p className="text-sm text-muted-foreground mb-6 max-w-xs mx-auto">
               {errorMessage}
             </p>
 
             <Button
               onClick={handleWhatsApp}
-              className="w-full h-14 bg-whatsapp hover:bg-whatsapp/90 text-whatsapp-foreground font-semibold shadow-button"
+              className="w-full h-12 bg-whatsapp hover:bg-whatsapp/90 text-whatsapp-foreground font-semibold shadow-button touch-manipulation"
             >
               <MessageCircle size={20} />
               Falar com Consultor
@@ -164,7 +164,7 @@ export default function ConsultaPage() {
             <Button
               onClick={handleRetry}
               variant="ghost"
-              className="w-full mt-4 text-foreground"
+              className="w-full mt-3 text-foreground touch-manipulation"
             >
               Tentar outro CPF
             </Button>
@@ -173,19 +173,19 @@ export default function ConsultaPage() {
 
         {state === 'error' && (
           <div className="text-center">
-            <div className="w-20 h-20 rounded-3xl bg-destructive/10 mx-auto mb-6 flex items-center justify-center">
-              <AlertCircle size={40} className="text-destructive" />
+            <div className="w-16 h-16 rounded-2xl bg-destructive/10 mx-auto mb-5 flex items-center justify-center">
+              <AlertCircle size={32} className="text-destructive" />
             </div>
-            <h2 className="text-xl font-bold text-foreground mb-2">
+            <h2 className="text-lg font-bold text-foreground mb-1.5">
               Erro ao consultar
             </h2>
-            <p className="text-muted-foreground mb-8 max-w-xs mx-auto">
+            <p className="text-sm text-muted-foreground mb-6 max-w-xs mx-auto">
               {errorMessage || 'Tente novamente em alguns segundos'}
             </p>
 
             <Button
               onClick={handleRetry}
-              className="w-full h-14 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold shadow-button"
+              className="w-full h-12 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold shadow-button touch-manipulation"
             >
               Tentar Novamente
             </Button>

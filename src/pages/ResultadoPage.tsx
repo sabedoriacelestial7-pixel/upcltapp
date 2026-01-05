@@ -41,73 +41,73 @@ export default function ResultadoPage() {
   };
 
   return (
-    <div className="min-h-screen gradient-primary pb-24">
+    <div className="min-h-screen min-h-[100dvh] gradient-primary pb-20">
       <Header title="Sua Margem" />
 
-      <main className="max-w-md mx-auto px-4 py-6 space-y-6 animate-fade-in">
+      <main className="max-w-md mx-auto px-4 py-5 space-y-4 animate-fade-in">
         {/* Success Card */}
-        <div className="gradient-card rounded-3xl p-6 shadow-card text-center">
-          <div className="w-16 h-16 rounded-full bg-white/20 mx-auto mb-4 flex items-center justify-center">
-            <CheckCircle size={36} className="text-white" />
+        <div className="gradient-card rounded-2xl p-5 shadow-card text-center">
+          <div className="w-14 h-14 rounded-full bg-white/20 mx-auto mb-3 flex items-center justify-center">
+            <CheckCircle size={28} className="text-white" />
           </div>
-          <h2 className="text-xl font-bold text-white mb-1">
+          <h2 className="text-lg font-bold text-white mb-0.5">
             Parabéns, {consulta.nome.split(' ')[0]}!
           </h2>
-          <p className="text-white/80 mb-4">Você tem margem disponível</p>
-          <p className="text-5xl font-extrabold text-white animate-count">
+          <p className="text-white/80 text-sm mb-3">Você tem margem disponível</p>
+          <p className="text-4xl font-extrabold text-white animate-count">
             {formatarMoeda(consulta.valorMargemDisponivel)}
           </p>
-          <p className="text-white/70 text-sm mt-2">
+          <p className="text-white/70 text-xs mt-1.5">
             Margem disponível para empréstimo
           </p>
         </div>
 
         {/* Info Card */}
-        <div className="bg-card rounded-2xl p-5 shadow-card">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Building2 size={18} className="text-primary" />
+        <div className="bg-card rounded-xl p-4 shadow-card">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Building2 size={16} className="text-primary" />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Empresa</p>
-                <p className="text-sm font-semibold text-card-foreground truncate max-w-[120px]">
+              <div className="min-w-0">
+                <p className="text-[10px] text-muted-foreground">Empresa</p>
+                <p className="text-xs font-semibold text-card-foreground truncate">
                   {consulta.nomeEmpregador}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Calendar size={18} className="text-primary" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Calendar size={16} className="text-primary" />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Admissão</p>
-                <p className="text-sm font-semibold text-card-foreground">
+              <div className="min-w-0">
+                <p className="text-[10px] text-muted-foreground">Admissão</p>
+                <p className="text-xs font-semibold text-card-foreground">
                   {formatarData(consulta.dataAdmissao)}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Wallet size={18} className="text-primary" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Wallet size={16} className="text-primary" />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Salário base</p>
-                <p className="text-sm font-semibold text-card-foreground">
+              <div className="min-w-0">
+                <p className="text-[10px] text-muted-foreground">Salário base</p>
+                <p className="text-xs font-semibold text-card-foreground">
                   {formatarMoeda(consulta.valorBaseMargem)}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Clock size={18} className="text-primary" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Clock size={16} className="text-primary" />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Atualizado em</p>
-                <p className="text-sm font-semibold text-card-foreground">
+              <div className="min-w-0">
+                <p className="text-[10px] text-muted-foreground">Atualizado em</p>
+                <p className="text-xs font-semibold text-card-foreground">
                   {formatarData(consulta.atualizadoEm)}
                 </p>
               </div>
@@ -117,15 +117,15 @@ export default function ResultadoPage() {
 
         {/* Banks Comparison */}
         <section>
-          <h3 className="text-lg font-bold text-foreground mb-2">
+          <h3 className="text-base font-bold text-foreground mb-1.5">
             Compare e escolha o melhor banco
           </h3>
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-xs text-muted-foreground mb-3">
             Valores calculados para {simulacao.parcelas}x de{' '}
             {formatarMoeda(valorSimulacao)}
           </p>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {bancosCalculados.map((banco, index) => (
               <BankCard
                 key={banco.id}
@@ -147,17 +147,17 @@ export default function ResultadoPage() {
             navigate('/simulador');
           }}
           variant="outline"
-          className="w-full h-14 border-secondary text-secondary hover:bg-secondary/10"
+          className="w-full h-12 border-secondary text-secondary hover:bg-secondary/10 touch-manipulation"
         >
-          <Calculator size={20} />
+          <Calculator size={18} />
           Simular outros valores
         </Button>
 
         {/* Disclaimer */}
-        <div className="flex items-start gap-3 bg-muted/20 rounded-xl p-4">
-          <Info size={18} className="text-muted-foreground shrink-0 mt-0.5" />
-          <p className="text-xs text-muted-foreground">
-            Valores sujeitos à análise de crédito do banco escolhido. As taxas podem variar de acordo com o perfil do cliente.
+        <div className="flex items-start gap-2.5 bg-muted/20 rounded-xl p-3.5">
+          <Info size={16} className="text-muted-foreground shrink-0 mt-0.5" />
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Valores sujeitos à análise de crédito. As taxas podem variar de acordo com o perfil.
           </p>
         </div>
       </main>

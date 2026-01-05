@@ -105,28 +105,28 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen gradient-primary flex flex-col items-center justify-center p-6 safe-top safe-bottom">
+    <div className="min-h-screen min-h-[100dvh] gradient-primary flex flex-col items-center justify-center p-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
       <div className="w-full max-w-sm animate-fade-in">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <Logo size="xl" className="justify-center mb-4" />
-          <p className="text-muted-foreground text-lg">
+        <div className="text-center mb-6">
+          <Logo size="xl" className="justify-center mb-3" />
+          <p className="text-muted-foreground text-base">
             Crédito CLT sem burocracia
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-card rounded-3xl p-6 shadow-card animate-slide-up">
-          <h2 className="text-xl font-bold text-card-foreground text-center mb-6">
+        <div className="bg-card rounded-2xl p-5 shadow-card animate-slide-up">
+          <h2 className="text-lg font-bold text-card-foreground text-center mb-5">
             {mode === 'login' ? 'Entrar' : 'Criar Conta'}
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3.5">
             {mode === 'cadastro' && (
               <InputMask
                 label="Nome completo"
                 placeholder="Seu nome"
-                icon={<User size={20} />}
+                icon={<User size={18} />}
                 value={formData.nome}
                 onChange={(v) => updateField('nome', v)}
                 error={errors.nome}
@@ -137,7 +137,7 @@ export default function LoginPage() {
               label="Email"
               type="email"
               placeholder="seu@email.com"
-              icon={<Mail size={20} />}
+              icon={<Mail size={18} />}
               value={formData.email}
               onChange={(v) => updateField('email', v)}
               error={errors.email}
@@ -148,7 +148,7 @@ export default function LoginPage() {
                 label="Telefone"
                 placeholder="(99) 99999-9999"
                 mask="telefone"
-                icon={<Phone size={20} />}
+                icon={<Phone size={18} />}
                 value={formData.telefone}
                 onChange={(v) => updateField('telefone', v)}
                 error={errors.telefone}
@@ -160,7 +160,7 @@ export default function LoginPage() {
                 label="Senha"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
-                icon={<Lock size={20} />}
+                icon={<Lock size={18} />}
                 value={formData.senha}
                 onChange={(v) => updateField('senha', v)}
                 error={errors.senha}
@@ -168,9 +168,9 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-[42px] text-muted-foreground"
+                className="absolute right-3 top-[38px] text-muted-foreground p-1.5 touch-manipulation"
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
 
@@ -181,22 +181,23 @@ export default function LoginPage() {
                     label="Confirmar senha"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
-                    icon={<Lock size={20} />}
+                    icon={<Lock size={18} />}
                     value={formData.confirmarSenha}
                     onChange={(v) => updateField('confirmarSenha', v)}
                     error={errors.confirmarSenha}
                   />
                 </div>
 
-                <div className="flex items-start gap-3 pt-2">
+                <div className="flex items-start gap-2.5 pt-1.5">
                   <Checkbox
                     id="terms"
                     checked={acceptedTerms}
                     onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                    className="mt-0.5"
                   />
                   <label 
                     htmlFor="terms" 
-                    className="text-sm text-card-foreground cursor-pointer leading-tight"
+                    className="text-sm text-card-foreground cursor-pointer leading-snug"
                   >
                     Aceito os <span className="text-secondary font-medium">Termos de Uso</span> e{' '}
                     <span className="text-secondary font-medium">Política de Privacidade</span>
@@ -211,27 +212,27 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-14 mt-6 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold text-lg shadow-button"
+              className="w-full h-12 mt-5 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold text-base shadow-button touch-manipulation"
             >
               {loading ? 'Carregando...' : mode === 'login' ? 'Entrar' : 'Criar Conta'}
             </Button>
           </form>
 
           {mode === 'login' && (
-            <button className="w-full text-center text-sm text-muted-foreground mt-4 hover:text-card-foreground transition-colors">
+            <button className="w-full text-center text-sm text-muted-foreground mt-3 hover:text-card-foreground transition-colors touch-manipulation py-1">
               Esqueci minha senha
             </button>
           )}
         </div>
 
         {/* Toggle mode */}
-        <p className="text-center text-muted-foreground mt-6">
+        <p className="text-center text-muted-foreground text-sm mt-5">
           {mode === 'login' ? (
             <>
               Não tem conta?{' '}
               <button
                 onClick={() => setMode('cadastro')}
-                className="text-secondary font-semibold hover:underline"
+                className="text-secondary font-semibold hover:underline touch-manipulation"
               >
                 Criar conta grátis
               </button>
@@ -241,7 +242,7 @@ export default function LoginPage() {
               Já tem conta?{' '}
               <button
                 onClick={() => setMode('login')}
-                className="text-secondary font-semibold hover:underline"
+                className="text-secondary font-semibold hover:underline touch-manipulation"
               >
                 Entrar
               </button>

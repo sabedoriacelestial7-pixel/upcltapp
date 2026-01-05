@@ -50,61 +50,61 @@ export default function PerfilPage() {
   };
 
   return (
-    <div className="min-h-screen gradient-primary pb-24">
+    <div className="min-h-screen min-h-[100dvh] gradient-primary pb-20">
       <Header title="Meu Perfil" showBack={false} />
 
-      <main className="max-w-md mx-auto px-4 py-6 space-y-6 animate-fade-in">
+      <main className="max-w-md mx-auto px-4 py-5 space-y-4 animate-fade-in">
         {/* User Card */}
-        <div className="bg-card rounded-3xl p-6 shadow-card">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center">
-              <span className="text-2xl font-bold text-secondary-foreground">
+        <div className="bg-card rounded-2xl p-5 shadow-card">
+          <div className="flex items-center gap-3.5 mb-4">
+            <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center shrink-0">
+              <span className="text-xl font-bold text-secondary-foreground">
                 {getInitial()}
               </span>
             </div>
-            <div className="flex-1">
-              <h2 className="text-xl font-bold text-card-foreground">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-lg font-bold text-card-foreground truncate">
                 {usuario?.nome || 'Usuário'}
               </h2>
               <p className="text-muted-foreground text-sm">Cliente UpCLT</p>
             </div>
           </div>
 
-          <div className="space-y-3 pt-4 border-t border-border">
-            <div className="flex items-center gap-3">
-              <Mail size={18} className="text-muted-foreground" />
-              <span className="text-card-foreground">
+          <div className="space-y-2.5 pt-3.5 border-t border-border">
+            <div className="flex items-center gap-2.5">
+              <Mail size={16} className="text-muted-foreground shrink-0" />
+              <span className="text-sm text-card-foreground truncate">
                 {usuario?.email || 'email@exemplo.com'}
               </span>
             </div>
             {usuario?.telefone && (
-              <div className="flex items-center gap-3">
-                <Phone size={18} className="text-muted-foreground" />
-                <span className="text-card-foreground">{usuario.telefone}</span>
+              <div className="flex items-center gap-2.5">
+                <Phone size={16} className="text-muted-foreground shrink-0" />
+                <span className="text-sm text-card-foreground">{usuario.telefone}</span>
               </div>
             )}
           </div>
         </div>
 
         {/* Menu */}
-        <div className="bg-card rounded-3xl shadow-card overflow-hidden">
+        <div className="bg-card rounded-2xl shadow-card overflow-hidden">
           {menuItems.map(({ icon: Icon, label, action }, index) => (
             <button
               key={action}
               onClick={() => handleMenuClick(action)}
               className={cn(
-                'w-full flex items-center justify-between p-4',
-                'hover:bg-muted/50 transition-colors active:bg-muted/70',
+                'w-full flex items-center justify-between p-3.5 min-h-[52px]',
+                'hover:bg-muted/50 transition-colors active:bg-muted/70 touch-manipulation',
                 index < menuItems.length - 1 && 'border-b border-border'
               )}
             >
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
-                  <Icon size={20} className="text-secondary" />
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-secondary/10 flex items-center justify-center shrink-0">
+                  <Icon size={18} className="text-secondary" />
                 </div>
-                <span className="font-medium text-card-foreground">{label}</span>
+                <span className="font-medium text-card-foreground text-sm">{label}</span>
               </div>
-              <ChevronRight size={20} className="text-muted-foreground" />
+              <ChevronRight size={18} className="text-muted-foreground" />
             </button>
           ))}
         </div>
@@ -113,18 +113,18 @@ export default function PerfilPage() {
         <button
           onClick={handleLogout}
           className={cn(
-            'w-full bg-card rounded-2xl p-4 shadow-card',
-            'flex items-center justify-center gap-3',
-            'text-destructive font-medium',
-            'hover:bg-destructive/5 transition-colors active:scale-[0.99]'
+            'w-full bg-card rounded-xl p-3.5 shadow-card min-h-[52px]',
+            'flex items-center justify-center gap-2.5',
+            'text-destructive font-medium text-sm',
+            'hover:bg-destructive/5 transition-colors active:scale-[0.99] touch-manipulation'
           )}
         >
-          <LogOut size={20} />
+          <LogOut size={18} />
           Sair da conta
         </button>
 
         {/* Version */}
-        <p className="text-center text-xs text-muted-foreground">
+        <p className="text-center text-xs text-muted-foreground pt-2">
           UpCLT v1.0.0 • 3F Promotora
         </p>
       </main>
