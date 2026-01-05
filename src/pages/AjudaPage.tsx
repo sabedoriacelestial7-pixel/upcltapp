@@ -46,9 +46,12 @@ export default function AjudaPage() {
     <div className="min-h-screen min-h-[100dvh] gradient-primary pb-20">
       <Header title="Ajuda" showBack />
 
-      <main className="max-w-md mx-auto px-5 py-5 space-y-4 animate-fade-in">
+      <main className="max-w-md mx-auto px-5 py-5 space-y-4">
         {/* Hero Section */}
-        <div className="bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-2xl p-5 shadow-lg shadow-green-500/25 text-center">
+        <div 
+          className="bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-2xl p-5 shadow-lg shadow-green-500/25 text-center animate-fade-in opacity-0"
+          style={{ animationDelay: '0ms', animationFillMode: 'forwards' }}
+        >
           <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-3 backdrop-blur-sm">
             <HelpCircle size={28} className="text-white" />
           </div>
@@ -61,11 +64,19 @@ export default function AjudaPage() {
         </div>
 
         {/* FAQ Accordion */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
+        <div 
+          className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm animate-fade-in opacity-0"
+          style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}
+        >
           <Accordion type="single" collapsible className="w-full">
-            {faqItems.map((item) => (
-              <AccordionItem key={item.id} value={item.id} className="border-white/10">
-                <AccordionTrigger className="px-4 py-3.5 text-left text-sm font-medium text-white hover:no-underline hover:bg-white/5">
+            {faqItems.map((item, index) => (
+              <AccordionItem 
+                key={item.id} 
+                value={item.id} 
+                className="border-white/10 animate-fade-in opacity-0"
+                style={{ animationDelay: `${200 + index * 75}ms`, animationFillMode: 'forwards' }}
+              >
+                <AccordionTrigger className="px-4 py-3.5 text-left text-sm font-medium text-white hover:no-underline hover:bg-white/5 transition-colors duration-300">
                   {item.question}
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4 text-sm text-white/70 leading-relaxed">
@@ -77,7 +88,10 @@ export default function AjudaPage() {
         </div>
 
         {/* Contact Section */}
-        <div className="bg-white/5 border border-[#22c55e]/30 rounded-2xl p-5 backdrop-blur-sm">
+        <div 
+          className="bg-white/5 border border-[#22c55e]/30 rounded-2xl p-5 backdrop-blur-sm animate-fade-in opacity-0"
+          style={{ animationDelay: '650ms', animationFillMode: 'forwards' }}
+        >
           <h3 className="font-semibold text-white mb-2">
             Ainda tem dúvidas?
           </h3>
