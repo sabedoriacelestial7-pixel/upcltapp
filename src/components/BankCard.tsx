@@ -32,12 +32,13 @@ export function BankCard({ banco, isFirst = false, onContratar }: BankCardProps)
         <div className="flex items-center gap-3">
           <div 
             className={cn(
-              'w-11 h-11 rounded-xl flex items-center justify-center text-xl',
-              'transition-all duration-300 group-hover:scale-110 group-hover:rotate-3'
+              'w-11 h-11 rounded-xl flex items-center justify-center',
+              'transition-all duration-300 group-hover:scale-110 group-hover:rotate-3',
+              'font-bold text-sm text-white'
             )}
-            style={{ backgroundColor: `${banco.cor}20` }}
+            style={{ backgroundColor: banco.cor }}
           >
-            {banco.logo}
+            {banco.sigla}
           </div>
           <div>
             <h3 className="font-semibold text-white group-hover:text-[#22c55e] transition-colors duration-300">

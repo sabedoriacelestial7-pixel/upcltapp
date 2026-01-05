@@ -47,6 +47,7 @@ export interface BancoCalculado {
   id: string;
   nome: string;
   logo: string;
+  sigla: string;
   taxaMensal: number;
   cor: string;
   destaque: string | null;
