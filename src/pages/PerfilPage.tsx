@@ -80,9 +80,12 @@ export default function PerfilPage() {
     <div className="min-h-screen min-h-[100dvh] gradient-primary pb-20">
       <Header title="Meu Perfil" showBack={false} />
 
-      <main className="max-w-md mx-auto px-5 py-5 space-y-4 animate-fade-in">
+      <main className="max-w-md mx-auto px-5 py-5 space-y-4">
         {/* User Card */}
-        <div className="bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-2xl p-5 shadow-lg shadow-green-500/25">
+        <div 
+          className="bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-2xl p-5 shadow-lg shadow-green-500/25 animate-fade-in opacity-0"
+          style={{ animationDelay: '0ms', animationFillMode: 'forwards' }}
+        >
           <div className="flex items-center gap-3.5 mb-4">
             <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm">
               <span className="text-xl font-bold text-white">
@@ -114,7 +117,10 @@ export default function PerfilPage() {
         </div>
 
         {/* Menu */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
+        <div 
+          className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm animate-fade-in opacity-0"
+          style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}
+        >
           {menuItems.map(({ icon: Icon, label, action }, index) => (
             <button
               key={action}
@@ -144,8 +150,10 @@ export default function PerfilPage() {
                 'w-full bg-white/5 border border-red-500/30 rounded-xl p-3.5 min-h-[52px]',
                 'flex items-center justify-center gap-2.5',
                 'text-red-400 font-medium text-sm',
-                'hover:bg-red-500/10 hover:border-red-500/50 transition-all duration-300 active:scale-[0.99] touch-manipulation'
+                'hover:bg-red-500/10 hover:border-red-500/50 transition-all duration-300 active:scale-[0.99] touch-manipulation',
+                'animate-fade-in opacity-0'
               )}
+              style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
             >
               <Trash2 size={18} />
               Excluir minha conta (LGPD)
@@ -175,15 +183,20 @@ export default function PerfilPage() {
             'w-full bg-white/5 border border-white/10 rounded-xl p-3.5 min-h-[52px]',
             'flex items-center justify-center gap-2.5',
             'text-white/60 font-medium text-sm',
-            'hover:bg-white/10 transition-all duration-300 active:scale-[0.99] touch-manipulation'
+            'hover:bg-white/10 transition-all duration-300 active:scale-[0.99] touch-manipulation',
+            'animate-fade-in opacity-0'
           )}
+          style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}
         >
           <LogOut size={18} />
           Sair da conta
         </button>
 
         {/* Version */}
-        <p className="text-center text-xs text-white/40 pt-2">
+        <p 
+          className="text-center text-xs text-white/40 pt-2 animate-fade-in opacity-0"
+          style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}
+        >
           UpCLT v1.0.0 • 3F Promotora
         </p>
       </main>

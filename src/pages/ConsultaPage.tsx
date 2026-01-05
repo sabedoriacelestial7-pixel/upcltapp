@@ -63,20 +63,32 @@ export default function ConsultaPage() {
     <div className="min-h-screen min-h-[100dvh] gradient-primary pb-20">
       <Header title="Consultar Margem" />
 
-      <main className="max-w-md mx-auto px-5 py-6 animate-fade-in">
+      <main className="max-w-md mx-auto px-5 py-6">
         {state === 'idle' && (
           <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#22c55e] to-[#16a34a] mx-auto mb-5 flex items-center justify-center shadow-lg shadow-green-500/25">
+            <div 
+              className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#22c55e] to-[#16a34a] mx-auto mb-5 flex items-center justify-center shadow-lg shadow-green-500/25 animate-fade-in opacity-0"
+              style={{ animationDelay: '0ms', animationFillMode: 'forwards' }}
+            >
               <Search size={32} className="text-white" />
             </div>
-            <h2 className="text-lg font-bold text-foreground mb-1.5">
+            <h2 
+              className="text-lg font-bold text-foreground mb-1.5 animate-fade-in opacity-0"
+              style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}
+            >
               Informe seu CPF
             </h2>
-            <p className="text-sm text-muted-foreground mb-6">
+            <p 
+              className="text-sm text-muted-foreground mb-6 animate-fade-in opacity-0"
+              style={{ animationDelay: '150ms', animationFillMode: 'forwards' }}
+            >
               Vamos verificar sua margem disponível
             </p>
 
-            <div className="bg-white/5 border border-[#22c55e]/30 rounded-2xl p-5 backdrop-blur-sm">
+            <div 
+              className="bg-white/5 border border-[#22c55e]/30 rounded-2xl p-5 backdrop-blur-sm animate-fade-in opacity-0"
+              style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
+            >
               <InputMask
                 label="CPF"
                 placeholder="000.000.000-00"
@@ -95,7 +107,10 @@ export default function ConsultaPage() {
               </Button>
             </div>
 
-            <p className="text-xs text-muted-foreground mt-5">
+            <p 
+              className="text-xs text-muted-foreground mt-5 animate-fade-in opacity-0"
+              style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}
+            >
               CPFs de teste: 123.456.789-01, 987.654.321-00, 111.222.333-44
             </p>
           </div>
