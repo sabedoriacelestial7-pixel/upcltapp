@@ -32,13 +32,20 @@ export function BankCard({ banco, isFirst = false, onContratar }: BankCardProps)
         <div className="flex items-center gap-3">
           <div 
             className={cn(
-              'w-11 h-11 rounded-xl flex items-center justify-center',
-              'transition-all duration-300 group-hover:scale-110 group-hover:rotate-3',
-              'font-bold text-sm text-white'
+              'w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-white',
+              'transition-all duration-300 group-hover:scale-110 group-hover:rotate-3'
             )}
-            style={{ backgroundColor: banco.cor }}
           >
-            {banco.sigla}
+            <img 
+              src={banco.logo} 
+              alt={banco.nome} 
+              className="w-full h-full object-contain p-1"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+                target.parentElement!.innerHTML = `<span class="font-bold text-sm" style="color: ${banco.cor}">${banco.sigla}</span>`;
+              }}
+            />
           </div>
           <div>
             <h3 className="font-semibold text-white group-hover:text-[#22c55e] transition-colors duration-300">
