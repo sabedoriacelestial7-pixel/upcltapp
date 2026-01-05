@@ -49,10 +49,13 @@ export default function SimuladorPage() {
     <div className="min-h-screen min-h-[100dvh] gradient-primary pb-36">
       <Header title="Simulador" />
 
-      <main className="max-w-md mx-auto px-5 py-5 space-y-4 animate-fade-in">
+      <main className="max-w-md mx-auto px-5 py-5 space-y-4">
         {/* Margin Info */}
         {consulta ? (
-          <div className="bg-[#22c55e]/10 border border-[#22c55e]/30 rounded-xl p-3.5 flex items-center justify-between">
+          <div 
+            className="bg-[#22c55e]/10 border border-[#22c55e]/30 rounded-xl p-3.5 flex items-center justify-between animate-fade-in opacity-0"
+            style={{ animationDelay: '0ms', animationFillMode: 'forwards' }}
+          >
             <div>
               <p className="text-xs text-white/60">Sua margem mensal</p>
               <p className="text-lg font-bold text-[#22c55e]">
@@ -71,7 +74,8 @@ export default function SimuladorPage() {
         ) : (
           <button
             onClick={() => navigate('/consulta')}
-            className="w-full bg-white/5 border border-[#22c55e]/30 rounded-xl p-3.5 flex items-center gap-3 text-left hover:bg-white/10 hover:border-[#22c55e]/50 transition-all duration-300 active:scale-[0.99] touch-manipulation"
+            className="w-full bg-white/5 border border-[#22c55e]/30 rounded-xl p-3.5 flex items-center gap-3 text-left hover:bg-white/10 hover:border-[#22c55e]/50 transition-all duration-300 active:scale-[0.99] touch-manipulation animate-fade-in opacity-0"
+            style={{ animationDelay: '0ms', animationFillMode: 'forwards' }}
           >
             <div className="w-10 h-10 rounded-lg bg-[#22c55e]/10 flex items-center justify-center shrink-0">
               <Search size={20} className="text-[#22c55e]" />
@@ -88,7 +92,10 @@ export default function SimuladorPage() {
         )}
 
         {/* Parcelas */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-sm">
+        <div 
+          className="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-sm animate-fade-in opacity-0"
+          style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}
+        >
           <ParcelasSelector
             value={parcelas}
             onChange={setParcelas}
@@ -96,7 +103,10 @@ export default function SimuladorPage() {
         </div>
 
         {/* Result Preview */}
-        <div className="bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-2xl p-5 shadow-lg shadow-green-500/25 text-center">
+        <div 
+          className="bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-2xl p-5 shadow-lg shadow-green-500/25 text-center animate-fade-in opacity-0"
+          style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
+        >
           <p className="text-white/80 text-xs mb-1">
             Valor liberado
           </p>
@@ -112,7 +122,10 @@ export default function SimuladorPage() {
         </div>
 
         {/* Parcelas - Second */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-sm">
+        <div 
+          className="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-sm animate-fade-in opacity-0"
+          style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}
+        >
           <ParcelasSelector
             value={parcelas}
             onChange={setParcelas}
@@ -120,7 +133,10 @@ export default function SimuladorPage() {
         </div>
 
         {/* Result Preview - Parcela */}
-        <div className="bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-2xl p-5 shadow-lg shadow-green-500/25 text-center">
+        <div 
+          className="bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-2xl p-5 shadow-lg shadow-green-500/25 text-center animate-fade-in opacity-0"
+          style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}
+        >
           <p className="text-white/80 text-xs mb-1">
             Parcela mensal
           </p>
@@ -136,24 +152,35 @@ export default function SimuladorPage() {
         </div>
 
         {/* Banks List */}
-        <section>
+        <section 
+          className="animate-fade-in opacity-0"
+          style={{ animationDelay: '500ms', animationFillMode: 'forwards' }}
+        >
           <h3 className="text-base font-bold text-foreground mb-3">
             Compare os bancos
           </h3>
           <div className="space-y-3">
             {bancosCalculados.map((banco, index) => (
-              <BankCard
+              <div 
                 key={banco.id}
-                banco={banco}
-                isFirst={index === 0}
-                onContratar={() => handleContratar(banco.id)}
-              />
+                className="animate-fade-in opacity-0"
+                style={{ animationDelay: `${600 + index * 100}ms`, animationFillMode: 'forwards' }}
+              >
+                <BankCard
+                  banco={banco}
+                  isFirst={index === 0}
+                  onContratar={() => handleContratar(banco.id)}
+                />
+              </div>
             ))}
           </div>
         </section>
 
         {/* Disclaimer */}
-        <div className="flex items-start gap-2.5 bg-white/5 border border-white/10 rounded-xl p-3.5">
+        <div 
+          className="flex items-start gap-2.5 bg-white/5 border border-white/10 rounded-xl p-3.5 animate-fade-in opacity-0"
+          style={{ animationDelay: '900ms', animationFillMode: 'forwards' }}
+        >
           <Info size={16} className="text-white/50 shrink-0 mt-0.5" />
           <p className="text-xs text-white/60 leading-relaxed">
             Valores calculados com base no Sistema Price. Taxas e condições sujeitas à aprovação.
