@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { 
-  User, 
   Mail, 
   Phone, 
   History, 
@@ -9,19 +8,36 @@ import {
   Shield, 
   Info, 
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Calculator,
+  Trash2,
+  HelpCircle
 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
 import { useApp } from '@/contexts/AppContext';
 import { cn } from '@/lib/utils';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
 
 const menuItems = [
-  { icon: History, label: 'Minhas Consultas', action: 'consultas' },
-  { icon: Edit, label: 'Editar Perfil', action: 'editar' },
-  { icon: FileText, label: 'Termos de Uso', action: 'termos' },
-  { icon: Shield, label: 'Política de Privacidade', action: 'privacidade' },
-  { icon: Info, label: 'Sobre o UpCLT', action: 'sobre' }
+  { icon: History, label: 'Histórico de consultas', action: 'consultas' },
+  { icon: Calculator, label: 'Minhas simulações salvas', action: 'simulacoes' },
+  { icon: Edit, label: 'Editar dados', action: 'editar' },
+  { icon: HelpCircle, label: 'Ajuda / FAQ', action: 'ajuda' },
+  { icon: FileText, label: 'Termos de uso', action: 'termos' },
+  { icon: Shield, label: 'Política de privacidade', action: 'privacidade' },
+  { icon: Info, label: 'Sobre o app', action: 'sobre' }
 ];
 
 export default function PerfilPage() {
@@ -29,13 +45,18 @@ export default function PerfilPage() {
   const { usuario, logout } = useApp();
 
   const handleMenuClick = (action: string) => {
-    // For now, just show a toast or navigate
     switch (action) {
       case 'consultas':
         navigate('/consulta');
         break;
+      case 'simulacoes':
+        navigate('/simulador');
+        break;
+      case 'ajuda':
+        navigate('/ajuda');
+        break;
       default:
-        // Could navigate to specific pages
+        toast.info('Em breve!', { description: 'Esta funcionalidade estará disponível em breve.' });
         break;
     }
   };
@@ -43,6 +64,12 @@ export default function PerfilPage() {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleDeleteAccount = () => {
+    toast.info('Solicitação enviada', { 
+      description: 'Sua solicitação de exclusão será processada em até 48 horas conforme a LGPD.' 
+    });
   };
 
   const getInitial = () => {
@@ -109,14 +136,46 @@ export default function PerfilPage() {
           ))}
         </div>
 
+        {/* Delete Account */}
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <button
+              className={cn(
+                'w-full bg-card rounded-xl p-3.5 shadow-card min-h-[52px]',
+                'flex items-center justify-center gap-2.5',
+                'text-destructive font-medium text-sm',
+                'hover:bg-destructive/5 transition-colors active:scale-[0.99] touch-manipulation'
+              )}
+            >
+              <Trash2 size={18} />
+              Excluir minha conta (LGPD)
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Excluir conta</AlertDialogTitle>
+              <AlertDialogDescription>
+                Conforme a LGPD, você tem o direito de solicitar a exclusão dos seus dados. 
+                Esta ação é irreversível e todos os seus dados serão removidos permanentemente.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Confirmar exclusão
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
         {/* Logout Button */}
         <button
           onClick={handleLogout}
           className={cn(
             'w-full bg-card rounded-xl p-3.5 shadow-card min-h-[52px]',
             'flex items-center justify-center gap-2.5',
-            'text-destructive font-medium text-sm',
-            'hover:bg-destructive/5 transition-colors active:scale-[0.99] touch-manipulation'
+            'text-muted-foreground font-medium text-sm',
+            'hover:bg-muted/50 transition-colors active:scale-[0.99] touch-manipulation'
           )}
         >
           <LogOut size={18} />

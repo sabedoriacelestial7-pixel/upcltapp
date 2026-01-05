@@ -12,6 +12,7 @@ import ConsultaPage from "@/pages/ConsultaPage";
 import ResultadoPage from "@/pages/ResultadoPage";
 import SimuladorPage from "@/pages/SimuladorPage";
 import PerfilPage from "@/pages/PerfilPage";
+import AjudaPage from "@/pages/AjudaPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -65,6 +66,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <PerfilPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ajuda"
+              element={
+                <ProtectedRoute>
+                  <AjudaPage />
                 </ProtectedRoute>
               }
             />
