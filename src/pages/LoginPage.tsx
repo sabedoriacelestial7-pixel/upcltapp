@@ -110,14 +110,14 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-6">
           <Logo size="xl" className="justify-center mb-3" />
-          <p className="text-muted-foreground text-base">
+          <p className="text-white/70 text-base">
             Crédito CLT sem burocracia
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-card rounded-2xl p-5 shadow-card animate-slide-up">
-          <h2 className="text-lg font-bold text-card-foreground text-center mb-5">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-sm animate-slide-up">
+          <h2 className="text-lg font-bold text-white text-center mb-5">
             {mode === 'login' ? 'Entrar' : 'Criar Conta'}
           </h2>
 
@@ -168,7 +168,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[38px] text-muted-foreground p-1.5 touch-manipulation"
+                className="absolute right-3 top-[38px] text-white/50 p-1.5 touch-manipulation hover:text-white/70 transition-colors"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -193,18 +193,18 @@ export default function LoginPage() {
                     id="terms"
                     checked={acceptedTerms}
                     onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
-                    className="mt-0.5"
+                    className="mt-0.5 border-white/30 data-[state=checked]:bg-[#22c55e] data-[state=checked]:border-[#22c55e]"
                   />
                   <label 
                     htmlFor="terms" 
-                    className="text-sm text-card-foreground cursor-pointer leading-snug"
+                    className="text-sm text-white/80 cursor-pointer leading-snug"
                   >
-                    Aceito os <span className="text-secondary font-medium">Termos de Uso</span> e{' '}
-                    <span className="text-secondary font-medium">Política de Privacidade</span>
+                    Aceito os <span className="text-[#22c55e] font-medium">Termos de Uso</span> e{' '}
+                    <span className="text-[#22c55e] font-medium">Política de Privacidade</span>
                   </label>
                 </div>
                 {errors.terms && (
-                  <p className="text-sm text-destructive">{errors.terms}</p>
+                  <p className="text-sm text-red-400">{errors.terms}</p>
                 )}
               </>
             )}
@@ -212,27 +212,27 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-12 mt-5 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold text-base shadow-button touch-manipulation"
+              className="w-full h-12 mt-5 bg-gradient-to-r from-[#22c55e] to-[#16a34a] hover:from-[#16a34a] hover:to-[#15803d] text-white font-semibold text-base shadow-lg shadow-green-500/25 touch-manipulation transition-all duration-300"
             >
               {loading ? 'Carregando...' : mode === 'login' ? 'Entrar' : 'Criar Conta'}
             </Button>
           </form>
 
           {mode === 'login' && (
-            <button className="w-full text-center text-sm text-muted-foreground mt-3 hover:text-card-foreground transition-colors touch-manipulation py-1">
+            <button className="w-full text-center text-sm text-white/50 mt-3 hover:text-white/70 transition-colors touch-manipulation py-1">
               Esqueci minha senha
             </button>
           )}
         </div>
 
         {/* Toggle mode */}
-        <p className="text-center text-muted-foreground text-sm mt-5">
+        <p className="text-center text-white/60 text-sm mt-5">
           {mode === 'login' ? (
             <>
               Não tem conta?{' '}
               <button
                 onClick={() => setMode('cadastro')}
-                className="text-secondary font-semibold hover:underline touch-manipulation"
+                className="text-[#22c55e] font-semibold hover:underline touch-manipulation"
               >
                 Criar conta grátis
               </button>
@@ -242,7 +242,7 @@ export default function LoginPage() {
               Já tem conta?{' '}
               <button
                 onClick={() => setMode('login')}
-                className="text-secondary font-semibold hover:underline touch-manipulation"
+                className="text-[#22c55e] font-semibold hover:underline touch-manipulation"
               >
                 Entrar
               </button>

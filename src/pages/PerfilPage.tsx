@@ -80,58 +80,58 @@ export default function PerfilPage() {
     <div className="min-h-screen min-h-[100dvh] gradient-primary pb-20">
       <Header title="Meu Perfil" showBack={false} />
 
-      <main className="max-w-md mx-auto px-4 py-5 space-y-4 animate-fade-in">
+      <main className="max-w-md mx-auto px-5 py-5 space-y-4 animate-fade-in">
         {/* User Card */}
-        <div className="bg-card rounded-2xl p-5 shadow-card">
+        <div className="bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-2xl p-5 shadow-lg shadow-green-500/25">
           <div className="flex items-center gap-3.5 mb-4">
-            <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center shrink-0">
-              <span className="text-xl font-bold text-secondary-foreground">
+            <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm">
+              <span className="text-xl font-bold text-white">
                 {getInitial()}
               </span>
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-bold text-card-foreground truncate">
+              <h2 className="text-lg font-bold text-white truncate">
                 {usuario?.nome || 'Usuário'}
               </h2>
-              <p className="text-muted-foreground text-sm">Cliente UpCLT</p>
+              <p className="text-white/70 text-sm">Cliente UpCLT</p>
             </div>
           </div>
 
-          <div className="space-y-2.5 pt-3.5 border-t border-border">
+          <div className="space-y-2.5 pt-3.5 border-t border-white/20">
             <div className="flex items-center gap-2.5">
-              <Mail size={16} className="text-muted-foreground shrink-0" />
-              <span className="text-sm text-card-foreground truncate">
+              <Mail size={16} className="text-white/60 shrink-0" />
+              <span className="text-sm text-white/90 truncate">
                 {usuario?.email || 'email@exemplo.com'}
               </span>
             </div>
             {usuario?.telefone && (
               <div className="flex items-center gap-2.5">
-                <Phone size={16} className="text-muted-foreground shrink-0" />
-                <span className="text-sm text-card-foreground">{usuario.telefone}</span>
+                <Phone size={16} className="text-white/60 shrink-0" />
+                <span className="text-sm text-white/90">{usuario.telefone}</span>
               </div>
             )}
           </div>
         </div>
 
         {/* Menu */}
-        <div className="bg-card rounded-2xl shadow-card overflow-hidden">
+        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
           {menuItems.map(({ icon: Icon, label, action }, index) => (
             <button
               key={action}
               onClick={() => handleMenuClick(action)}
               className={cn(
                 'w-full flex items-center justify-between p-3.5 min-h-[52px]',
-                'hover:bg-muted/50 transition-colors active:bg-muted/70 touch-manipulation',
-                index < menuItems.length - 1 && 'border-b border-border'
+                'hover:bg-white/5 transition-all duration-300 active:bg-white/10 touch-manipulation',
+                index < menuItems.length - 1 && 'border-b border-white/10'
               )}
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-secondary/10 flex items-center justify-center shrink-0">
-                  <Icon size={18} className="text-secondary" />
+                <div className="w-9 h-9 rounded-lg bg-[#22c55e]/10 flex items-center justify-center shrink-0">
+                  <Icon size={18} className="text-[#22c55e]" />
                 </div>
-                <span className="font-medium text-card-foreground text-sm">{label}</span>
+                <span className="font-medium text-white text-sm">{label}</span>
               </div>
-              <ChevronRight size={18} className="text-muted-foreground" />
+              <ChevronRight size={18} className="text-white/40" />
             </button>
           ))}
         </div>
@@ -141,27 +141,27 @@ export default function PerfilPage() {
           <AlertDialogTrigger asChild>
             <button
               className={cn(
-                'w-full bg-card rounded-xl p-3.5 shadow-card min-h-[52px]',
+                'w-full bg-white/5 border border-red-500/30 rounded-xl p-3.5 min-h-[52px]',
                 'flex items-center justify-center gap-2.5',
-                'text-destructive font-medium text-sm',
-                'hover:bg-destructive/5 transition-colors active:scale-[0.99] touch-manipulation'
+                'text-red-400 font-medium text-sm',
+                'hover:bg-red-500/10 hover:border-red-500/50 transition-all duration-300 active:scale-[0.99] touch-manipulation'
               )}
             >
               <Trash2 size={18} />
               Excluir minha conta (LGPD)
             </button>
           </AlertDialogTrigger>
-          <AlertDialogContent>
+          <AlertDialogContent className="bg-[#1e293b] border-white/10">
             <AlertDialogHeader>
-              <AlertDialogTitle>Excluir conta</AlertDialogTitle>
-              <AlertDialogDescription>
+              <AlertDialogTitle className="text-white">Excluir conta</AlertDialogTitle>
+              <AlertDialogDescription className="text-white/60">
                 Conforme a LGPD, você tem o direito de solicitar a exclusão dos seus dados. 
                 Esta ação é irreversível e todos os seus dados serão removidos permanentemente.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              <AlertDialogCancel className="bg-white/10 border-white/20 text-white hover:bg-white/20">Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteAccount} className="bg-red-500 text-white hover:bg-red-600">
                 Confirmar exclusão
               </AlertDialogAction>
             </AlertDialogFooter>
@@ -172,10 +172,10 @@ export default function PerfilPage() {
         <button
           onClick={handleLogout}
           className={cn(
-            'w-full bg-card rounded-xl p-3.5 shadow-card min-h-[52px]',
+            'w-full bg-white/5 border border-white/10 rounded-xl p-3.5 min-h-[52px]',
             'flex items-center justify-center gap-2.5',
-            'text-muted-foreground font-medium text-sm',
-            'hover:bg-muted/50 transition-colors active:scale-[0.99] touch-manipulation'
+            'text-white/60 font-medium text-sm',
+            'hover:bg-white/10 transition-all duration-300 active:scale-[0.99] touch-manipulation'
           )}
         >
           <LogOut size={18} />
@@ -183,7 +183,7 @@ export default function PerfilPage() {
         </button>
 
         {/* Version */}
-        <p className="text-center text-xs text-muted-foreground pt-2">
+        <p className="text-center text-xs text-white/40 pt-2">
           UpCLT v1.0.0 • 3F Promotora
         </p>
       </main>

@@ -63,11 +63,11 @@ export default function ConsultaPage() {
     <div className="min-h-screen min-h-[100dvh] gradient-primary pb-20">
       <Header title="Consultar Margem" />
 
-      <main className="max-w-md mx-auto px-4 py-6 animate-fade-in">
+      <main className="max-w-md mx-auto px-5 py-6 animate-fade-in">
         {state === 'idle' && (
           <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl bg-secondary/10 mx-auto mb-5 flex items-center justify-center">
-              <Search size={32} className="text-secondary" />
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#22c55e] to-[#16a34a] mx-auto mb-5 flex items-center justify-center shadow-lg shadow-green-500/25">
+              <Search size={32} className="text-white" />
             </div>
             <h2 className="text-lg font-bold text-foreground mb-1.5">
               Informe seu CPF
@@ -76,7 +76,7 @@ export default function ConsultaPage() {
               Vamos verificar sua margem disponível
             </p>
 
-            <div className="bg-card rounded-2xl p-5 shadow-card">
+            <div className="bg-white/5 border border-[#22c55e]/30 rounded-2xl p-5 backdrop-blur-sm">
               <InputMask
                 label="CPF"
                 placeholder="000.000.000-00"
@@ -89,7 +89,7 @@ export default function ConsultaPage() {
               <Button
                 onClick={handleConsulta}
                 disabled={!isValidCPF}
-                className="w-full h-12 mt-5 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold text-base shadow-button disabled:opacity-50 disabled:shadow-none touch-manipulation"
+                className="w-full h-12 mt-5 bg-gradient-to-r from-[#22c55e] to-[#16a34a] hover:from-[#16a34a] hover:to-[#15803d] text-white font-semibold text-base shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:shadow-none touch-manipulation transition-all duration-300"
               >
                 Consultar
               </Button>
@@ -113,8 +113,8 @@ export default function ConsultaPage() {
 
         {state === 'not-found' && (
           <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl bg-accent/10 mx-auto mb-5 flex items-center justify-center">
-              <AlertTriangle size={32} className="text-accent" />
+            <div className="w-16 h-16 rounded-2xl bg-amber-500/20 mx-auto mb-5 flex items-center justify-center border border-amber-500/30">
+              <AlertTriangle size={32} className="text-amber-400" />
             </div>
             <h2 className="text-lg font-bold text-foreground mb-1.5">
               CPF não encontrado
@@ -125,7 +125,7 @@ export default function ConsultaPage() {
 
             <Button
               onClick={handleWhatsApp}
-              className="w-full h-12 bg-whatsapp hover:bg-whatsapp/90 text-whatsapp-foreground font-semibold shadow-button touch-manipulation"
+              className="w-full h-12 bg-gradient-to-r from-[#22c55e] to-[#16a34a] hover:from-[#16a34a] hover:to-[#15803d] text-white font-semibold shadow-lg shadow-green-500/25 touch-manipulation transition-all duration-300"
             >
               <MessageCircle size={20} />
               Falar com Consultor
@@ -134,7 +134,7 @@ export default function ConsultaPage() {
             <Button
               onClick={handleRetry}
               variant="ghost"
-              className="w-full mt-3 text-foreground touch-manipulation"
+              className="w-full mt-3 text-white/70 hover:text-white hover:bg-white/10 touch-manipulation"
             >
               Tentar outro CPF
             </Button>
@@ -143,8 +143,8 @@ export default function ConsultaPage() {
 
         {state === 'ineligible' && (
           <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl bg-destructive/10 mx-auto mb-5 flex items-center justify-center">
-              <XCircle size={32} className="text-destructive" />
+            <div className="w-16 h-16 rounded-2xl bg-red-500/20 mx-auto mb-5 flex items-center justify-center border border-red-500/30">
+              <XCircle size={32} className="text-red-400" />
             </div>
             <h2 className="text-lg font-bold text-foreground mb-1.5">
               Margem não disponível
@@ -155,7 +155,7 @@ export default function ConsultaPage() {
 
             <Button
               onClick={handleWhatsApp}
-              className="w-full h-12 bg-whatsapp hover:bg-whatsapp/90 text-whatsapp-foreground font-semibold shadow-button touch-manipulation"
+              className="w-full h-12 bg-gradient-to-r from-[#22c55e] to-[#16a34a] hover:from-[#16a34a] hover:to-[#15803d] text-white font-semibold shadow-lg shadow-green-500/25 touch-manipulation transition-all duration-300"
             >
               <MessageCircle size={20} />
               Falar com Consultor
@@ -164,7 +164,7 @@ export default function ConsultaPage() {
             <Button
               onClick={handleRetry}
               variant="ghost"
-              className="w-full mt-3 text-foreground touch-manipulation"
+              className="w-full mt-3 text-white/70 hover:text-white hover:bg-white/10 touch-manipulation"
             >
               Tentar outro CPF
             </Button>
@@ -173,8 +173,8 @@ export default function ConsultaPage() {
 
         {state === 'error' && (
           <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl bg-destructive/10 mx-auto mb-5 flex items-center justify-center">
-              <AlertCircle size={32} className="text-destructive" />
+            <div className="w-16 h-16 rounded-2xl bg-red-500/20 mx-auto mb-5 flex items-center justify-center border border-red-500/30">
+              <AlertCircle size={32} className="text-red-400" />
             </div>
             <h2 className="text-lg font-bold text-foreground mb-1.5">
               Erro ao consultar
@@ -185,7 +185,7 @@ export default function ConsultaPage() {
 
             <Button
               onClick={handleRetry}
-              className="w-full h-12 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold shadow-button touch-manipulation"
+              className="w-full h-12 bg-gradient-to-r from-[#22c55e] to-[#16a34a] hover:from-[#16a34a] hover:to-[#15803d] text-white font-semibold shadow-lg shadow-green-500/25 touch-manipulation transition-all duration-300"
             >
               Tentar Novamente
             </Button>

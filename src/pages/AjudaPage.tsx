@@ -46,29 +46,29 @@ export default function AjudaPage() {
     <div className="min-h-screen min-h-[100dvh] gradient-primary pb-20">
       <Header title="Ajuda" showBack />
 
-      <main className="max-w-md mx-auto px-4 py-5 space-y-4 animate-fade-in">
+      <main className="max-w-md mx-auto px-5 py-5 space-y-4 animate-fade-in">
         {/* Hero Section */}
-        <div className="bg-card rounded-2xl p-5 shadow-card text-center">
-          <div className="w-14 h-14 rounded-xl bg-secondary/10 flex items-center justify-center mx-auto mb-3">
-            <HelpCircle size={28} className="text-secondary" />
+        <div className="bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-2xl p-5 shadow-lg shadow-green-500/25 text-center">
+          <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-3 backdrop-blur-sm">
+            <HelpCircle size={28} className="text-white" />
           </div>
-          <h2 className="text-lg font-bold text-card-foreground mb-1">
+          <h2 className="text-lg font-bold text-white mb-1">
             Perguntas Frequentes
           </h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-white/80">
             Tire suas dúvidas sobre crédito consignado CLT
           </p>
         </div>
 
         {/* FAQ Accordion */}
-        <div className="bg-card rounded-2xl shadow-card overflow-hidden">
+        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
           <Accordion type="single" collapsible className="w-full">
             {faqItems.map((item) => (
-              <AccordionItem key={item.id} value={item.id} className="border-border">
-                <AccordionTrigger className="px-4 py-3.5 text-left text-sm font-medium text-card-foreground hover:no-underline hover:bg-muted/50">
+              <AccordionItem key={item.id} value={item.id} className="border-white/10">
+                <AccordionTrigger className="px-4 py-3.5 text-left text-sm font-medium text-white hover:no-underline hover:bg-white/5">
                   {item.question}
                 </AccordionTrigger>
-                <AccordionContent className="px-4 pb-4 text-sm text-muted-foreground leading-relaxed">
+                <AccordionContent className="px-4 pb-4 text-sm text-white/70 leading-relaxed">
                   {item.answer}
                 </AccordionContent>
               </AccordionItem>
@@ -77,11 +77,11 @@ export default function AjudaPage() {
         </div>
 
         {/* Contact Section */}
-        <div className="bg-card rounded-2xl p-5 shadow-card">
-          <h3 className="font-semibold text-card-foreground mb-2">
+        <div className="bg-white/5 border border-[#22c55e]/30 rounded-2xl p-5 backdrop-blur-sm">
+          <h3 className="font-semibold text-white mb-2">
             Ainda tem dúvidas?
           </h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-white/70">
             Entre em contato conosco pelo WhatsApp ou e-mail que teremos prazer em ajudar.
           </p>
         </div>
