@@ -32,11 +32,14 @@ export default function ResultadoPage() {
       setError(null);
       
       try {
+        // Usa 85% da margem disponível como valor de parcela (prática comum do mercado)
+        const parcelaMaxima = Math.floor(consulta.valorMargemDisponivel * 0.85 * 100) / 100;
+        
         const result = await consultarOperacoesDisponiveis({
           cpf: consulta.cpf,
           dataNascimento: consulta.dataNascimento,
           valorRenda: consulta.valorTotalVencimentos,
-          valorParcela: consulta.valorMargemDisponivel
+          valorParcela: parcelaMaxima
         });
 
         if (result.erro || !result.tabelas || result.tabelas.length === 0) {
