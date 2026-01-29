@@ -32,8 +32,8 @@ export default function ResultadoPage() {
       setError(null);
       
       try {
-        // Usa 85.5% da margem disponível e arredonda para cima (padrão do mercado)
-        const parcelaMaxima = Math.ceil(consulta.valorMargemDisponivel * 0.855);
+        // Usa 90% da margem disponível (padrão Facta)
+        const parcelaMaxima = Math.ceil(consulta.valorMargemDisponivel * 0.90);
         
         const result = await consultarOperacoesDisponiveis({
           cpf: consulta.cpf,

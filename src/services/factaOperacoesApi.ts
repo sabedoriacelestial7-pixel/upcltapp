@@ -50,14 +50,23 @@ export async function consultarOperacoesDisponiveis(params: {
   return data as OperacoesDisponiveisResult;
 }
 
-// Agrupa as tabelas por prazo e retorna a melhor opção (menor taxa) para cada prazo
+// Agrupa as tabelas por prazo e retorna a melhor opção SEM SEGURO para cada prazo
 export function agruparTabelasPorPrazo(tabelas: TabelaFacta[]): Map<number, TabelaFacta> {
   const porPrazo = new Map<number, TabelaFacta>();
   
   for (const tabela of tabelas) {
     const existente = porPrazo.get(tabela.prazo);
-    // Mantém a tabela com menor taxa (melhor para o cliente)
-    if (!existente || tabela.taxa < existente.taxa) {
+    // Prioriza tabelas SEM seguro, depois menor taxa
+    const tabelaSemSeguro = tabela.valor_seguro === 0;
+    const existenteSemSeguro = existente?.valor_seguro === 0;
+    
+    if (!existente) {
+      porPrazo.set(tabela.prazo, tabela);
+    } else if (tabelaSemSeguro && !existenteSemSeguro) {
+      // Prefere sem seguro
+      porPrazo.set(tabela.prazo, tabela);
+    } else if (tabelaSemSeguro === existenteSemSeguro && tabela.valor_liquido > existente.valor_liquido) {
+      // Se ambas têm/não têm seguro, prefere maior valor líquido
       porPrazo.set(tabela.prazo, tabela);
     }
   }
@@ -71,13 +80,17 @@ export function getPrazosDisponiveis(tabelas: TabelaFacta[]): number[] {
   return prazos.sort((a, b) => a - b);
 }
 
-// Encontra a melhor tabela para um prazo específico
+// Encontra a melhor tabela SEM SEGURO para um prazo específico
 export function getMelhorTabelaParaPrazo(tabelas: TabelaFacta[], prazo: number): TabelaFacta | undefined {
   const tabelasDoPrazo = tabelas.filter(t => t.prazo === prazo);
   if (tabelasDoPrazo.length === 0) return undefined;
   
-  // Retorna a com menor taxa
-  return tabelasDoPrazo.reduce((melhor, atual) => 
-    atual.taxa < melhor.taxa ? atual : melhor
+  // Filtra tabelas sem seguro primeiro
+  const semSeguro = tabelasDoPrazo.filter(t => t.valor_seguro === 0);
+  const candidatas = semSeguro.length > 0 ? semSeguro : tabelasDoPrazo;
+  
+  // Retorna a com maior valor líquido (melhor para o cliente)
+  return candidatas.reduce((melhor, atual) => 
+    atual.valor_liquido > melhor.valor_liquido ? atual : melhor
   );
 }
