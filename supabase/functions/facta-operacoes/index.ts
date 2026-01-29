@@ -22,17 +22,26 @@ async function getFactaToken(): Promise<string> {
     throw new Error("FACTA_AUTH_BASIC not configured");
   }
 
-  console.log("Fetching new Facta token...");
+  console.log("Fetching new Facta token from webservice...");
   
   const response = await fetch(`${FACTA_BASE_URL}/gera-token`, {
     method: 'GET',
     headers: {
-      'Authorization': `Basic ${authBasic}`
+      'Authorization': `Basic ${authBasic}`,
+      'Accept': 'application/json'
     }
   });
 
-  const data = await response.json();
-  console.log("Token response:", JSON.stringify(data));
+  const responseText = await response.text();
+  console.log("Token response status:", response.status);
+  console.log("Token response text:", responseText.substring(0, 200));
+  
+  let data;
+  try {
+    data = JSON.parse(responseText);
+  } catch (e) {
+    throw new Error(`Failed to parse token response: ${responseText.substring(0, 100)}`);
+  }
   
   if (data.erro) {
     throw new Error(data.mensagem || "Failed to get Facta token");
