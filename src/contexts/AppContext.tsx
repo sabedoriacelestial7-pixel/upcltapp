@@ -1,10 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-export interface Usuario {
-  nome: string;
-  email: string;
-  telefone: string;
-}
+import { useAuth } from '@/contexts/AuthContext';
 
 export interface TrabalhadorData {
   nome: string;
@@ -19,7 +14,6 @@ export interface TrabalhadorData {
 }
 
 interface AppState {
-  usuario: Usuario | null;
   consulta: TrabalhadorData | null;
   simulacao: {
     valor: number;
@@ -29,7 +23,7 @@ interface AppState {
 }
 
 interface AppContextType extends AppState {
-  setUsuario: (usuario: Usuario | null) => void;
+  usuario: { nome: string; email: string; telefone: string | null } | null;
   setConsulta: (consulta: TrabalhadorData | null) => void;
   setSimulacao: (simulacao: AppState['simulacao']) => void;
   logout: () => void;
@@ -41,7 +35,8 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 const STORAGE_KEY = 'upclt_state';
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [usuario, setUsuarioState] = useState<Usuario | null>(null);
+  const { user, signOut } = useAuth();
+  
   const [consulta, setConsultaState] = useState<TrabalhadorData | null>(null);
   const [simulacao, setSimulacaoState] = useState<AppState['simulacao']>({
     valor: 5000,
@@ -55,7 +50,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (parsed.usuario) setUsuarioState(parsed.usuario);
         if (parsed.consulta) setConsultaState(parsed.consulta);
         if (parsed.simulacao) setSimulacaoState(parsed.simulacao);
       }
@@ -68,18 +62,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        usuario,
         consulta,
         simulacao
       }));
     } catch (error) {
       console.error('Error saving state to localStorage:', error);
     }
-  }, [usuario, consulta, simulacao]);
+  }, [consulta, simulacao]);
 
-  const setUsuario = (newUsuario: Usuario | null) => {
-    setUsuarioState(newUsuario);
-  };
+  // Clear state on logout
+  useEffect(() => {
+    if (!user) {
+      setConsultaState(null);
+      setSimulacaoState({ valor: 5000, parcelas: 48, bancoSelecionado: null });
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }, [user]);
 
   const setConsulta = (newConsulta: TrabalhadorData | null) => {
     setConsultaState(newConsulta);
@@ -89,21 +87,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setSimulacaoState(newSimulacao);
   };
 
-  const logout = () => {
-    setUsuarioState(null);
-    setConsultaState(null);
-    setSimulacaoState({ valor: 5000, parcelas: 48, bancoSelecionado: null });
-    localStorage.removeItem(STORAGE_KEY);
+  const logout = async () => {
+    await signOut();
   };
 
-  const isLoggedIn = usuario !== null;
+  // Derive usuario from Supabase user
+  const usuario = user ? {
+    nome: user.user_metadata?.nome || user.email?.split('@')[0] || 'Usuário',
+    email: user.email || '',
+    telefone: user.user_metadata?.telefone || null
+  } : null;
+
+  const isLoggedIn = user !== null;
 
   return (
     <AppContext.Provider value={{
       usuario,
       consulta,
       simulacao,
-      setUsuario,
       setConsulta,
       setSimulacao,
       logout,

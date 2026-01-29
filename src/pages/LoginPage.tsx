@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, Phone, User, Eye, EyeOff } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { InputMask } from '@/components/InputMask';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useApp } from '@/contexts/AppContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { validarEmail, validarTelefone } from '@/utils/formatters';
 import { useToast } from '@/hooks/use-toast';
 
@@ -13,7 +13,7 @@ type AuthMode = 'login' | 'cadastro';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { setUsuario } = useApp();
+  const { signIn, signUp, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
 
   const [mode, setMode] = useState<AuthMode>('login');
@@ -30,6 +30,13 @@ export default function LoginPage() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate('/');
+    }
+  }, [user, authLoading, navigate]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -79,22 +86,64 @@ export default function LoginPage() {
 
     setLoading(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      if (mode === 'cadastro') {
+        const { error } = await signUp(formData.email, formData.senha, {
+          nome: formData.nome,
+          telefone: formData.telefone
+        });
 
-    setUsuario({
-      nome: formData.nome || formData.email.split('@')[0],
-      email: formData.email,
-      telefone: formData.telefone
-    });
+        if (error) {
+          if (error.message.includes('already registered')) {
+            setErrors({ email: 'Este email já está cadastrado' });
+          } else {
+            toast({
+              title: 'Erro ao criar conta',
+              description: error.message,
+              variant: 'destructive'
+            });
+          }
+          setLoading(false);
+          return;
+        }
 
-    toast({
-      title: mode === 'cadastro' ? 'Conta criada!' : 'Bem-vindo de volta!',
-      description: 'Redirecionando...'
-    });
+        toast({
+          title: 'Conta criada com sucesso!',
+          description: 'Você já está logado.'
+        });
+      } else {
+        const { error } = await signIn(formData.email, formData.senha);
 
-    setLoading(false);
-    navigate('/');
+        if (error) {
+          if (error.message.includes('Invalid login credentials')) {
+            setErrors({ senha: 'Email ou senha incorretos' });
+          } else {
+            toast({
+              title: 'Erro ao entrar',
+              description: error.message,
+              variant: 'destructive'
+            });
+          }
+          setLoading(false);
+          return;
+        }
+
+        toast({
+          title: 'Bem-vindo de volta!',
+          description: 'Login realizado com sucesso.'
+        });
+      }
+
+      navigate('/');
+    } catch (error) {
+      toast({
+        title: 'Erro',
+        description: 'Ocorreu um erro inesperado. Tente novamente.',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const updateField = (field: string, value: string) => {
@@ -103,6 +152,14 @@ export default function LoginPage() {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen min-h-[100dvh] gradient-primary flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen min-h-[100dvh] gradient-primary flex flex-col items-center justify-center p-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-[calc(1.25rem+env(safe-area-inset-bottom))]">

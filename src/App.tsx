@@ -2,7 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { AppProvider } from "@/contexts/AppContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
@@ -22,95 +23,97 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AppProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<LoginPage />} />
+    <AuthProvider>
+      <AppProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/login" element={<LoginPage />} />
 
-            {/* Protected Routes */}
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <HomePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/consulta"
-              element={
-                <ProtectedRoute>
-                  <ConsultaPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/resultado"
-              element={
-                <ProtectedRoute>
-                  <ResultadoPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/simulador"
-              element={
-                <ProtectedRoute>
-                  <SimuladorPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/contratacao"
-              element={
-                <ProtectedRoute>
-                  <ContratacaoPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/propostas"
-              element={
-                <ProtectedRoute>
-                  <PropostasPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/propostas/:id"
-              element={
-                <ProtectedRoute>
-                  <PropostaDetalhePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/perfil"
-              element={
-                <ProtectedRoute>
-                  <PerfilPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/ajuda"
-              element={
-                <ProtectedRoute>
-                  <AjudaPage />
-                </ProtectedRoute>
-              }
-            />
+              {/* Protected Routes */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <HomePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/consulta"
+                element={
+                  <ProtectedRoute>
+                    <ConsultaPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/resultado"
+                element={
+                  <ProtectedRoute>
+                    <ResultadoPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/simulador"
+                element={
+                  <ProtectedRoute>
+                    <SimuladorPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/contratacao"
+                element={
+                  <ProtectedRoute>
+                    <ContratacaoPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/propostas"
+                element={
+                  <ProtectedRoute>
+                    <PropostasPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/propostas/:id"
+                element={
+                  <ProtectedRoute>
+                    <PropostaDetalhePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/perfil"
+                element={
+                  <ProtectedRoute>
+                    <PerfilPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/ajuda"
+                element={
+                  <ProtectedRoute>
+                    <AjudaPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Catch-all */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AppProvider>
+              {/* Catch-all */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AppProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
