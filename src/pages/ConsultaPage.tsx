@@ -7,9 +7,9 @@ import { InputMask } from '@/components/InputMask';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { consultarMargem } from '@/services/factaApi';
-import { getProfile, vincularCPF, podeConsultarCPF } from '@/services/profileService';
+import { getProfile, vincularCPF, podeConsultarCPF, isUserAdmin } from '@/services/profileService';
 import { validarCPF, formatarCPF } from '@/utils/formatters';
-import { Lock } from 'lucide-react';
+import { Lock, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { abrirWhatsAppConsulta } from '@/utils/whatsapp';
 
@@ -22,12 +22,13 @@ export default function ConsultaPage() {
 
   const [cpf, setCpf] = useState('');
   const [cpfVinculado, setCpfVinculado] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [state, setState] = useState<ConsultaState>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('Buscando as melhores taxas...');
 
-  // Load profile to check for linked CPF
+  // Load profile to check for linked CPF and admin status
   useEffect(() => {
     async function loadProfile() {
       if (!user) {
@@ -35,8 +36,14 @@ export default function ConsultaPage() {
         return;
       }
 
-      const profile = await getProfile(user.id);
-      if (profile?.cpf) {
+      const [profile, adminStatus] = await Promise.all([
+        getProfile(user.id),
+        isUserAdmin(user.id)
+      ]);
+
+      setIsAdmin(adminStatus);
+
+      if (profile?.cpf && !adminStatus) {
         setCpfVinculado(profile.cpf);
         setCpf(formatarCPF(profile.cpf));
       }
@@ -48,12 +55,12 @@ export default function ConsultaPage() {
 
   const isValidCPF = validarCPF(cpf);
   const cpfLimpo = cpf.replace(/\D/g, '');
-  const isCpfBloqueado = cpfVinculado && cpfLimpo !== cpfVinculado;
+  const isCpfBloqueado = !isAdmin && cpfVinculado && cpfLimpo !== cpfVinculado;
 
   const handleConsulta = async () => {
     if (!isValidCPF || !user) return;
 
-    // Verify if user can consult this CPF
+    // Verify if user can consult this CPF (admins always can)
     const verificacao = await podeConsultarCPF(user.id, cpf);
     
     if (!verificacao.permitido) {
@@ -83,8 +90,8 @@ export default function ConsultaPage() {
       clearInterval(messageInterval);
 
       if (result.sucesso && result.dados) {
-        // Link CPF if not already linked
-        if (!cpfVinculado) {
+        // Link CPF only if not admin and not already linked
+        if (!isAdmin && !cpfVinculado) {
           const vinculacao = await vincularCPF(user.id, cpf);
           if (vinculacao.success) {
             setCpfVinculado(cpfLimpo);
@@ -112,7 +119,8 @@ export default function ConsultaPage() {
   const handleRetry = () => {
     setState('idle');
     setErrorMessage('');
-    if (cpfVinculado) {
+    // Admin keeps the field editable, regular user reverts to linked CPF
+    if (!isAdmin && cpfVinculado) {
       setCpf(formatarCPF(cpfVinculado));
     }
   };
@@ -177,14 +185,41 @@ export default function ConsultaPage() {
       <Header progress={25} showChat />
 
       <main className="max-w-md mx-auto px-5 py-6">
+        {/* Admin Badge */}
+        {isAdmin && (
+          <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 px-3 py-2 rounded-lg mb-4">
+            <Shield size={16} />
+            <span className="text-sm font-medium">Modo Administrador - Consulta livre de CPFs</span>
+          </div>
+        )}
+
         <h1 className="text-2xl font-bold text-foreground mb-2">
           Vamos começar
         </h1>
         <p className="text-muted-foreground mb-6">
-          {cpfVinculado ? 'Seu CPF está vinculado à sua conta.' : 'Nos informe seu CPF.'}
+          {isAdmin 
+            ? 'Consulte qualquer CPF.' 
+            : cpfVinculado 
+              ? 'Seu CPF está vinculado à sua conta.' 
+              : 'Nos informe seu CPF.'}
         </p>
 
-        {cpfVinculado ? (
+        {/* Admin ou sem CPF vinculado: input editável */}
+        {isAdmin || !cpfVinculado ? (
+          <InputMask
+            label="CPF"
+            placeholder="000.000.000-00"
+            mask="cpf"
+            value={cpf}
+            onChange={setCpf}
+            error={
+              cpf.length === 14 && !isValidCPF 
+                ? 'CPF inválido' 
+                : undefined
+            }
+          />
+        ) : (
+          /* Usuário comum com CPF vinculado: exibe bloqueado */
           <div className="bg-white rounded-xl border border-gray-200 p-4">
             <label className="block text-sm font-medium text-muted-foreground mb-2">
               CPF Vinculado
@@ -196,21 +231,6 @@ export default function ConsultaPage() {
               </span>
             </div>
           </div>
-        ) : (
-          <InputMask
-            label="CPF"
-            placeholder="000.000.000-00"
-            mask="cpf"
-            value={cpf}
-            onChange={setCpf}
-            error={
-              cpf.length === 14 && !isValidCPF 
-                ? 'CPF inválido' 
-                : isCpfBloqueado 
-                  ? 'Você só pode consultar seu próprio CPF' 
-                  : undefined
-            }
-          />
         )}
       </main>
 

@@ -30,6 +30,21 @@ export async function getProfile(userId: string): Promise<Profile | null> {
 }
 
 /**
+ * Verifica se o usuário é admin
+ */
+export async function isUserAdmin(userId: string): Promise<boolean> {
+  const { data, error } = await supabase
+    .rpc('is_admin', { _user_id: userId });
+
+  if (error) {
+    console.error('Erro ao verificar se é admin:', error);
+    return false;
+  }
+
+  return data === true;
+}
+
+/**
  * Vincula um CPF ao perfil do usuário (apenas se ainda não tiver CPF vinculado)
  */
 export async function vincularCPF(userId: string, cpf: string): Promise<{ success: boolean; error?: string }> {
@@ -84,6 +99,7 @@ export async function podeConsultarCPF(userId: string, cpf: string): Promise<{
   permitido: boolean; 
   motivo?: string;
   cpfVinculado?: string | null;
+  isAdmin?: boolean;
 }> {
   const profile = await getProfile(userId);
   
@@ -94,13 +110,25 @@ export async function podeConsultarCPF(userId: string, cpf: string): Promise<{
     };
   }
 
+  // Verifica se é admin - admins podem consultar qualquer CPF
+  const admin = await isUserAdmin(userId);
+  
+  if (admin) {
+    return { 
+      permitido: true,
+      cpfVinculado: profile.cpf,
+      isAdmin: true
+    };
+  }
+
   const cpfLimpo = cpf.replace(/\D/g, '');
 
   // Se o usuário ainda não tem CPF vinculado, pode consultar qualquer CPF (será vinculado)
   if (!profile.cpf) {
     return { 
       permitido: true,
-      cpfVinculado: null
+      cpfVinculado: null,
+      isAdmin: false
     };
   }
 
@@ -108,13 +136,15 @@ export async function podeConsultarCPF(userId: string, cpf: string): Promise<{
   if (profile.cpf === cpfLimpo) {
     return { 
       permitido: true,
-      cpfVinculado: profile.cpf
+      cpfVinculado: profile.cpf,
+      isAdmin: false
     };
   }
 
   return { 
     permitido: false, 
     motivo: 'Você só pode consultar o CPF vinculado à sua conta',
-    cpfVinculado: profile.cpf
+    cpfVinculado: profile.cpf,
+    isAdmin: false
   };
 }
