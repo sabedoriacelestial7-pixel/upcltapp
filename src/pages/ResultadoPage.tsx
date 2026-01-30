@@ -166,7 +166,7 @@ export default function ResultadoPage() {
           </div>
 
           <button 
-            onClick={() => navigate('/resultado/detalhes')}
+            onClick={() => navigate('/resultado/detalhes', { state: { tabela: tabelaSelecionada } })}
             className="text-primary text-sm font-medium mt-4 hover:underline"
           >
             Detalhes
