@@ -8,7 +8,7 @@ import { useApp } from '@/contexts/AppContext';
 import { formatarMoeda } from '@/utils/formatters';
 import { consultarOperacoesDisponiveis, TabelaFacta, getPrazosDisponiveis, getMelhorTabelaParaPrazo } from '@/services/factaOperacoesApi';
 import { LoadingScreen } from '@/components/LoadingScreen';
-import { Clock, RefreshCw, Edit3 } from 'lucide-react';
+import { Clock, ChevronRight, ChevronDown, RefreshCw, Edit3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function ResultadoPage() {
@@ -18,8 +18,7 @@ export default function ResultadoPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tabelas, setTabelas] = useState<TabelaFacta[]>([]);
-  const [prazoSelecionado, setPrazoSelecionado] = useState<number | null>(null);
-  const [tabelaSelecionada, setTabelaSelecionada] = useState<TabelaFacta | null>(null);
+  const [prazoExpandido, setPrazoExpandido] = useState<number | null>(null);
   
   // Estado para edição de parcela
   const [editandoParcela, setEditandoParcela] = useState(false);
@@ -57,13 +56,6 @@ export default function ResultadoPage() {
         setParcelaDesejada(parcelaParaConsulta.toFixed(2).replace('.', ','));
       }
       
-      const prazos = getPrazosDisponiveis(result.tabelas);
-      const maiorPrazo = prazos[prazos.length - 1];
-      setPrazoSelecionado(maiorPrazo);
-      
-      const melhorTabela = getMelhorTabelaParaPrazo(result.tabelas, maiorPrazo);
-      setTabelaSelecionada(melhorTabela || null);
-      
     } catch (err) {
       console.error('Erro ao buscar operações:', err);
       setError('Erro ao buscar operações disponíveis');
@@ -80,13 +72,6 @@ export default function ResultadoPage() {
     fetchOperacoes();
   }, [consulta, navigate]);
 
-  useEffect(() => {
-    if (prazoSelecionado && tabelas.length > 0) {
-      const melhorTabela = getMelhorTabelaParaPrazo(tabelas, prazoSelecionado);
-      setTabelaSelecionada(melhorTabela || null);
-    }
-  }, [prazoSelecionado, tabelas]);
-
   const handleNovaSimulacao = () => {
     const valorNumerico = parseFloat(parcelaDesejada.replace(',', '.'));
     if (isNaN(valorNumerico) || valorNumerico <= 0) {
@@ -100,13 +85,40 @@ export default function ResultadoPage() {
     fetchOperacoes(valorFinal);
   };
 
+  const handleContratar = (tabela: TabelaFacta) => {
+    navigate('/contratacao', {
+      state: {
+        banco: {
+          id: 'facta',
+          nome: 'Facta Financeira',
+          logo: '/logos/facta.png',
+          sigla: 'FACTA',
+          taxaMensal: tabela.taxa,
+          cor: '#10b981',
+          destaque: null,
+          valorParcela: tabela.parcela,
+          valorLiberado: tabela.valor_liquido,
+          valorTotal: tabela.contrato,
+          parcelas: tabela.prazo
+        },
+        codigoTabela: tabela.codigoTabela,
+        coeficiente: tabela.coeficiente.toString(),
+        tabela: tabela
+      }
+    });
+  };
+
+  const handleVerDetalhes = (tabela: TabelaFacta) => {
+    navigate('/resultado/detalhes', { state: { tabela } });
+  };
+
   if (!consulta) return null;
 
   if (loading) {
     return <LoadingScreen variant="searching" message="Buscando as melhores taxas..." />;
   }
 
-  if (error || !tabelaSelecionada) {
+  if (error) {
     return (
       <div className="min-h-screen bg-[#f5f5f5]">
         <Header showChat />
@@ -121,32 +133,8 @@ export default function ResultadoPage() {
     );
   }
 
+  // Pega os prazos disponíveis da API (reais)
   const prazosDisponiveis = getPrazosDisponiveis(tabelas);
-
-  const handleContratar = () => {
-    if (!tabelaSelecionada) return;
-
-    navigate('/contratacao', {
-      state: {
-        banco: {
-          id: 'facta',
-          nome: 'Facta Financeira',
-          logo: '/logos/facta.png',
-          sigla: 'FACTA',
-          taxaMensal: tabelaSelecionada.taxa,
-          cor: '#10b981',
-          destaque: null,
-          valorParcela: tabelaSelecionada.parcela,
-          valorLiberado: tabelaSelecionada.valor_liquido,
-          valorTotal: tabelaSelecionada.contrato,
-          parcelas: tabelaSelecionada.prazo
-        },
-        codigoTabela: tabelaSelecionada.codigoTabela,
-        coeficiente: tabelaSelecionada.coeficiente.toString(),
-        tabela: tabelaSelecionada
-      }
-    });
-  };
 
   return (
     <div className="min-h-screen bg-[#f5f5f5] pb-24">
@@ -155,14 +143,14 @@ export default function ResultadoPage() {
       <main className="max-w-md mx-auto px-5 py-5">
         {/* Title */}
         <h1 className="text-2xl font-bold text-foreground mb-1">
-          Consignado CLT
+          Outras simulações
         </h1>
         <p className="text-muted-foreground text-sm mb-5">
           Taxas acessíveis e sem burocracia
         </p>
 
         {/* Parcela Editor */}
-        <div className="bg-white rounded-2xl p-4 shadow-card mb-4">
+        <div className="bg-white rounded-2xl p-4 shadow-card mb-5">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-muted-foreground">Parcela desejada</span>
             <span className="text-xs text-muted-foreground">
@@ -195,153 +183,124 @@ export default function ResultadoPage() {
               className="w-full flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
             >
               <span className="text-xl font-bold text-foreground">
-                {formatarMoeda(tabelaSelecionada.parcela)}
+                {formatarMoeda(parseFloat(parcelaDesejada.replace(',', '.')) || 0)}
               </span>
               <Edit3 size={18} className="text-primary" />
             </button>
           )}
         </div>
 
-        {/* Prazo Selector */}
-        <div className="bg-white rounded-2xl p-4 shadow-card mb-4">
-          <span className="text-sm text-muted-foreground mb-3 block">
-            Escolha o prazo
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {prazosDisponiveis.map((prazo) => {
-              const tabelaDoPrazo = getMelhorTabelaParaPrazo(tabelas, prazo);
-              return (
+        {/* Cards de Prazos - Dados reais da API Facta */}
+        <div className="space-y-4">
+          {prazosDisponiveis.map((prazo) => {
+            const tabela = getMelhorTabelaParaPrazo(tabelas, prazo);
+            if (!tabela) return null;
+            
+            const isExpanded = prazoExpandido === prazo;
+            
+            return (
+              <div 
+                key={prazo}
+                className="bg-white rounded-2xl shadow-card overflow-hidden"
+              >
+                {/* Card Header - Clicável */}
                 <button
-                  key={prazo}
-                  onClick={() => setPrazoSelecionado(prazo)}
-                  className={cn(
-                    'flex flex-col items-center px-4 py-3 rounded-xl transition-all min-w-[70px]',
-                    prazoSelecionado === prazo
-                      ? 'bg-primary text-white shadow-lg'
-                      : 'bg-gray-50 text-foreground hover:bg-gray-100'
-                  )}
+                  onClick={() => setPrazoExpandido(isExpanded ? null : prazo)}
+                  className="w-full p-4"
                 >
-                  <span className="text-lg font-bold">{prazo}x</span>
-                  <span className={cn(
-                    'text-xs',
-                    prazoSelecionado === prazo ? 'text-white/80' : 'text-muted-foreground'
-                  )}>
-                    {tabelaDoPrazo?.taxa.toFixed(2)}%
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Main Result Card */}
-        <div className="bg-white rounded-2xl p-6 shadow-card mb-5 text-center">
-          <p className="text-muted-foreground text-sm mb-2">
-            Em <span className="text-primary font-semibold">{tabelaSelecionada.prazo} meses</span>,{' '}
-            pagando <span className="text-primary font-semibold">{formatarMoeda(tabelaSelecionada.parcela)}</span> por mês,
-          </p>
-          <p className="text-muted-foreground text-sm mb-3">
-            estimamos que você receba
-          </p>
-          
-          <p className="text-4xl font-extrabold text-foreground mb-2">
-            {formatarMoeda(tabelaSelecionada.valor_liquido)}
-          </p>
-          
-          <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm">
-            <Clock size={14} />
-            <span>Em 1 dia útil</span>
-          </div>
-
-          <p className="text-muted-foreground text-xs mt-4 max-w-xs mx-auto">
-            Com a taxa de <span className="font-semibold">{tabelaSelecionada.taxa}% a.m.</span> de acordo com as nossas estimativas, de todos os bancos em nosso catálogo, o <span className="font-semibold">FACTA</span> é o que traz a melhor proposta.
-          </p>
-
-          {/* Bank logo */}
-          <div className="mt-4">
-            <img 
-              src="/logos/facta.png" 
-              alt="Facta" 
-              className="w-16 h-16 mx-auto object-contain"
-            />
-          </div>
-
-          <button 
-            onClick={() => navigate('/resultado/detalhes', { state: { tabela: tabelaSelecionada } })}
-            className="text-primary text-sm font-medium mt-4 hover:underline"
-          >
-            Ver detalhes completos
-          </button>
-        </div>
-
-        {/* Summary Table */}
-        <div className="bg-white rounded-2xl shadow-card overflow-hidden mb-5">
-          <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
-            <span className="text-sm font-medium text-foreground">Resumo das opções</span>
-          </div>
-          <div className="divide-y divide-gray-100">
-            {prazosDisponiveis.map((prazo) => {
-              const tabelaDoPrazo = getMelhorTabelaParaPrazo(tabelas, prazo);
-              if (!tabelaDoPrazo) return null;
-              
-              const isSelected = prazo === prazoSelecionado;
-              
-              return (
-                <button
-                  key={prazo}
-                  onClick={() => setPrazoSelecionado(prazo)}
-                  className={cn(
-                    'w-full flex items-center justify-between px-4 py-3 transition-colors',
-                    isSelected ? 'bg-primary/5' : 'hover:bg-gray-50'
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={cn(
-                      'w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold',
-                      isSelected ? 'bg-primary text-white' : 'bg-gray-100 text-foreground'
-                    )}>
-                      {prazo}x
+                  {/* Badge + Logo */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-1.5 bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs font-medium">
+                      <Clock size={12} />
+                      <span>1 dia útil</span>
                     </div>
-                    <div className="text-left">
-                      <p className="text-sm font-medium text-foreground">
-                        {formatarMoeda(tabelaDoPrazo.valor_liquido)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Parcela: {formatarMoeda(tabelaDoPrazo.parcela)}
-                      </p>
+                    <img 
+                      src="/logos/facta.png" 
+                      alt="Facta" 
+                      className="w-12 h-12 object-contain"
+                    />
+                  </div>
+
+                  {/* Info */}
+                  <div className="space-y-2 text-left">
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground text-sm">Valor da parcela</span>
+                      <span className="font-semibold text-foreground">{formatarMoeda(tabela.parcela)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground text-sm">Número de parcelas</span>
+                      <span className="font-semibold text-foreground">{tabela.prazo}</span>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className={cn(
-                      'text-sm font-semibold',
-                      isSelected ? 'text-primary' : 'text-foreground'
-                    )}>
-                      {tabelaDoPrazo.taxa.toFixed(2)}% a.m.
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Total: {formatarMoeda(tabelaDoPrazo.contrato)}
-                    </p>
+
+                  {/* Valor Líquido + Arrow */}
+                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+                    <span className="text-xl font-bold text-primary">
+                      {formatarMoeda(tabela.valor_liquido)}
+                    </span>
+                    {isExpanded ? (
+                      <ChevronDown size={24} className="text-primary" />
+                    ) : (
+                      <ChevronRight size={24} className="text-primary" />
+                    )}
                   </div>
                 </button>
-              );
-            })}
-          </div>
+
+                {/* Expanded Content */}
+                {isExpanded && (
+                  <div className="px-4 pb-4 border-t border-gray-100 pt-4 space-y-3 animate-in slide-in-from-top-2 duration-200">
+                    {/* Detalhes extras */}
+                    <div className="bg-gray-50 rounded-xl p-3 space-y-2">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted-foreground">Taxa mensal</span>
+                        <span className="font-medium text-foreground">{tabela.taxa.toFixed(2)}% a.m.</span>
+                      </div>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted-foreground">Taxa anual</span>
+                        <span className="font-medium text-foreground">
+                          {((Math.pow(1 + tabela.taxa / 100, 12) - 1) * 100).toFixed(2)}% a.a.
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted-foreground">Valor total</span>
+                        <span className="font-medium text-foreground">{formatarMoeda(tabela.contrato)}</span>
+                      </div>
+                      {tabela.valor_seguro > 0 && (
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-muted-foreground">Seguro incluso</span>
+                          <span className="font-medium text-foreground">{formatarMoeda(tabela.valor_seguro)}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Botões */}
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => handleVerDetalhes(tabela)}
+                        className="flex-1 h-12"
+                      >
+                        Ver detalhes
+                      </Button>
+                      <Button
+                        onClick={() => handleContratar(tabela)}
+                        className="flex-1 h-12 bg-primary hover:bg-primary/90"
+                      >
+                        Contratar
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
-        {/* CTA Button */}
-        <Button
-          onClick={handleContratar}
-          className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-semibold text-base shadow-button mb-3"
-        >
-          Quero essa proposta!
-        </Button>
-
-        <button 
-          onClick={() => navigate('/simulacoes')}
-          className="w-full text-center text-primary font-medium py-3 hover:underline"
-        >
-          Ver outras simulações
-        </button>
+        {/* Info text */}
+        <p className="text-center text-muted-foreground text-xs mt-6 px-4">
+          Valores e prazos calculados de acordo com sua margem consignável.
+          Sujeito a análise de crédito.
+        </p>
       </main>
 
       <BottomNav />
