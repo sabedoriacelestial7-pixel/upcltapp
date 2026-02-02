@@ -7,6 +7,7 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
+const PROXY_URL = "http://179.0.176.151:3001/proxy";
 
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;
@@ -23,13 +24,20 @@ async function getFactaToken(): Promise<string> {
     throw new Error("FACTA_AUTH_BASIC not configured");
   }
 
-  console.log("Fetching new Facta token...");
+  console.log("Fetching new Facta token via proxy...");
   
-  const response = await fetch(`${FACTA_BASE_URL}/gera-token`, {
-    method: 'GET',
+  const response = await fetch(PROXY_URL, {
+    method: 'POST',
     headers: {
-      'Authorization': `Basic ${authBasic}`
-    }
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      method: 'GET',
+      url: `${FACTA_BASE_URL}/gera-token`,
+      headers: {
+        'Authorization': `Basic ${authBasic}`
+      }
+    })
   });
 
   // Check if response is OK
@@ -121,23 +129,27 @@ serve(async (req) => {
     // Get Facta token
     const token = await getFactaToken();
 
-    // Call Facta API to request authorization
+    // Call Facta API to request authorization via proxy
     // POST /solicita-autorizacao-consulta
-    const factaResponse = await fetch(
-      `${FACTA_BASE_URL}/solicita-autorizacao-consulta`,
-      {
+    const factaResponse = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
         method: 'POST',
+        url: `${FACTA_BASE_URL}/solicita-autorizacao-consulta`,
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
+        body: {
           cpf: cpfLimpo,
           celular: celularLimpo,
           canal: canalEnvio
-        })
-      }
-    );
+        }
+      })
+    });
 
     const factaData = await factaResponse.json();
     console.log("Facta authorization response:", JSON.stringify(factaData));
