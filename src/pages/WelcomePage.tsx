@@ -106,8 +106,8 @@ export default function WelcomePage() {
             >
               <img 
                 src={welcomeHero} 
-                alt="App financeiro" 
-                className="w-full h-full object-cover grayscale"
+                alt="Profissional sorrindo" 
+                className="w-full h-full object-cover"
               />
             </div>
           </div>
