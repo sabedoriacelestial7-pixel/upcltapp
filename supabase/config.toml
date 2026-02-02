@@ -11,3 +11,9 @@ verify_jwt = false
 
 [functions.facta-propostas]
 verify_jwt = false
+
+[functions.facta-autorizar]
+verify_jwt = false
+
+[functions.facta-consultar-autorizado]
+verify_jwt = false
