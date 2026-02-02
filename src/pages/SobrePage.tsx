@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Users, Banknote, Building2, ShieldCheck, Clock, TrendingDown } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import welcomeHero from '@/assets/welcome-hero.png';
@@ -8,9 +8,15 @@ export default function SobrePage() {
   const navigate = useNavigate();
 
   const stats = [
-    { value: '+50 mil', label: 'pessoas', description: 'já compararam taxas no UpCLT' },
-    { value: '+R$ 100 milhões', label: 'em crédito', description: 'contratados com as melhores taxas' },
-    { value: '10+', label: 'bancos parceiros', description: 'disputando para oferecer a melhor taxa' },
+    { icon: Users, value: '+50 mil', label: 'pessoas', description: 'já compararam taxas no UpCLT' },
+    { icon: Banknote, value: '+R$ 100 mi', label: 'em crédito', description: 'contratados com as melhores taxas' },
+    { icon: Building2, value: '10+', label: 'bancos parceiros', description: 'disputando para oferecer a melhor taxa' },
+  ];
+
+  const features = [
+    { icon: ShieldCheck, title: 'Seguro e confiável', description: 'Seus dados protegidos com criptografia' },
+    { icon: Clock, title: 'Rápido e fácil', description: 'Consulta em menos de 2 minutos' },
+    { icon: TrendingDown, title: 'Menores taxas', description: 'Economize até 40% nos juros' },
   ];
 
   return (
@@ -58,25 +64,60 @@ export default function SobrePage() {
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="space-y-8">
-          {stats.map((stat, index) => (
-            <div 
-              key={index} 
-              className="text-center"
-              style={{ animation: `fade-in 0.5s ease-out ${0.2 + index * 0.15}s both` }}
-            >
-              <div className="text-3xl font-bold text-foreground mb-1">
-                {stat.value}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-3 gap-4 mb-10">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <div 
+                key={index} 
+                className="text-center p-3 rounded-2xl bg-card border border-border"
+                style={{ animation: `fade-in 0.5s ease-out ${0.2 + index * 0.1}s both` }}
+              >
+                <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-primary" />
+                </div>
+                <div className="text-xl font-bold text-foreground">
+                  {stat.value}
+                </div>
+                <div className="text-xs font-medium text-foreground">
+                  {stat.label}
+                </div>
+                <div className="text-[10px] text-muted-foreground mt-1 leading-tight">
+                  {stat.description}
+                </div>
               </div>
-              <div className="text-lg font-medium text-foreground mb-1">
-                {stat.label}
+            );
+          })}
+        </div>
+
+        {/* Features List */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-foreground text-center mb-4">
+            Por que escolher o UpCLT?
+          </h2>
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <div 
+                key={index} 
+                className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border"
+                style={{ animation: `fade-in 0.5s ease-out ${0.5 + index * 0.1}s both` }}
+              >
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <div className="font-semibold text-foreground">
+                    {feature.title}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {feature.description}
+                  </div>
+                </div>
               </div>
-              <div className="text-sm text-muted-foreground">
-                {stat.description}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </main>
 
