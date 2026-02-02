@@ -331,10 +331,12 @@ export default function ConsultaPage() {
         />
       </main>
 
-      <FloatingButton 
-        onClick={handleProsseguir}
-        disabled={!isValidCPF || !!isCpfBloqueado}
-      />
+      {isValidCPF && !isCpfBloqueado && (
+        <FloatingButton 
+          onClick={handleProsseguir}
+          disabled={false}
+        />
+      )}
     </div>
   );
 }
