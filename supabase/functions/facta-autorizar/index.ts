@@ -25,20 +25,38 @@ async function getFactaToken(): Promise<string> {
   }
 
   console.log("Fetching new Facta token via proxy...");
+  console.log(`Proxy URL: ${PROXY_URL}`);
   
-  const response = await fetch(PROXY_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      method: 'GET',
-      url: `${FACTA_BASE_URL}/gera-token`,
+  // Create AbortController for timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    console.error("Token request timed out after 25 seconds");
+    controller.abort();
+  }, 25000);
+  
+  let response: Response;
+  try {
+    response = await fetch(PROXY_URL, {
+      method: 'POST',
       headers: {
-        'Authorization': `Basic ${authBasic}`
-      }
-    })
-  });
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        method: 'GET',
+        url: `${FACTA_BASE_URL}/gera-token`,
+        headers: {
+          'Authorization': `Basic ${authBasic}`
+        }
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    console.log(`Token proxy response status: ${response.status}`);
+  } catch (fetchError) {
+    clearTimeout(timeoutId);
+    console.error(`Failed to connect to proxy: ${fetchError}`);
+    throw new Error("Não foi possível conectar ao servidor proxy. Verifique se o serviço está ativo.");
+  }
 
   // Check if response is OK
   if (!response.ok) {
@@ -130,29 +148,44 @@ serve(async (req) => {
     // Get Facta token
     const token = await getFactaToken();
 
-    // Call Facta API to request authorization via proxy
-    // POST /solicita-autorizacao-consulta
-    const factaResponse = await fetch(PROXY_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+    // Create AbortController for authorization request
+    const authController = new AbortController();
+    const authTimeoutId = setTimeout(() => {
+      console.error("Authorization request timed out after 25 seconds");
+      authController.abort();
+    }, 25000);
+    
+    let factaResponse: Response;
+    try {
+      factaResponse = await fetch(PROXY_URL, {
         method: 'POST',
-        url: `${FACTA_BASE_URL}/solicita-autorizacao-consulta`,
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: {
-          averbador: 20222,
-          nome: nomeCliente,
-          cpf: cpfLimpo,
-          celular: celularLimpo,
-          tipo_envio: tipoEnvio
-        }
-      })
-    });
+        body: JSON.stringify({
+          method: 'POST',
+          url: `${FACTA_BASE_URL}/solicita-autorizacao-consulta`,
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: {
+            averbador: 20222,
+            nome: nomeCliente,
+            cpf: cpfLimpo,
+            celular: celularLimpo,
+            tipo_envio: tipoEnvio
+          }
+        }),
+        signal: authController.signal
+      });
+      clearTimeout(authTimeoutId);
+      console.log(`Authorization proxy response status: ${factaResponse.status}`);
+    } catch (fetchError) {
+      clearTimeout(authTimeoutId);
+      console.error(`Failed to connect to proxy for authorization: ${fetchError}`);
+      throw new Error("Não foi possível conectar ao servidor proxy para autorização.");
+    }
 
     const factaData = await factaResponse.json();
     console.log("Facta authorization response:", JSON.stringify(factaData));
