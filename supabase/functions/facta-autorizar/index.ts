@@ -104,7 +104,7 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const { cpf, celular, canal } = body;
+    const { cpf, celular, canal, nome } = body;
     
     if (!cpf) {
       return new Response(
@@ -122,9 +122,10 @@ serve(async (req) => {
 
     const cpfLimpo = cpf.replace(/\D/g, '');
     const celularLimpo = celular.replace(/\D/g, '');
-    const canalEnvio = canal || 'S'; // S = SMS, W = WhatsApp
+    const tipoEnvio = canal === 'W' ? 'W' : 'S'; // S = SMS, W = WhatsApp
+    const nomeCliente = nome || 'Cliente';
 
-    console.log(`Requesting authorization for CPF: ${cpfLimpo.substring(0, 3)}... via ${canalEnvio === 'W' ? 'WhatsApp' : 'SMS'}`);
+    console.log(`Requesting authorization for CPF: ${cpfLimpo.substring(0, 3)}... via ${tipoEnvio === 'W' ? 'WhatsApp' : 'SMS'}`);
 
     // Get Facta token
     const token = await getFactaToken();
@@ -144,9 +145,11 @@ serve(async (req) => {
           'Content-Type': 'application/json'
         },
         body: {
+          averbador: 20222,
+          nome: nomeCliente,
           cpf: cpfLimpo,
           celular: celularLimpo,
-          canal: canalEnvio
+          tipo_envio: tipoEnvio
         }
       })
     });

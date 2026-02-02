@@ -20,7 +20,8 @@ export interface ConsultaAutorizadaResult {
 export async function solicitarAutorizacao(
   cpf: string, 
   celular: string, 
-  canal: 'S' | 'W' = 'S'
+  canal: 'S' | 'W' = 'S',
+  nome?: string
 ): Promise<AutorizacaoResult> {
   const cpfLimpo = cpf.replace(/\D/g, '');
   const celularLimpo = celular.replace(/\D/g, '');
@@ -29,7 +30,8 @@ export async function solicitarAutorizacao(
     body: { 
       cpf: cpfLimpo, 
       celular: celularLimpo, 
-      canal 
+      canal,
+      nome: nome || 'Cliente'
     }
   });
 
