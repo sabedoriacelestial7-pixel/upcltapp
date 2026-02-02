@@ -1,14 +1,22 @@
-import { Lock, Shield } from 'lucide-react';
+import { Lock, Shield, Calendar } from 'lucide-react';
 import { InputMask } from '@/components/InputMask';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { formatarCPF } from '@/utils/formatters';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 
 interface CpfInputStepProps {
   cpf: string;
   onCpfChange: (value: string) => void;
   nome: string;
   onNomeChange: (value: string) => void;
+  dataNascimento: Date | undefined;
+  onDataNascimentoChange: (value: Date | undefined) => void;
   celular: string;
   onCelularChange: (value: string) => void;
   isAdmin: boolean;
@@ -21,6 +29,8 @@ export function CpfInputStep({
   onCpfChange,
   nome,
   onNomeChange,
+  dataNascimento,
+  onDataNascimentoChange,
   celular,
   onCelularChange,
   isAdmin,
@@ -95,6 +105,46 @@ export function CpfInputStep({
           </div>
         </div>
       )}
+
+      {/* Data de Nascimento */}
+      <div className="space-y-2">
+        <Label className="text-sm font-medium text-foreground">
+          Data de nascimento
+        </Label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full h-12 justify-start text-left font-normal",
+                !dataNascimento && "text-muted-foreground"
+              )}
+            >
+              <Calendar className="mr-2 h-4 w-4" />
+              {dataNascimento ? (
+                format(dataNascimento, "dd/MM/yyyy", { locale: ptBR })
+              ) : (
+                <span>Selecione a data</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <CalendarComponent
+              mode="single"
+              selected={dataNascimento}
+              onSelect={onDataNascimentoChange}
+              disabled={(date) =>
+                date > new Date() || date < new Date("1900-01-01")
+              }
+              initialFocus
+              captionLayout="dropdown-buttons"
+              fromYear={1930}
+              toYear={new Date().getFullYear()}
+              className="pointer-events-auto"
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
 
       {/* Celular */}
       <InputMask

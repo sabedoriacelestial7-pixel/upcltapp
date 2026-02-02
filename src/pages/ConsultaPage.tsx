@@ -28,6 +28,7 @@ export default function ConsultaPage() {
   // Profile state
   const [cpf, setCpf] = useState('');
   const [nome, setNome] = useState('');
+  const [dataNascimento, setDataNascimento] = useState<Date | undefined>(undefined);
   const [telefone, setTelefone] = useState('');
   const [cpfVinculado, setCpfVinculado] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -99,8 +100,9 @@ export default function ConsultaPage() {
   const telefoneLimpo = telefone.replace(/\D/g, '');
   const isTelefoneValido = telefoneLimpo.length >= 10;
   const isNomeValido = nome.trim().length >= 3;
+  const isDataNascimentoValida = dataNascimento !== undefined;
   const isCpfBloqueado = !isAdmin && cpfVinculado && cpfLimpo !== cpfVinculado;
-  const isFormValid = isValidCPF && isTelefoneValido && isNomeValido && !isCpfBloqueado;
+  const isFormValid = isValidCPF && isTelefoneValido && isNomeValido && isDataNascimentoValida && !isCpfBloqueado;
 
   // Request authorization via SMS/WhatsApp
   const handleSolicitarAutorizacao = async (canal: 'S' | 'W') => {
@@ -338,6 +340,8 @@ export default function ConsultaPage() {
           onCpfChange={setCpf}
           nome={nome}
           onNomeChange={setNome}
+          dataNascimento={dataNascimento}
+          onDataNascimentoChange={setDataNascimento}
           celular={telefone}
           onCelularChange={setTelefone}
           isAdmin={isAdmin}
