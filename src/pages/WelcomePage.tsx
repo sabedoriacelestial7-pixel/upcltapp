@@ -7,19 +7,22 @@ export default function WelcomePage() {
   const navigate = useNavigate();
 
   return (
-    <div className="theme-dark min-h-screen min-h-[100dvh] bg-background flex flex-col">
+    <div className="theme-dark min-h-screen min-h-[100dvh] bg-background flex flex-col overflow-hidden">
       {/* Header with Logo */}
-      <header className="pt-[env(safe-area-inset-top)] px-6 pt-8">
+      <header className="pt-[env(safe-area-inset-top)] px-6 pt-8 animate-fade-in" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
         <Logo size="md" variant="dark" />
       </header>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 pb-8">
         {/* Hero Image with Diamond Shape */}
-        <div className="relative mb-12">
+        <div 
+          className="relative mb-12 animate-scale-in" 
+          style={{ animationDelay: '0.3s', animationFillMode: 'both', animationDuration: '0.5s' }}
+        >
           {/* Background diamond shape */}
           <div 
-            className="absolute bg-primary rounded-3xl"
+            className="absolute bg-primary rounded-3xl transition-transform duration-700"
             style={{
               width: '220px',
               height: '220px',
@@ -45,15 +48,21 @@ export default function WelcomePage() {
         </div>
 
         {/* Headline */}
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground text-center leading-tight mb-12">
+        <h1 
+          className="text-3xl md:text-4xl font-bold text-foreground text-center leading-tight mb-12 animate-fade-in"
+          style={{ animationDelay: '0.5s', animationFillMode: 'both' }}
+        >
           Compare e contrate o empréstimo consignado CLT mais barato do Brasil
         </h1>
 
         {/* CTA Buttons */}
-        <div className="w-full max-w-sm space-y-4">
+        <div 
+          className="w-full max-w-sm space-y-4 animate-slide-up"
+          style={{ animationDelay: '0.7s', animationFillMode: 'both' }}
+        >
           <Button
             onClick={() => navigate('/login')}
-            className="w-full h-14 text-lg font-semibold rounded-full shadow-button"
+            className="w-full h-14 text-lg font-semibold rounded-full shadow-button hover:scale-[1.02] active:scale-[0.98] transition-transform"
             size="lg"
           >
             Vamos começar
