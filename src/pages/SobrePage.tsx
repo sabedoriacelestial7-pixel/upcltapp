@@ -10,9 +10,9 @@ export default function SobrePage() {
   const navigate = useNavigate();
 
   const stats = [
-    { icon: Users, value: 50, prefix: '+', suffix: ' mil', label: 'pessoas', description: 'já compararam taxas', color: 'from-emerald-500 to-emerald-600', stringColor: 'from-emerald-500/50' },
-    { icon: Banknote, value: 100, prefix: '+R$ ', suffix: ' mi', label: 'em crédito', description: 'contratados', color: 'from-violet-500 to-violet-600', stringColor: 'from-violet-500/50' },
-    { icon: Building2, value: 10, prefix: '+', suffix: '', label: 'bancos', description: 'parceiros', color: 'from-amber-500 to-amber-600', stringColor: 'from-amber-500/50' },
+    { icon: Users, value: 50, prefix: '+', suffix: ' mil', label: 'pessoas', description: 'já compararam taxas', color: 'from-emerald-500 to-emerald-600', stringColor: 'from-emerald-500/50', glowColor: 'rgba(16, 185, 129, 0.4)' },
+    { icon: Banknote, value: 100, prefix: '+R$ ', suffix: ' mi', label: 'em crédito', description: 'contratados', color: 'from-violet-500 to-violet-600', stringColor: 'from-violet-500/50', glowColor: 'rgba(139, 92, 246, 0.4)' },
+    { icon: Building2, value: 10, prefix: '+', suffix: '', label: 'bancos', description: 'parceiros', color: 'from-amber-500 to-amber-600', stringColor: 'from-amber-500/50', glowColor: 'rgba(245, 158, 11, 0.4)' },
   ];
 
   const features = [
@@ -109,9 +109,10 @@ export default function SobrePage() {
               >
                 {/* Balloon */}
                 <div 
-                  className={`w-24 h-24 rounded-full bg-gradient-to-br ${stat.color} shadow-lg flex flex-col items-center justify-center text-white relative overflow-hidden`}
+                  className={`w-24 h-24 rounded-full bg-gradient-to-br ${stat.color} flex flex-col items-center justify-center text-white relative overflow-hidden`}
                   style={{
-                    animation: `float 3s ease-in-out ${floatDelay}s infinite`,
+                    animation: `float 3s ease-in-out ${floatDelay}s infinite, glow-pulse 2s ease-in-out ${floatDelay + 0.5}s infinite`,
+                    boxShadow: `0 0 25px 0 ${stat.glowColor}`,
                   }}
                 >
                   {/* Shine effect */}

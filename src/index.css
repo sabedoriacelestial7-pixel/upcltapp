@@ -259,3 +259,13 @@
     transform: translateY(0) scale(1);
   }
 }
+
+/* Balloon glow pulse animation */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px 0 currentColor;
+  }
+  50% {
+    box-shadow: 0 0 35px 5px currentColor;
+  }
+}
