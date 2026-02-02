@@ -97,13 +97,14 @@ export default function SobrePage() {
         <div className="flex justify-center gap-3 mb-10">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
-            const floatDelay = index * 0.3;
+            const riseDelay = 0.2 + index * 0.15;
+            const floatDelay = 0.8 + index * 0.3;
             return (
               <div 
                 key={index} 
                 className="relative group"
                 style={{ 
-                  animation: `fade-in 0.5s ease-out ${0.2 + index * 0.1}s both`
+                  animation: `balloon-rise 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) ${riseDelay}s both`
                 }}
               >
                 {/* Balloon */}

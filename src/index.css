@@ -240,3 +240,22 @@
     transform: translateY(-8px);
   }
 }
+
+/* Balloon rise animation */
+@keyframes balloon-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(100px) scale(0.5);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.05);
+  }
+  80% {
+    transform: translateY(5px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
