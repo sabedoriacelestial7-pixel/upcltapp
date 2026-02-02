@@ -341,7 +341,7 @@ export default function ContratacaoPage() {
                   <SelectTrigger className="bg-white/5 border-white/10">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-background border border-border z-[100]">
                     <SelectItem value="M">Masculino</SelectItem>
                     <SelectItem value="F">Feminino</SelectItem>
                   </SelectContent>
@@ -354,7 +354,7 @@ export default function ContratacaoPage() {
                   <SelectTrigger className="bg-white/5 border-white/10">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-background border border-border z-[100]">
                     {ESTADO_CIVIL_OPTIONS.map(opt => (
                       <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                     ))}
@@ -380,7 +380,7 @@ export default function ContratacaoPage() {
                   <SelectTrigger className="bg-white/5 border-white/10">
                     <SelectValue placeholder="UF" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-background border border-border z-[100]">
                     {ESTADOS.map(uf => (
                       <SelectItem key={uf} value={uf}>{uf}</SelectItem>
                     ))}
@@ -419,7 +419,7 @@ export default function ContratacaoPage() {
                   <SelectTrigger className="bg-white/5 border-white/10">
                     <SelectValue placeholder="UF" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-background border border-border z-[100]">
                     {ESTADOS.map(uf => (
                       <SelectItem key={uf} value={uf}>{uf}</SelectItem>
                     ))}
@@ -548,7 +548,7 @@ export default function ContratacaoPage() {
                   <SelectTrigger className="bg-white/5 border-white/10">
                     <SelectValue placeholder="UF" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-background border border-border z-[100]">
                     {ESTADOS.map(uf => (
                       <SelectItem key={uf} value={uf}>{uf}</SelectItem>
                     ))}
@@ -610,7 +610,7 @@ export default function ContratacaoPage() {
                 <SelectTrigger className="bg-white/5 border-white/10">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background border border-border z-[100]">
                   {TIPO_CONTA_OPTIONS.map(opt => (
                     <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                   ))}
@@ -656,7 +656,7 @@ export default function ContratacaoPage() {
                 <SelectTrigger className="bg-white/5 border-white/10">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background border border-border z-[100]">
                   {TIPO_CHAVE_PIX_OPTIONS.map(opt => (
                     <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                   ))}
