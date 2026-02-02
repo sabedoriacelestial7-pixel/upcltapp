@@ -101,7 +101,9 @@ export default function ConsultaPage() {
     setCanalEnvio(canal);
 
     try {
-      const result = await solicitarAutorizacao(cpf, telefone, canal);
+      // Pass user name for Facta API
+      const nomeUsuario = usuario?.nome || user.email?.split('@')[0] || 'Cliente';
+      const result = await solicitarAutorizacao(cpf, telefone, canal, nomeUsuario);
 
       if (result.sucesso) {
         setAuthRequested(true);
