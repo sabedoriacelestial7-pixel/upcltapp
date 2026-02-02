@@ -1,10 +1,16 @@
 import { Lock, Shield } from 'lucide-react';
 import { InputMask } from '@/components/InputMask';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { formatarCPF } from '@/utils/formatters';
 
 interface CpfInputStepProps {
   cpf: string;
   onCpfChange: (value: string) => void;
+  nome: string;
+  onNomeChange: (value: string) => void;
+  celular: string;
+  onCelularChange: (value: string) => void;
   isAdmin: boolean;
   cpfVinculado: string | null;
   isValidCPF: boolean;
@@ -13,10 +19,17 @@ interface CpfInputStepProps {
 export function CpfInputStep({
   cpf,
   onCpfChange,
+  nome,
+  onNomeChange,
+  celular,
+  onCelularChange,
   isAdmin,
   cpfVinculado,
   isValidCPF
 }: CpfInputStepProps) {
+  const celularLimpo = celular.replace(/\D/g, '');
+  const isCelularValido = celularLimpo.length >= 10;
+
   return (
     <div className="space-y-6">
       {/* Admin Badge */}
@@ -33,14 +46,29 @@ export function CpfInputStep({
         </h1>
         <p className="text-muted-foreground">
           {isAdmin 
-            ? 'Consulte qualquer CPF.' 
+            ? 'Preencha os dados para consultar.' 
             : cpfVinculado 
-              ? 'Seu CPF está vinculado à sua conta.' 
-              : 'Nos informe seu CPF.'}
+              ? 'Complete seus dados para consultar.' 
+              : 'Preencha seus dados para consultar.'}
         </p>
       </div>
 
-      {/* Admin ou sem CPF vinculado: input editável */}
+      {/* Nome */}
+      <div className="space-y-2">
+        <Label htmlFor="nome" className="text-sm font-medium text-foreground">
+          Nome completo
+        </Label>
+        <Input
+          id="nome"
+          type="text"
+          placeholder="Digite seu nome completo"
+          value={nome}
+          onChange={(e) => onNomeChange(e.target.value)}
+          className="h-12 text-base"
+        />
+      </div>
+
+      {/* CPF */}
       {isAdmin || !cpfVinculado ? (
         <InputMask
           label="CPF"
@@ -55,7 +83,6 @@ export function CpfInputStep({
           }
         />
       ) : (
-        /* Usuário comum com CPF vinculado: exibe bloqueado */
         <div className="bg-white rounded-xl border border-gray-200 p-4">
           <label className="block text-sm font-medium text-muted-foreground mb-2">
             CPF Vinculado
@@ -68,6 +95,24 @@ export function CpfInputStep({
           </div>
         </div>
       )}
+
+      {/* Celular */}
+      <InputMask
+        label="Celular (para receber o código)"
+        placeholder="(00) 00000-0000"
+        mask="telefone"
+        value={celular}
+        onChange={onCelularChange}
+        error={
+          celular.length > 0 && !isCelularValido 
+            ? 'Celular inválido' 
+            : undefined
+        }
+      />
+
+      <p className="text-xs text-muted-foreground text-center">
+        Você receberá um código de autorização no celular informado.
+      </p>
     </div>
   );
 }
