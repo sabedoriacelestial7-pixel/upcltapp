@@ -230,3 +230,13 @@
   border-radius: 2px;
   transition: width 0.3s ease;
 }
+
+/* Float animation for balloons */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}

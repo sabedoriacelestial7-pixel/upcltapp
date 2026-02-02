@@ -3,15 +3,16 @@ import { ArrowLeft, Users, Banknote, Building2, ShieldCheck, Clock, TrendingDown
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import { AnimatedCounter } from '@/components/AnimatedCounter';
 import welcomeHero from '@/assets/welcome-hero.png';
 
 export default function SobrePage() {
   const navigate = useNavigate();
 
   const stats = [
-    { icon: Users, value: '+50 mil', label: 'pessoas', description: 'já compararam taxas no UpCLT' },
-    { icon: Banknote, value: '+R$ 100 mi', label: 'em crédito', description: 'contratados com as melhores taxas' },
-    { icon: Building2, value: '10+', label: 'bancos parceiros', description: 'disputando para oferecer a melhor taxa' },
+    { icon: Users, value: 50, prefix: '+', suffix: ' mil', label: 'pessoas', description: 'já compararam taxas' },
+    { icon: Banknote, value: 100, prefix: '+R$ ', suffix: ' mi', label: 'em crédito', description: 'contratados' },
+    { icon: Building2, value: 10, prefix: '+', suffix: '', label: 'bancos', description: 'parceiros' },
   ];
 
   const features = [
@@ -92,26 +93,49 @@ export default function SobrePage() {
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-4 mb-10">
+        {/* Floating Stats Balloons */}
+        <div className="flex justify-center gap-3 mb-10">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
+            const floatDelay = index * 0.3;
             return (
               <div 
                 key={index} 
-                className="text-center p-3 rounded-2xl bg-card border border-border"
-                style={{ animation: `fade-in 0.5s ease-out ${0.2 + index * 0.1}s both` }}
+                className="relative group"
+                style={{ 
+                  animation: `fade-in 0.5s ease-out ${0.2 + index * 0.1}s both`
+                }}
               >
-                <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-primary" />
+                {/* Balloon */}
+                <div 
+                  className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary/80 shadow-lg flex flex-col items-center justify-center text-primary-foreground relative overflow-hidden"
+                  style={{
+                    animation: `float 3s ease-in-out ${floatDelay}s infinite`,
+                  }}
+                >
+                  {/* Shine effect */}
+                  <div className="absolute top-2 left-3 w-4 h-4 bg-white/30 rounded-full blur-sm" />
+                  <div className="absolute top-4 left-5 w-2 h-2 bg-white/50 rounded-full" />
+                  
+                  <Icon className="w-5 h-5 mb-1 opacity-90" />
+                  <div className="text-lg font-bold leading-none">
+                    <AnimatedCounter 
+                      end={stat.value} 
+                      prefix={stat.prefix} 
+                      suffix={stat.suffix}
+                      duration={1500}
+                    />
+                  </div>
+                  <div className="text-[10px] opacity-80 mt-0.5">
+                    {stat.label}
+                  </div>
                 </div>
-                <div className="text-xl font-bold text-foreground">
-                  {stat.value}
-                </div>
-                <div className="text-xs font-medium text-foreground">
-                  {stat.label}
-                </div>
-                <div className="text-[10px] text-muted-foreground mt-1 leading-tight">
+                
+                {/* Balloon string */}
+                <div className="absolute left-1/2 -translate-x-1/2 top-full w-px h-6 bg-gradient-to-b from-primary/50 to-transparent" />
+                
+                {/* Description tooltip on hover */}
+                <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] text-muted-foreground text-center opacity-70">
                   {stat.description}
                 </div>
               </div>
