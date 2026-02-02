@@ -27,6 +27,7 @@ export default function ConsultaPage() {
 
   // Profile state
   const [cpf, setCpf] = useState('');
+  const [nome, setNome] = useState('');
   const [telefone, setTelefone] = useState('');
   const [cpfVinculado, setCpfVinculado] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -69,6 +70,10 @@ export default function ConsultaPage() {
       if (profile?.telefone) {
         setTelefone(profile.telefone);
       }
+
+      if (profile?.nome) {
+        setNome(profile.nome);
+      }
       
       setLoadingProfile(false);
     }
@@ -91,7 +96,11 @@ export default function ConsultaPage() {
 
   const isValidCPF = validarCPF(cpf);
   const cpfLimpo = cpf.replace(/\D/g, '');
+  const telefoneLimpo = telefone.replace(/\D/g, '');
+  const isTelefoneValido = telefoneLimpo.length >= 10;
+  const isNomeValido = nome.trim().length >= 3;
   const isCpfBloqueado = !isAdmin && cpfVinculado && cpfLimpo !== cpfVinculado;
+  const isFormValid = isValidCPF && isTelefoneValido && isNomeValido && !isCpfBloqueado;
 
   // Request authorization via SMS/WhatsApp
   const handleSolicitarAutorizacao = async (canal: 'S' | 'W') => {
@@ -327,13 +336,17 @@ export default function ConsultaPage() {
         <CpfInputStep
           cpf={cpf}
           onCpfChange={setCpf}
+          nome={nome}
+          onNomeChange={setNome}
+          celular={telefone}
+          onCelularChange={setTelefone}
           isAdmin={isAdmin}
           cpfVinculado={cpfVinculado}
           isValidCPF={isValidCPF}
         />
       </main>
 
-      {isValidCPF && !isCpfBloqueado && (
+      {isFormValid && (
         <FloatingButton 
           onClick={handleProsseguir}
           disabled={false}
