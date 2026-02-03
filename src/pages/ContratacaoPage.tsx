@@ -257,6 +257,7 @@ export default function ContratacaoPage() {
         dataExpedicao: formData.dataExpedicao,
         estadoNatural: formData.estadoNatural,
         cidadeNatural: formData.cidadeNatural,
+        cidadeNaturalNome: cidadesNaturais.find(c => c.id.toString() === formData.cidadeNatural)?.nome || '',
         celular: formData.celular,
         email: formData.email,
         
@@ -266,6 +267,7 @@ export default function ContratacaoPage() {
         complemento: formData.complemento || undefined,
         bairro: formData.bairro,
         cidade: formData.cidade,
+        cidadeNome: cidadesEndereco.find(c => c.id.toString() === formData.cidade)?.nome || '',
         estado: formData.estado,
         
         nomeMae: formData.nomeMae,

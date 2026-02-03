@@ -78,6 +78,7 @@ export interface DadosPessoaisContratacao {
   dataExpedicao: string;
   estadoNatural: string;
   cidadeNatural: string;
+  cidadeNaturalNome: string; // Nome da cidade natural para API Facta
   celular: string;
   email: string;
   
@@ -88,6 +89,7 @@ export interface DadosPessoaisContratacao {
   complemento?: string;
   bairro: string;
   cidade: string;
+  cidadeNome: string; // Nome da cidade para API Facta
   estado: string;
   
   // Filiação

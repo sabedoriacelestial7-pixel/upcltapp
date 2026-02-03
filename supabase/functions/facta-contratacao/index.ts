@@ -116,6 +116,7 @@ interface ContratacaoParams {
   dataExpedicao: string;
   estadoNatural: string;
   cidadeNatural: string;
+  cidadeNaturalNome: string; // Nome da cidade natural (ex: "Cariacica")
   celular: string;
   email: string;
   cep: string;
@@ -124,6 +125,7 @@ interface ContratacaoParams {
   complemento?: string;
   bairro: string;
   cidade: string;
+  cidadeNome: string; // Nome da cidade do endereço (ex: "Guarapari")
   estado: string;
   nomeMae: string;
   nomePai?: string;
@@ -234,9 +236,9 @@ serve(async (req) => {
     // Garante que CEP está apenas com números
     const cepLimpo = params.cep.replace(/\D/g, '');
     
-    // Usa código IBGE completo de 7 dígitos para cidade
-    console.log("Address data - cidade:", params.cidade, "estado:", params.estado, "cep:", cepLimpo);
-    console.log("Natural data - cidade_natural:", params.cidadeNatural, "estado_natural:", params.estadoNatural);
+    // A API Facta espera o NOME da cidade em texto, não o código IBGE
+    console.log("Address data - cidade (nome):", params.cidadeNome, "estado:", params.estado, "cep:", cepLimpo);
+    console.log("Natural data - cidade_natural (nome):", params.cidadeNaturalNome, "estado_natural:", params.estadoNatural);
     
     const dadosFormData: Record<string, string> = {
       id_simulador: idSimulador,
@@ -250,7 +252,7 @@ serve(async (req) => {
       orgao_emissor: params.orgaoEmissor,
       data_expedicao: params.dataExpedicao,
       estado_natural: params.estadoNatural,
-      cidade_natural: params.cidadeNatural,
+      cidade_natural: params.cidadeNaturalNome, // Envia NOME da cidade, não código IBGE
       nacionalidade: '1',
       celular: params.celular,
       renda: params.valorRenda.toString(),
@@ -258,7 +260,7 @@ serve(async (req) => {
       endereco: params.endereco,
       numero: params.numero,
       bairro: params.bairro,
-      cidade: params.cidade,
+      cidade: params.cidadeNome, // Envia NOME da cidade, não código IBGE
       estado: params.estado,
       nome_mae: params.nomeMae,
       nome_pai: params.nomePai || 'NAO DECLARADO',
