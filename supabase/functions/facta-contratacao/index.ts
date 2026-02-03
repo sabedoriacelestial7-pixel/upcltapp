@@ -236,9 +236,13 @@ serve(async (req) => {
     // Garante que CEP está apenas com números
     const cepLimpo = params.cep.replace(/\D/g, '');
     
-    // A API Facta espera o NOME da cidade em texto, não o código IBGE
-    console.log("Address data - cidade (nome):", params.cidadeNome, "estado:", params.estado, "cep:", cepLimpo);
-    console.log("Natural data - cidade_natural (nome):", params.cidadeNaturalNome, "estado_natural:", params.estadoNatural);
+    // A API Facta espera código IBGE numérico para cidade e cidade_natural
+    // O código IBGE completo tem 7 dígitos (ex: 3202405), a API pode aceitar só os 5 últimos dígitos
+    const cidadeNaturalCodigo = params.cidadeNatural.replace(/\D/g, '');
+    const cidadeCodigo = params.cidade.replace(/\D/g, '');
+    
+    console.log("Address data - cidade (IBGE):", cidadeCodigo, "estado:", params.estado, "cep:", cepLimpo);
+    console.log("Natural data - cidade_natural (IBGE):", cidadeNaturalCodigo, "estado_natural:", params.estadoNatural);
     
     const dadosFormData: Record<string, string> = {
       id_simulador: idSimulador,
@@ -252,7 +256,7 @@ serve(async (req) => {
       orgao_emissor: params.orgaoEmissor,
       data_expedicao: params.dataExpedicao,
       estado_natural: params.estadoNatural,
-      cidade_natural: params.cidadeNaturalNome, // Envia NOME da cidade, não código IBGE
+      cidade_natural: cidadeNaturalCodigo, // Código IBGE numérico
       nacionalidade: '1',
       celular: params.celular,
       renda: params.valorRenda.toString(),
@@ -260,7 +264,7 @@ serve(async (req) => {
       endereco: params.endereco,
       numero: params.numero,
       bairro: params.bairro,
-      cidade: params.cidadeNome, // Envia NOME da cidade, não código IBGE
+      cidade: cidadeCodigo, // Código IBGE numérico
       estado: params.estado,
       nome_mae: params.nomeMae,
       nome_pai: params.nomePai || 'NAO DECLARADO',
