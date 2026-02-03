@@ -11,6 +11,7 @@ import { realizarContratacao, DadosPessoaisContratacao } from '@/services/contra
 import { BancoCalculado } from '@/utils/calculos';
 import { formatarMoeda } from '@/utils/formatters';
 import { useToast } from '@/hooks/use-toast';
+import { buscarCidadesPorEstado, CidadeIBGE } from '@/services/ibgeApi';
 
 interface LocationState {
   banco: BancoCalculado;
@@ -57,6 +58,8 @@ export default function ContratacaoPage() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [cidadesNaturais, setCidadesNaturais] = useState<CidadeIBGE[]>([]);
+  const [loadingCidades, setLoadingCidades] = useState(false);
   const [propostaUrl, setPropostaUrl] = useState<string | null>(null);
 
   // Form data
@@ -110,6 +113,24 @@ export default function ContratacaoPage() {
       setFormData(prev => ({ ...prev, chavePix: consulta.cpf }));
     }
   }, [formData.tipoChavePix, consulta?.cpf]);
+
+  // Carregar cidades quando estado natural mudar
+  useEffect(() => {
+    if (formData.estadoNatural) {
+      setLoadingCidades(true);
+      buscarCidadesPorEstado(formData.estadoNatural)
+        .then(cidades => {
+          setCidadesNaturais(cidades);
+          // Limpa cidade se não existir na nova lista
+          if (formData.cidadeNatural && !cidades.some(c => c.id.toString() === formData.cidadeNatural)) {
+            setFormData(prev => ({ ...prev, cidadeNatural: '' }));
+          }
+        })
+        .finally(() => setLoadingCidades(false));
+    } else {
+      setCidadesNaturais([]);
+    }
+  }, [formData.estadoNatural]);
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -429,12 +450,20 @@ export default function ContratacaoPage() {
 
               <div>
                 <Label className="text-xs text-white/60">Cidade Natural *</Label>
-                <Input
-                  value={formData.cidadeNatural}
-                  onChange={(e) => handleChange('cidadeNatural', e.target.value)}
-                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
-                  placeholder="Cidade"
-                />
+                <Select 
+                  value={formData.cidadeNatural} 
+                  onValueChange={(v) => handleChange('cidadeNatural', v)}
+                  disabled={!formData.estadoNatural || loadingCidades}
+                >
+                  <SelectTrigger className="bg-white border-gray-300 text-black">
+                    <SelectValue placeholder={loadingCidades ? "Carregando..." : "Selecione"} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border border-gray-300 z-[100] max-h-60">
+                    {cidadesNaturais.map(cidade => (
+                      <SelectItem key={cidade.id} value={cidade.id.toString()}>{cidade.nome}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
