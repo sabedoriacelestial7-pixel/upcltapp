@@ -117,6 +117,16 @@ export default function ConsultaPage() {
       const result = await solicitarAutorizacao(cpf, telefone, canal, nomeUsuario);
 
       if (result.sucesso) {
+        // Check if already authorized - go directly to verification
+        if (result.status === 'already_authorized') {
+          toast.success('CPF já autorizado! Consultando dados...');
+          // Immediately check authorization (which will fetch the data)
+          setAuthRequested(true);
+          await checkAuthorization();
+          return;
+        }
+        
+        // Normal flow - code was sent
         setAuthRequested(true);
         setPollingActive(true);
         toast.success(`Código enviado por ${canal === 'W' ? 'WhatsApp' : 'SMS'}!`);

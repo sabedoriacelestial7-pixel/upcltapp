@@ -202,8 +202,24 @@ serve(async (req) => {
       );
     }
 
+    // Handle array response (Facta sometimes returns array)
+    const responseData = Array.isArray(factaData) ? factaData[0] : factaData;
+    const mensagem = responseData?.mensagem || '';
+
+    // Check if already authorized - can proceed directly to consultation
+    if (mensagem.includes('Token válido') || mensagem.includes('Não necessita de autorização')) {
+      console.log("CPF already authorized, returning already_authorized status");
+      return new Response(
+        JSON.stringify({ 
+          sucesso: true, 
+          mensagem: "CPF já autorizado! Consultando dados...",
+          status: 'already_authorized'
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Check for business errors in the message (Facta sometimes returns erro:false with error messages)
-    const mensagem = factaData.mensagem || '';
     const isBusinessError = 
       mensagem.includes('Telefone já informado') ||
       mensagem.includes('não é um numero de celular válido') ||
@@ -233,8 +249,7 @@ serve(async (req) => {
     const isSuccess = 
       mensagem.includes('enviado') || 
       mensagem.includes('sucesso') ||
-      mensagem.includes('Token válido') ||
-      factaData.protocolo;
+      responseData?.protocolo;
 
     return new Response(
       JSON.stringify({ 
@@ -242,7 +257,8 @@ serve(async (req) => {
         mensagem: isSuccess 
           ? "Código de autorização enviado com sucesso!" 
           : (mensagem || "Solicitação processada"),
-        protocolo: factaData.protocolo || factaData.id
+        protocolo: responseData?.protocolo || responseData?.id,
+        status: 'code_sent'
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

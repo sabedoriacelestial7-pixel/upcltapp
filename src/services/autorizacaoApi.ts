@@ -5,6 +5,7 @@ export interface AutorizacaoResult {
   sucesso: boolean;
   mensagem: string;
   protocolo?: string;
+  status?: 'code_sent' | 'already_authorized';
 }
 
 export interface ConsultaAutorizadaResult {
