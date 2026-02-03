@@ -230,12 +230,8 @@ serve(async (req) => {
 
     // Step 2: Save personal data
     console.log("Step 2: Saving personal data...");
-    // Convert UF abbreviations to IBGE state codes
-    const estadoIbge = UF_TO_IBGE[params.estado] || params.estado;
-    const estadoNaturalIbge = UF_TO_IBGE[params.estadoNatural] || params.estadoNatural;
-    const estadoRgIbge = UF_TO_IBGE[params.estadoRg] || params.estadoRg;
-    
-    console.log("Address data - cidade (nome):", params.cidade, "estado (ibge):", estadoIbge, "cidade_natural (ibge):", params.cidadeNatural, "estado_natural (ibge):", estadoNaturalIbge);
+    // Keep UF abbreviations for estado fields, use IBGE codes for cities
+    console.log("Address data - cidade (ibge):", params.cidade, "estado (uf):", params.estado, "cidade_natural (ibge):", params.cidadeNatural, "estado_natural (uf):", params.estadoNatural);
     
     const dadosFormData: Record<string, string> = {
       id_simulador: idSimulador,
@@ -245,10 +241,10 @@ serve(async (req) => {
       estado_civil: params.estadoCivil,
       data_nascimento: params.dataNascimento,
       rg: params.rg,
-      estado_rg: estadoRgIbge,
+      estado_rg: params.estadoRg,
       orgao_emissor: params.orgaoEmissor,
       data_expedicao: params.dataExpedicao,
-      estado_natural: estadoNaturalIbge,
+      estado_natural: params.estadoNatural,
       cidade_natural: params.cidadeNatural,
       nacionalidade: '1',
       celular: params.celular,
@@ -258,7 +254,7 @@ serve(async (req) => {
       numero: params.numero,
       bairro: params.bairro,
       cidade: params.cidade,
-      estado: estadoIbge,
+      estado: params.estado,
       nome_mae: params.nomeMae,
       nome_pai: params.nomePai || 'NAO DECLARADO',
       valor_patrimonio: '1',
