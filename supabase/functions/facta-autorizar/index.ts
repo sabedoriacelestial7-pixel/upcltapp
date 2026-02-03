@@ -140,10 +140,10 @@ serve(async (req) => {
 
     const cpfLimpo = cpf.replace(/\D/g, '');
     const celularLimpo = celular.replace(/\D/g, '');
-    const tipoEnvio = canal === 'W' ? 'W' : 'S'; // S = SMS, W = WhatsApp
+    const tipoEnvio = canal === 'W' ? 'WHATSAPP' : 'SMS';
     const nomeCliente = nome || 'Cliente';
 
-    console.log(`Requesting authorization for CPF: ${cpfLimpo.substring(0, 3)}... via ${tipoEnvio === 'W' ? 'WhatsApp' : 'SMS'}`);
+    console.log(`Requesting authorization for CPF: ${cpfLimpo.substring(0, 3)}... via ${tipoEnvio}`);
 
     // Get Facta token
     const token = await getFactaToken();
