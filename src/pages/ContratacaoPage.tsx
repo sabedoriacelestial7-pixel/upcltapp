@@ -167,11 +167,11 @@ export default function ContratacaoPage() {
 
       const dados: DadosPessoaisContratacao = {
         cpf: consulta.cpf.replace(/\D/g, ''),
-        dataNascimento: formatDate(consulta.dataAdmissao), // TODO: Get real birth date
+        dataNascimento: formatDate(consulta.dataNascimento),
         valorRenda: consulta.valorTotalVencimentos,
-        matricula: '0', // TODO: Get from consulta
-        cnpjEmpregador: '', // TODO: Get from consulta
-        dataAdmissao: formatDate(consulta.dataAdmissao),
+        matricula: consulta.matricula || '0',
+        cnpjEmpregador: '',
+        dataAdmissao: consulta.dataAdmissao ? formatDate(consulta.dataAdmissao) : undefined,
         
         codigoTabela: state?.codigoTabela || 112726, // Default table
         prazo: banco.parcelas,
