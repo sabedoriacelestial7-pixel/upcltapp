@@ -351,20 +351,20 @@ export default function ContratacaoPage() {
   // Tela de erro de política de crédito - amigável para o usuário
   if (creditPolicyError) {
     return (
-      <div className="min-h-screen min-h-[100dvh] gradient-primary">
+      <div className="min-h-screen min-h-[100dvh] bg-background">
         <Header title="Contratação" showBack />
         
         <main className="max-w-md mx-auto px-5 py-8">
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 text-center animate-fade-in">
-            <div className="w-20 h-20 rounded-full bg-amber-500/20 mx-auto mb-5 flex items-center justify-center">
-              <HeadphonesIcon size={40} className="text-amber-400" />
+          <div className="bg-card rounded-2xl p-6 text-center animate-fade-in shadow-card border border-border">
+            <div className="w-20 h-20 rounded-full bg-amber-100 mx-auto mb-5 flex items-center justify-center">
+              <HeadphonesIcon size={40} className="text-amber-600" />
             </div>
             
-            <h2 className="text-xl font-bold text-white mb-3">
+            <h2 className="text-xl font-bold text-foreground mb-3">
               Ops! Consulta não processada
             </h2>
             
-            <p className="text-white/80 text-sm mb-6 leading-relaxed">
+            <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
               Não se preocupe! Nossa equipe está pronta para ajudar você a descobrir 
               o valor disponível para seu empréstimo. Clique no botão abaixo e fale 
               diretamente com um de nossos consultores especializados.
@@ -382,13 +382,13 @@ export default function ContratacaoPage() {
               <Button
                 onClick={() => navigate('/consulta')}
                 variant="outline"
-                className="w-full h-12 border-white/30 text-white hover:bg-white/10"
+                className="w-full h-12 border-border text-foreground hover:bg-muted"
               >
                 Fazer Nova Consulta
               </Button>
             </div>
             
-            <p className="text-white/50 text-xs mt-6">
+            <p className="text-muted-foreground text-xs mt-6">
               Atendimento rápido via WhatsApp • Segunda a Sexta, 8h às 18h
             </p>
           </div>
@@ -399,16 +399,16 @@ export default function ContratacaoPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen min-h-[100dvh] gradient-primary">
+      <div className="min-h-screen min-h-[100dvh] bg-background">
         <Header title="Contratação" showBack />
         
         <main className="max-w-md mx-auto px-5 py-8">
-          <div className="bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-2xl p-6 text-center animate-fade-in">
+          <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 text-center animate-fade-in">
             <div className="w-16 h-16 rounded-full bg-white/20 mx-auto mb-4 flex items-center justify-center">
               <CheckCircle size={32} className="text-white" />
             </div>
             <h2 className="text-xl font-bold text-white mb-2">Proposta Criada!</h2>
-            <p className="text-white/80 text-sm mb-4">
+            <p className="text-white/90 text-sm mb-4">
               Enviamos o link de assinatura para o seu {formData.tipoEnvio === 'whatsapp' ? 'WhatsApp' : 'SMS'}.
             </p>
             
@@ -417,7 +417,7 @@ export default function ContratacaoPage() {
                 href={`https://${propostaUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-white text-[#22c55e] font-semibold py-3 px-6 rounded-lg mb-4 hover:bg-white/90 transition-colors"
+                className="inline-block bg-white text-primary font-semibold py-3 px-6 rounded-lg mb-4 hover:bg-white/90 transition-colors"
               >
                 Assinar Agora
               </a>
@@ -427,14 +427,14 @@ export default function ContratacaoPage() {
           <div className="mt-6 space-y-3">
             <Button
               onClick={() => navigate('/propostas')}
-              className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20"
+              className="w-full bg-card hover:bg-muted text-foreground border border-border"
             >
               Ver Minhas Propostas
             </Button>
             <Button
               onClick={() => navigate('/')}
               variant="ghost"
-              className="w-full text-white/60"
+              className="w-full text-muted-foreground"
             >
               Voltar ao Início
             </Button>
@@ -445,14 +445,14 @@ export default function ContratacaoPage() {
   }
 
   return (
-    <div className="min-h-screen min-h-[100dvh] gradient-primary pb-8">
+    <div className="min-h-screen min-h-[100dvh] bg-background pb-8">
       <Header title="Contratação" showBack />
 
       <main className="max-w-md mx-auto px-5 py-5 space-y-4">
         {/* Resumo da operação */}
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+        <div className="bg-card border border-border rounded-xl p-4 shadow-card">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
               <img src={banco.logo} alt={banco.nome} className="w-6 h-6 object-contain" />
             </div>
             <div>
@@ -460,9 +460,9 @@ export default function ContratacaoPage() {
               <p className="text-xs text-muted-foreground">{banco.parcelas}x de {formatarMoeda(banco.valorParcela)}</p>
             </div>
           </div>
-          <div className="flex justify-between items-center pt-2 border-t border-white/10">
-            <span className="text-sm text-white/60">Valor a receber</span>
-            <span className="text-lg font-bold text-[#22c55e]">{formatarMoeda(banco.valorLiberado)}</span>
+          <div className="flex justify-between items-center pt-2 border-t border-border">
+            <span className="text-sm text-muted-foreground">Valor a receber</span>
+            <span className="text-lg font-bold text-primary">{formatarMoeda(banco.valorLiberado)}</span>
           </div>
         </div>
 
@@ -471,11 +471,11 @@ export default function ContratacaoPage() {
           {[1, 2, 3].map((s) => (
             <div key={s} className="flex items-center gap-2">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
-                step >= s ? 'bg-[#22c55e] text-white' : 'bg-white/10 text-white/50'
+                step >= s ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
               }`}>
                 {s}
               </div>
-              {s < 3 && <div className={`w-8 h-0.5 ${step > s ? 'bg-[#22c55e]' : 'bg-white/10'}`} />}
+              {s < 3 && <div className={`w-8 h-0.5 ${step > s ? 'bg-primary' : 'bg-muted'}`} />}
             </div>
           ))}
         </div>
@@ -484,13 +484,13 @@ export default function ContratacaoPage() {
         {step === 1 && (
           <div className="space-y-4 animate-fade-in">
             <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-              <User size={18} className="text-[#22c55e]" />
+              <User size={18} className="text-primary" />
               Dados Pessoais
             </h3>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">Sexo *</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Sexo *</Label>
                 <Select value={formData.sexo} onValueChange={(v) => handleChange('sexo', v)}>
                   <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="Selecione" />
@@ -503,7 +503,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">Estado Civil *</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Estado Civil *</Label>
                 <Select value={formData.estadoCivil} onValueChange={(v) => handleChange('estadoCivil', v)}>
                   <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="Selecione" />
@@ -519,7 +519,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">RG *</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">RG *</Label>
                 <Input
                   value={formData.rg}
                   onChange={(e) => handleChange('rg', e.target.value)}
@@ -529,7 +529,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">Estado do RG *</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Estado do RG *</Label>
                 <Select value={formData.estadoRg} onValueChange={(v) => handleChange('estadoRg', v)}>
                   <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="UF" />
@@ -545,7 +545,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">Órgão Emissor *</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Órgão Emissor *</Label>
                 <Input
                   value={formData.orgaoEmissor}
                   onChange={(e) => handleChange('orgaoEmissor', e.target.value.toUpperCase())}
@@ -556,7 +556,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">Data Expedição *</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Data Expedição *</Label>
                 <Input
                   value={formData.dataExpedicao}
                   onChange={(e) => handleChange('dataExpedicao', e.target.value)}
@@ -568,7 +568,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">Estado Natural *</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Estado Natural *</Label>
                 <Select value={formData.estadoNatural} onValueChange={(v) => handleChange('estadoNatural', v)}>
                   <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="UF" />
@@ -582,7 +582,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">Cidade Natural *</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Cidade Natural *</Label>
                 <Select 
                   value={formData.cidadeNatural} 
                   onValueChange={(v) => handleChange('cidadeNatural', v)}
@@ -601,7 +601,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white font-medium mb-1 block">Celular *</Label>
+              <Label className="text-xs text-foreground font-medium mb-1 block">Celular *</Label>
               <Input
                 value={formData.celular}
                 onChange={(e) => handleChange('celular', e.target.value)}
@@ -611,7 +611,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white font-medium mb-1 block">E-mail *</Label>
+              <Label className="text-xs text-foreground font-medium mb-1 block">E-mail *</Label>
               <Input
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
@@ -624,7 +624,7 @@ export default function ContratacaoPage() {
             <Button
               onClick={() => setStep(2)}
               disabled={!validateStep1()}
-              className="w-full bg-[#22c55e] hover:bg-[#16a34a] h-12"
+              className="w-full bg-primary hover:bg-primary/90 h-12"
             >
               Continuar
             </Button>
@@ -635,12 +635,12 @@ export default function ContratacaoPage() {
         {step === 2 && (
           <div className="space-y-4 animate-fade-in">
             <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-              <MapPin size={18} className="text-[#22c55e]" />
+              <MapPin size={18} className="text-primary" />
               Endereço
             </h3>
 
             <div>
-              <Label className="text-xs text-white font-medium mb-1 block">CEP *</Label>
+              <Label className="text-xs text-foreground font-medium mb-1 block">CEP *</Label>
               <Input
                 value={formData.cep}
                 onChange={(e) => handleChange('cep', e.target.value)}
@@ -652,7 +652,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white font-medium mb-1 block">Endereço *</Label>
+              <Label className="text-xs text-foreground font-medium mb-1 block">Endereço *</Label>
               <Input
                 value={formData.endereco}
                 onChange={(e) => handleChange('endereco', e.target.value)}
@@ -663,7 +663,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">Número *</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Número *</Label>
                 <Input
                   value={formData.numero}
                   onChange={(e) => handleChange('numero', e.target.value)}
@@ -673,7 +673,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div className="col-span-2">
-                <Label className="text-xs text-white font-medium mb-1 block">Complemento</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Complemento</Label>
                 <Input
                   value={formData.complemento}
                   onChange={(e) => handleChange('complemento', e.target.value)}
@@ -684,7 +684,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white font-medium mb-1 block">Bairro *</Label>
+              <Label className="text-xs text-foreground font-medium mb-1 block">Bairro *</Label>
               <Input
                 value={formData.bairro}
                 onChange={(e) => handleChange('bairro', e.target.value)}
@@ -695,7 +695,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">Estado *</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Estado *</Label>
                 <Select value={formData.estado} onValueChange={(v) => handleChange('estado', v)}>
                   <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="UF" />
@@ -709,7 +709,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div className="col-span-2">
-                <Label className="text-xs text-white font-medium mb-1 block">Cidade *</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Cidade *</Label>
                 <Select 
                   value={formData.cidade} 
                   onValueChange={(v) => handleChange('cidade', v)}
@@ -728,7 +728,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white font-medium mb-1 block">Nome da Mãe *</Label>
+              <Label className="text-xs text-foreground font-medium mb-1 block">Nome da Mãe *</Label>
               <Input
                 value={formData.nomeMae}
                 onChange={(e) => handleChange('nomeMae', e.target.value.toUpperCase())}
@@ -738,7 +738,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white font-medium mb-1 block">Nome do Pai</Label>
+              <Label className="text-xs text-foreground font-medium mb-1 block">Nome do Pai</Label>
               <Input
                 value={formData.nomePai}
                 onChange={(e) => handleChange('nomePai', e.target.value.toUpperCase())}
@@ -751,14 +751,14 @@ export default function ContratacaoPage() {
               <Button
                 onClick={() => setStep(1)}
                 variant="outline"
-                className="flex-1 border-white/20"
+                className="flex-1 border-border text-foreground"
               >
                 Voltar
               </Button>
               <Button
                 onClick={() => setStep(3)}
                 disabled={!validateStep2()}
-                className="flex-1 bg-[#22c55e] hover:bg-[#16a34a]"
+                className="flex-1 bg-primary hover:bg-primary/90"
               >
                 Continuar
               </Button>
@@ -770,12 +770,12 @@ export default function ContratacaoPage() {
         {step === 3 && (
           <div className="space-y-4 animate-fade-in">
             <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-              <CreditCard size={18} className="text-[#22c55e]" />
+              <CreditCard size={18} className="text-primary" />
               Dados para Pagamento (PIX)
             </h3>
 
             <div>
-              <Label className="text-xs text-white font-medium mb-1 block">Tipo de Conta *</Label>
+              <Label className="text-xs text-foreground font-medium mb-1 block">Tipo de Conta *</Label>
               <Select value={formData.tipoConta} onValueChange={(v) => handleChange('tipoConta', v)}>
                 <SelectTrigger className="bg-white border-gray-300 text-black">
                   <SelectValue />
@@ -790,7 +790,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">Banco</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Banco</Label>
                 <Input
                   value={formData.banco}
                   onChange={(e) => handleChange('banco', e.target.value)}
@@ -800,7 +800,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">Agência</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Agência</Label>
                 <Input
                   value={formData.agencia}
                   onChange={(e) => handleChange('agencia', e.target.value)}
@@ -810,7 +810,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div>
-                <Label className="text-xs text-white font-medium mb-1 block">Conta</Label>
+                <Label className="text-xs text-foreground font-medium mb-1 block">Conta</Label>
                 <Input
                   value={formData.conta}
                   onChange={(e) => handleChange('conta', e.target.value)}
@@ -821,7 +821,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white font-medium mb-1 block">Tipo de Chave PIX *</Label>
+              <Label className="text-xs text-foreground font-medium mb-1 block">Tipo de Chave PIX *</Label>
               <Select value={formData.tipoChavePix} onValueChange={(v) => handleChange('tipoChavePix', v)}>
                 <SelectTrigger className="bg-white border-gray-300 text-black">
                   <SelectValue />
@@ -835,7 +835,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white font-medium mb-1 block">Chave PIX *</Label>
+              <Label className="text-xs text-foreground font-medium mb-1 block">Chave PIX *</Label>
               <Input
                 value={formData.chavePix}
                 onChange={(e) => handleChange('chavePix', e.target.value)}
@@ -844,17 +844,17 @@ export default function ContratacaoPage() {
                 disabled={formData.tipoChavePix === '1'} // Disabled if CPF
               />
               {formData.tipoChavePix === '1' && (
-                <p className="text-xs text-white/70 mt-1">Usando seu CPF como chave PIX</p>
+                <p className="text-xs text-muted-foreground mt-1">Usando seu CPF como chave PIX</p>
               )}
             </div>
 
             <div>
-              <Label className="text-xs text-white font-medium mb-1 block">Receber link de assinatura via *</Label>
+              <Label className="text-xs text-foreground font-medium mb-1 block">Receber link de assinatura via *</Label>
               <div className="flex gap-3 mt-2">
                 <Button
                   type="button"
                   variant={formData.tipoEnvio === 'whatsapp' ? 'default' : 'outline'}
-                  className={formData.tipoEnvio === 'whatsapp' ? 'flex-1 bg-[#22c55e]' : 'flex-1 border-white/20'}
+                  className={formData.tipoEnvio === 'whatsapp' ? 'flex-1 bg-primary' : 'flex-1 border-border text-foreground'}
                   onClick={() => handleChange('tipoEnvio', 'whatsapp')}
                 >
                   WhatsApp
@@ -862,7 +862,7 @@ export default function ContratacaoPage() {
                 <Button
                   type="button"
                   variant={formData.tipoEnvio === 'sms' ? 'default' : 'outline'}
-                  className={formData.tipoEnvio === 'sms' ? 'flex-1 bg-[#22c55e]' : 'flex-1 border-white/20'}
+                  className={formData.tipoEnvio === 'sms' ? 'flex-1 bg-primary' : 'flex-1 border-border text-foreground'}
                   onClick={() => handleChange('tipoEnvio', 'sms')}
                 >
                   SMS
@@ -871,9 +871,9 @@ export default function ContratacaoPage() {
             </div>
 
             {/* Warning */}
-            <div className="flex items-start gap-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
-              <AlertCircle size={16} className="text-yellow-500 shrink-0 mt-0.5" />
-              <p className="text-xs text-yellow-200">
+            <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg p-3">
+              <AlertCircle size={16} className="text-amber-600 shrink-0 mt-0.5" />
+              <p className="text-xs text-amber-800">
                 Ao continuar, você receberá um link para assinar digitalmente o contrato. 
                 Verifique se os dados estão corretos antes de prosseguir.
               </p>
@@ -883,14 +883,14 @@ export default function ContratacaoPage() {
               <Button
                 onClick={() => setStep(2)}
                 variant="outline"
-                className="flex-1 border-white/20"
+                className="flex-1 border-border text-foreground"
               >
                 Voltar
               </Button>
               <Button
                 onClick={handleSubmit}
                 disabled={!validateStep3() || loading}
-                className="flex-1 bg-[#22c55e] hover:bg-[#16a34a] h-12"
+                className="flex-1 bg-primary hover:bg-primary/90 h-12"
               >
                 {loading ? (
                   <>
