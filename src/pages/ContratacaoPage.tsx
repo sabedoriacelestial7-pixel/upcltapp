@@ -338,10 +338,10 @@ export default function ContratacaoPage() {
               <div>
                 <Label className="text-xs text-white/60">Sexo *</Label>
                 <Select value={formData.sexo} onValueChange={(v) => handleChange('sexo', v)}>
-                  <SelectTrigger className="bg-white/5 border-white/10">
+                  <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border border-border z-[100]">
+                  <SelectContent className="bg-white border border-gray-300 z-[100]">
                     <SelectItem value="M">Masculino</SelectItem>
                     <SelectItem value="F">Feminino</SelectItem>
                   </SelectContent>
@@ -351,10 +351,10 @@ export default function ContratacaoPage() {
               <div>
                 <Label className="text-xs text-white/60">Estado Civil *</Label>
                 <Select value={formData.estadoCivil} onValueChange={(v) => handleChange('estadoCivil', v)}>
-                  <SelectTrigger className="bg-white/5 border-white/10">
+                  <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border border-border z-[100]">
+                  <SelectContent className="bg-white border border-gray-300 z-[100]">
                     {ESTADO_CIVIL_OPTIONS.map(opt => (
                       <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                     ))}
@@ -369,7 +369,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.rg}
                   onChange={(e) => handleChange('rg', e.target.value)}
-                  className="bg-white/5 border-white/10"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                   placeholder="Número do RG"
                 />
               </div>
@@ -377,10 +377,10 @@ export default function ContratacaoPage() {
               <div>
                 <Label className="text-xs text-white/60">Estado do RG *</Label>
                 <Select value={formData.estadoRg} onValueChange={(v) => handleChange('estadoRg', v)}>
-                  <SelectTrigger className="bg-white/5 border-white/10">
+                  <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="UF" />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border border-border z-[100]">
+                  <SelectContent className="bg-white border border-gray-300 z-[100]">
                     {ESTADOS.map(uf => (
                       <SelectItem key={uf} value={uf}>{uf}</SelectItem>
                     ))}
@@ -395,7 +395,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.orgaoEmissor}
                   onChange={(e) => handleChange('orgaoEmissor', e.target.value.toUpperCase())}
-                  className="bg-white/5 border-white/10"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                   placeholder="SSP, DETRAN..."
                   maxLength={10}
                 />
@@ -406,7 +406,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.dataExpedicao}
                   onChange={(e) => handleChange('dataExpedicao', e.target.value)}
-                  className="bg-white/5 border-white/10"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                   placeholder="DD/MM/AAAA"
                 />
               </div>
@@ -416,10 +416,10 @@ export default function ContratacaoPage() {
               <div>
                 <Label className="text-xs text-white/60">Estado Natural *</Label>
                 <Select value={formData.estadoNatural} onValueChange={(v) => handleChange('estadoNatural', v)}>
-                  <SelectTrigger className="bg-white/5 border-white/10">
+                  <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="UF" />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border border-border z-[100]">
+                  <SelectContent className="bg-white border border-gray-300 z-[100]">
                     {ESTADOS.map(uf => (
                       <SelectItem key={uf} value={uf}>{uf}</SelectItem>
                     ))}
@@ -432,7 +432,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.cidadeNatural}
                   onChange={(e) => handleChange('cidadeNatural', e.target.value)}
-                  className="bg-white/5 border-white/10"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                   placeholder="Cidade"
                 />
               </div>
@@ -443,7 +443,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.celular}
                 onChange={(e) => handleChange('celular', e.target.value)}
-                className="bg-white/5 border-white/10"
+                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                 placeholder="(00) 00000-0000"
               />
             </div>
@@ -453,7 +453,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
-                className="bg-white/5 border-white/10"
+                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                 placeholder="seu@email.com"
                 type="email"
               />
@@ -483,7 +483,7 @@ export default function ContratacaoPage() {
                 value={formData.cep}
                 onChange={(e) => handleChange('cep', e.target.value)}
                 onBlur={handleCepBlur}
-                className="bg-white/5 border-white/10"
+                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                 placeholder="00000-000"
                 maxLength={9}
               />
@@ -494,7 +494,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.endereco}
                 onChange={(e) => handleChange('endereco', e.target.value)}
-                className="bg-white/5 border-white/10"
+                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                 placeholder="Rua, Avenida..."
               />
             </div>
@@ -505,7 +505,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.numero}
                   onChange={(e) => handleChange('numero', e.target.value)}
-                  className="bg-white/5 border-white/10"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                   placeholder="Nº"
                 />
               </div>
@@ -515,7 +515,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.complemento}
                   onChange={(e) => handleChange('complemento', e.target.value)}
-                  className="bg-white/5 border-white/10"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                   placeholder="Apto, Bloco..."
                 />
               </div>
@@ -526,7 +526,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.bairro}
                 onChange={(e) => handleChange('bairro', e.target.value)}
-                className="bg-white/5 border-white/10"
+                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                 placeholder="Bairro"
               />
             </div>
@@ -537,7 +537,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.cidade}
                   onChange={(e) => handleChange('cidade', e.target.value)}
-                  className="bg-white/5 border-white/10"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                   placeholder="Cidade"
                 />
               </div>
@@ -545,10 +545,10 @@ export default function ContratacaoPage() {
               <div>
                 <Label className="text-xs text-white/60">Estado *</Label>
                 <Select value={formData.estado} onValueChange={(v) => handleChange('estado', v)}>
-                  <SelectTrigger className="bg-white/5 border-white/10">
+                  <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="UF" />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border border-border z-[100]">
+                  <SelectContent className="bg-white border border-gray-300 z-[100]">
                     {ESTADOS.map(uf => (
                       <SelectItem key={uf} value={uf}>{uf}</SelectItem>
                     ))}
@@ -562,7 +562,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.nomeMae}
                 onChange={(e) => handleChange('nomeMae', e.target.value.toUpperCase())}
-                className="bg-white/5 border-white/10"
+                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                 placeholder="Nome completo da mãe"
               />
             </div>
@@ -572,7 +572,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.nomePai}
                 onChange={(e) => handleChange('nomePai', e.target.value.toUpperCase())}
-                className="bg-white/5 border-white/10"
+                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                 placeholder="Nome completo do pai (opcional)"
               />
             </div>
@@ -607,10 +607,10 @@ export default function ContratacaoPage() {
             <div>
               <Label className="text-xs text-white/60">Tipo de Conta *</Label>
               <Select value={formData.tipoConta} onValueChange={(v) => handleChange('tipoConta', v)}>
-                <SelectTrigger className="bg-white/5 border-white/10">
+                <SelectTrigger className="bg-white border-gray-300 text-black">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-background border border-border z-[100]">
+                <SelectContent className="bg-white border border-gray-300 z-[100]">
                   {TIPO_CONTA_OPTIONS.map(opt => (
                     <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                   ))}
@@ -624,7 +624,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.banco}
                   onChange={(e) => handleChange('banco', e.target.value)}
-                  className="bg-white/5 border-white/10"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                   placeholder="Código"
                 />
               </div>
@@ -634,7 +634,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.agencia}
                   onChange={(e) => handleChange('agencia', e.target.value)}
-                  className="bg-white/5 border-white/10"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                   placeholder="0000"
                 />
               </div>
@@ -644,7 +644,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.conta}
                   onChange={(e) => handleChange('conta', e.target.value)}
-                  className="bg-white/5 border-white/10"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                   placeholder="00000-0"
                 />
               </div>
@@ -653,10 +653,10 @@ export default function ContratacaoPage() {
             <div>
               <Label className="text-xs text-white/60">Tipo de Chave PIX *</Label>
               <Select value={formData.tipoChavePix} onValueChange={(v) => handleChange('tipoChavePix', v)}>
-                <SelectTrigger className="bg-white/5 border-white/10">
+                <SelectTrigger className="bg-white border-gray-300 text-black">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-background border border-border z-[100]">
+                <SelectContent className="bg-white border border-gray-300 z-[100]">
                   {TIPO_CHAVE_PIX_OPTIONS.map(opt => (
                     <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                   ))}
@@ -669,7 +669,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.chavePix}
                 onChange={(e) => handleChange('chavePix', e.target.value)}
-                className="bg-white/5 border-white/10"
+                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                 placeholder="Sua chave PIX"
                 disabled={formData.tipoChavePix === '1'} // Disabled if CPF
               />
