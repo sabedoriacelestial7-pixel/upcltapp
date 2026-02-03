@@ -190,6 +190,7 @@ serve(async (req) => {
     const factaData = await factaResponse.json();
     console.log("Facta authorization response:", JSON.stringify(factaData));
 
+    // Check for explicit errors
     if (factaData.erro) {
       return new Response(
         JSON.stringify({ 
@@ -201,10 +202,46 @@ serve(async (req) => {
       );
     }
 
+    // Check for business errors in the message (Facta sometimes returns erro:false with error messages)
+    const mensagem = factaData.mensagem || '';
+    const isBusinessError = 
+      mensagem.includes('Telefone já informado') ||
+      mensagem.includes('não é um numero de celular válido') ||
+      mensagem.includes('CPF incorreto') ||
+      mensagem.includes('Averbador indisponível') ||
+      mensagem.includes('não encontrado');
+    
+    if (isBusinessError) {
+      // Map error messages to user-friendly versions
+      let userMessage = mensagem;
+      if (mensagem.includes('Telefone já informado')) {
+        userMessage = 'Este telefone já está vinculado a outro CPF. Use o telefone cadastrado para este CPF.';
+      } else if (mensagem.includes('não é um numero de celular válido')) {
+        userMessage = 'Número de celular inválido. Verifique e tente novamente.';
+      }
+      
+      return new Response(
+        JSON.stringify({ 
+          sucesso: false, 
+          mensagem: userMessage
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check if authorization was successful (contains success keywords)
+    const isSuccess = 
+      mensagem.includes('enviado') || 
+      mensagem.includes('sucesso') ||
+      mensagem.includes('Token válido') ||
+      factaData.protocolo;
+
     return new Response(
       JSON.stringify({ 
-        sucesso: true, 
-        mensagem: factaData.mensagem || "Solicitação de autorização enviada com sucesso",
+        sucesso: isSuccess, 
+        mensagem: isSuccess 
+          ? "Código de autorização enviado com sucesso!" 
+          : (mensagem || "Solicitação processada"),
         protocolo: factaData.protocolo || factaData.id
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
