@@ -167,10 +167,10 @@ serve(async (req) => {
           url: `${FACTA_BASE_URL}/solicita-autorizacao-consulta`,
           headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
           },
           body: {
-            averbador: 20222,
+            averbador: '20222',
             nome: nomeCliente,
             cpf: cpfLimpo,
             celular: celularLimpo,
