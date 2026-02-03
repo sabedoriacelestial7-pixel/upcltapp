@@ -18,7 +18,7 @@ export function ParcelasSelector({
   return (
     <div className="w-full">
       <label className="block text-sm font-medium text-foreground mb-3">
-        Em quantas vezes? <span className="text-white/50 font-normal">(máx. 36x)</span>
+        Em quantas vezes? <span className="text-muted-foreground font-normal">(máx. 36x)</span>
       </label>
       <div className="flex flex-wrap gap-2">
         {options.map((parcela) => (
@@ -30,7 +30,7 @@ export function ParcelasSelector({
               'active:scale-95 touch-manipulation',
               value === parcela
                 ? 'bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white shadow-lg shadow-green-500/25'
-                : 'bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-[#22c55e]/50'
+                : 'bg-card border border-border text-foreground hover:bg-muted hover:border-primary/50'
             )}
           >
             {parcela}x

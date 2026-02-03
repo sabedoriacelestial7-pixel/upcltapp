@@ -43,7 +43,7 @@ export default function PropostaDetalhePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen min-h-[100dvh] gradient-primary flex items-center justify-center">
+      <div className="min-h-screen min-h-[100dvh] bg-background flex items-center justify-center">
         <LoadingSpinner />
       </div>
     );
@@ -51,11 +51,11 @@ export default function PropostaDetalhePage() {
 
   if (!proposta) {
     return (
-      <div className="min-h-screen min-h-[100dvh] gradient-primary pb-20">
+      <div className="min-h-screen min-h-[100dvh] bg-background pb-20">
         <Header title="Proposta" showBack />
         <main className="max-w-md mx-auto px-5 py-5">
-          <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center">
-            <p className="text-white/60">Proposta não encontrada</p>
+          <div className="bg-card border border-border rounded-xl p-8 text-center">
+            <p className="text-muted-foreground">Proposta não encontrada</p>
           </div>
         </main>
         <BottomNav />
@@ -66,18 +66,18 @@ export default function PropostaDetalhePage() {
   const statusInfo = getStatusInfo(proposta.status_facta || proposta.status);
 
   return (
-    <div className="min-h-screen min-h-[100dvh] gradient-primary pb-20">
+    <div className="min-h-screen min-h-[100dvh] bg-background pb-20">
       <Header title="Detalhes da Proposta" showBack />
 
       <main className="max-w-md mx-auto px-5 py-5 space-y-4">
         {/* Status Card */}
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+        <div className="bg-card border border-border rounded-xl p-4 shadow-card">
           <div className="flex items-center justify-between mb-3">
             <span className={`px-3 py-1.5 rounded-full text-xs font-medium text-white ${statusInfo.color}`}>
               {statusInfo.label}
             </span>
             {proposta.codigo_af && (
-              <span className="text-xs text-white/50">
+              <span className="text-xs text-muted-foreground">
                 AF: {proposta.codigo_af}
               </span>
             )}
@@ -102,34 +102,34 @@ export default function PropostaDetalhePage() {
         </div>
 
         {/* Valores */}
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+        <div className="bg-card border border-border rounded-xl p-4 shadow-card">
           <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-            <Wallet size={16} className="text-[#22c55e]" />
+            <Wallet size={16} className="text-primary" />
             Valores da Operação
           </h3>
           
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <p className="text-[10px] text-white/50">Valor Liberado</p>
-              <p className="text-lg font-bold text-[#22c55e]">
+              <p className="text-[10px] text-muted-foreground">Valor Liberado</p>
+              <p className="text-lg font-bold text-primary">
                 {formatarMoeda(proposta.valor_operacao)}
               </p>
             </div>
             <div>
-              <p className="text-[10px] text-white/50">Parcelas</p>
+              <p className="text-[10px] text-muted-foreground">Parcelas</p>
               <p className="text-sm font-semibold text-foreground">
                 {proposta.parcelas}x de {formatarMoeda(proposta.valor_parcela)}
               </p>
             </div>
             <div>
-              <p className="text-[10px] text-white/50">Total a Pagar</p>
+              <p className="text-[10px] text-muted-foreground">Total a Pagar</p>
               <p className="text-sm font-semibold text-foreground">
                 {formatarMoeda(proposta.valor_parcela * proposta.parcelas)}
               </p>
             </div>
             {proposta.taxa_mensal && (
               <div>
-                <p className="text-[10px] text-white/50">Taxa Mensal</p>
+                <p className="text-[10px] text-muted-foreground">Taxa Mensal</p>
                 <p className="text-sm font-semibold text-foreground">
                   {proposta.taxa_mensal.toFixed(2)}%
                 </p>
@@ -139,30 +139,30 @@ export default function PropostaDetalhePage() {
         </div>
 
         {/* Dados do Cliente */}
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+        <div className="bg-card border border-border rounded-xl p-4 shadow-card">
           <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-            <Building2 size={16} className="text-[#22c55e]" />
+            <Building2 size={16} className="text-primary" />
             Dados do Cliente
           </h3>
           
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-white/50">Nome</span>
+              <span className="text-muted-foreground">Nome</span>
               <span className="text-foreground">{proposta.nome}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-white/50">CPF</span>
+              <span className="text-muted-foreground">CPF</span>
               <span className="text-foreground">{formatarCPF(proposta.cpf)}</span>
             </div>
             {proposta.celular && (
               <div className="flex justify-between">
-                <span className="text-white/50">Celular</span>
+                <span className="text-muted-foreground">Celular</span>
                 <span className="text-foreground">{proposta.celular}</span>
               </div>
             )}
             {proposta.email && (
               <div className="flex justify-between">
-                <span className="text-white/50">Email</span>
+                <span className="text-muted-foreground">Email</span>
                 <span className="text-foreground text-right max-w-[60%] truncate">{proposta.email}</span>
               </div>
             )}
@@ -170,9 +170,9 @@ export default function PropostaDetalhePage() {
         </div>
 
         {/* Histórico / Ocorrências */}
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+        <div className="bg-card border border-border rounded-xl p-4 shadow-card">
           <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-            <FileText size={16} className="text-[#22c55e]" />
+            <FileText size={16} className="text-primary" />
             Histórico
           </h3>
 
@@ -181,14 +181,14 @@ export default function PropostaDetalhePage() {
               <LoadingSpinner />
             </div>
           ) : ocorrencias.length === 0 ? (
-            <p className="text-sm text-white/50 text-center py-2">
+            <p className="text-sm text-muted-foreground text-center py-2">
               Nenhuma ocorrência registrada
             </p>
           ) : (
             <div className="space-y-3">
               {ocorrencias.map((oc, index) => (
-                <div key={oc.item || index} className="border-l-2 border-[#22c55e]/30 pl-3">
-                  <div className="flex items-center gap-2 text-xs text-white/50">
+                <div key={oc.item || index} className="border-l-2 border-primary/30 pl-3">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Clock size={12} />
                     {oc.data.split(' ')[0]} às {oc.hora}
                   </div>
@@ -196,7 +196,7 @@ export default function PropostaDetalhePage() {
                     {oc.status}
                   </p>
                   {oc.obs && (
-                    <p className="text-xs text-white/60 mt-0.5">{oc.obs}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{oc.obs}</p>
                   )}
                 </div>
               ))}

@@ -64,9 +64,9 @@ export function LoadingScreen({ variant, message }: LoadingScreenProps) {
 
   if (variant === 'verifying') {
     return (
-      <div className="min-h-screen bg-[#f5f5f5] flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
         <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mb-6">
-          <Wallet size={36} className="text-white" />
+          <Wallet size={36} className="text-primary-foreground" />
         </div>
         
         <h2 className="text-xl font-bold text-foreground text-center mb-2">

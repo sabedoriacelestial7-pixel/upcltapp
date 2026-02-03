@@ -107,7 +107,7 @@ export default function PropostasPage() {
         {propostas.length === 0 && !error && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mb-6">
-              <FolderX size={36} className="text-white" />
+              <FolderX size={36} className="text-primary-foreground" />
             </div>
             <h2 className="text-xl font-bold text-foreground mb-2">
               Você não possui contratações.
