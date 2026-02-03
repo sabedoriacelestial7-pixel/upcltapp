@@ -236,13 +236,16 @@ serve(async (req) => {
     // Garante que CEP está apenas com números
     const cepLimpo = params.cep.replace(/\D/g, '');
     
-    // A API Facta espera código IBGE numérico para cidade e cidade_natural
-    // O código IBGE completo tem 7 dígitos (ex: 3202405), a API pode aceitar só os 5 últimos dígitos
-    const cidadeNaturalCodigo = params.cidadeNatural.replace(/\D/g, '');
-    const cidadeCodigo = params.cidade.replace(/\D/g, '');
+    // A API Facta espera código IBGE - testando só os 5 últimos dígitos (sem prefixo do estado)
+    const cidadeNaturalFull = params.cidadeNatural.replace(/\D/g, '');
+    const cidadeFull = params.cidade.replace(/\D/g, '');
     
-    console.log("Address data - cidade (IBGE):", cidadeCodigo, "estado:", params.estado, "cep:", cepLimpo);
-    console.log("Natural data - cidade_natural (IBGE):", cidadeNaturalCodigo, "estado_natural:", params.estadoNatural);
+    // Remove os 2 primeiros dígitos (código do estado) do IBGE de 7 dígitos
+    const cidadeNaturalCodigo = cidadeNaturalFull.length === 7 ? cidadeNaturalFull.substring(2) : cidadeNaturalFull;
+    const cidadeCodigo = cidadeFull.length === 7 ? cidadeFull.substring(2) : cidadeFull;
+    
+    console.log("Address data - cidade (5 dig):", cidadeCodigo, "estado:", params.estado, "cep:", cepLimpo);
+    console.log("Natural data - cidade_natural (5 dig):", cidadeNaturalCodigo, "estado_natural:", params.estadoNatural);
     
     const dadosFormData: Record<string, string> = {
       id_simulador: idSimulador,
