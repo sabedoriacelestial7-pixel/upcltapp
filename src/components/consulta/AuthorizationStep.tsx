@@ -117,7 +117,7 @@ export function AuthorizationStep({
   return (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <div className="w-16 h-16 rounded-full bg-amber-100 mx-auto mb-4 flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full bg-amber-100 mx-auto mb-4 flex items-center justify-center animate-pulse">
           <Clock size={32} className="text-amber-600" />
         </div>
         <h2 className="text-xl font-bold text-foreground mb-2">
@@ -125,17 +125,25 @@ export function AuthorizationStep({
         </h2>
         <p className="text-muted-foreground text-sm">
           Enviamos um código para seu {canalEnvio === 'W' ? 'WhatsApp' : 'SMS'}.
-          <br />
-          <strong className="text-foreground">Responda com o código</strong> para autorizar a consulta.
         </p>
       </div>
 
+      {/* Clear instructions */}
+      <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
+        <h3 className="font-semibold text-foreground mb-2 text-sm">📱 Siga estes passos:</h3>
+        <ol className="text-sm text-muted-foreground space-y-2 list-decimal list-inside">
+          <li>Abra o {canalEnvio === 'W' ? 'WhatsApp' : 'SMS'} no seu celular</li>
+          <li><strong className="text-foreground">Responda a mensagem com o código recebido</strong></li>
+          <li>Volte aqui e clique no botão abaixo <strong>imediatamente</strong></li>
+        </ol>
+      </div>
+
       <div className="bg-muted/50 rounded-xl p-4 text-center">
-        <p className="text-sm text-muted-foreground mb-2">
+        <p className="text-sm text-muted-foreground mb-1">
           Telefone: <span className="font-mono">{telefone}</span>
         </p>
         <p className="text-xs text-muted-foreground">
-          Tentativas: {tentativas}/{maxTentativas}
+          O código expira em poucos segundos após autorização
         </p>
       </div>
 
@@ -143,17 +151,17 @@ export function AuthorizationStep({
         <Button
           onClick={onVerificarAutorizacao}
           disabled={isChecking}
-          className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold"
+          className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-semibold text-base"
         >
           {isChecking ? (
             <>
-              <RefreshCw className="animate-spin mr-2" size={18} />
+              <RefreshCw className="animate-spin mr-2" size={20} />
               Verificando...
             </>
           ) : (
             <>
-              <CheckCircle className="mr-2" size={18} />
-              Já autorizei, verificar
+              <CheckCircle className="mr-2" size={20} />
+              Já respondi o código, verificar agora!
             </>
           )}
         </Button>
@@ -174,6 +182,10 @@ export function AuthorizationStep({
           )}
         </Button>
       </div>
+
+      <p className="text-xs text-center text-muted-foreground">
+        Tentativas: {tentativas}/{maxTentativas}
+      </p>
     </div>
   );
 }
