@@ -405,7 +405,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-white/60">Sexo *</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Sexo *</Label>
                 <Select value={formData.sexo} onValueChange={(v) => handleChange('sexo', v)}>
                   <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="Selecione" />
@@ -418,7 +418,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div>
-                <Label className="text-xs text-white/60">Estado Civil *</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Estado Civil *</Label>
                 <Select value={formData.estadoCivil} onValueChange={(v) => handleChange('estadoCivil', v)}>
                   <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="Selecione" />
@@ -434,7 +434,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-white/60">RG *</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">RG *</Label>
                 <Input
                   value={formData.rg}
                   onChange={(e) => handleChange('rg', e.target.value)}
@@ -444,7 +444,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div>
-                <Label className="text-xs text-white/60">Estado do RG *</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Estado do RG *</Label>
                 <Select value={formData.estadoRg} onValueChange={(v) => handleChange('estadoRg', v)}>
                   <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="UF" />
@@ -460,7 +460,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-white/60">Órgão Emissor *</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Órgão Emissor *</Label>
                 <Input
                   value={formData.orgaoEmissor}
                   onChange={(e) => handleChange('orgaoEmissor', e.target.value.toUpperCase())}
@@ -471,7 +471,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div>
-                <Label className="text-xs text-white/60">Data Expedição *</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Data Expedição *</Label>
                 <Input
                   value={formData.dataExpedicao}
                   onChange={(e) => handleChange('dataExpedicao', e.target.value)}
@@ -483,7 +483,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-white/60">Estado Natural *</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Estado Natural *</Label>
                 <Select value={formData.estadoNatural} onValueChange={(v) => handleChange('estadoNatural', v)}>
                   <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="UF" />
@@ -497,7 +497,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div>
-                <Label className="text-xs text-white/60">Cidade Natural *</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Cidade Natural *</Label>
                 <Select 
                   value={formData.cidadeNatural} 
                   onValueChange={(v) => handleChange('cidadeNatural', v)}
@@ -516,7 +516,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white/60">Celular *</Label>
+              <Label className="text-xs text-white font-medium mb-1 block">Celular *</Label>
               <Input
                 value={formData.celular}
                 onChange={(e) => handleChange('celular', e.target.value)}
@@ -526,7 +526,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white/60">E-mail *</Label>
+              <Label className="text-xs text-white font-medium mb-1 block">E-mail *</Label>
               <Input
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
@@ -555,7 +555,7 @@ export default function ContratacaoPage() {
             </h3>
 
             <div>
-              <Label className="text-xs text-white/60">CEP *</Label>
+              <Label className="text-xs text-white font-medium mb-1 block">CEP *</Label>
               <Input
                 value={formData.cep}
                 onChange={(e) => handleChange('cep', e.target.value)}
@@ -567,7 +567,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white/60">Endereço *</Label>
+              <Label className="text-xs text-white font-medium mb-1 block">Endereço *</Label>
               <Input
                 value={formData.endereco}
                 onChange={(e) => handleChange('endereco', e.target.value)}
@@ -578,7 +578,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <Label className="text-xs text-white/60">Número *</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Número *</Label>
                 <Input
                   value={formData.numero}
                   onChange={(e) => handleChange('numero', e.target.value)}
@@ -588,7 +588,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div className="col-span-2">
-                <Label className="text-xs text-white/60">Complemento</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Complemento</Label>
                 <Input
                   value={formData.complemento}
                   onChange={(e) => handleChange('complemento', e.target.value)}
@@ -599,7 +599,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white/60">Bairro *</Label>
+              <Label className="text-xs text-white font-medium mb-1 block">Bairro *</Label>
               <Input
                 value={formData.bairro}
                 onChange={(e) => handleChange('bairro', e.target.value)}
@@ -610,7 +610,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <Label className="text-xs text-white/60">Estado *</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Estado *</Label>
                 <Select value={formData.estado} onValueChange={(v) => handleChange('estado', v)}>
                   <SelectTrigger className="bg-white border-gray-300 text-black">
                     <SelectValue placeholder="UF" />
@@ -624,7 +624,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div className="col-span-2">
-                <Label className="text-xs text-white/60">Cidade *</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Cidade *</Label>
                 <Select 
                   value={formData.cidade} 
                   onValueChange={(v) => handleChange('cidade', v)}
@@ -643,7 +643,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white/60">Nome da Mãe *</Label>
+              <Label className="text-xs text-white font-medium mb-1 block">Nome da Mãe *</Label>
               <Input
                 value={formData.nomeMae}
                 onChange={(e) => handleChange('nomeMae', e.target.value.toUpperCase())}
@@ -653,7 +653,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white/60">Nome do Pai</Label>
+              <Label className="text-xs text-white font-medium mb-1 block">Nome do Pai</Label>
               <Input
                 value={formData.nomePai}
                 onChange={(e) => handleChange('nomePai', e.target.value.toUpperCase())}
@@ -690,7 +690,7 @@ export default function ContratacaoPage() {
             </h3>
 
             <div>
-              <Label className="text-xs text-white/60">Tipo de Conta *</Label>
+              <Label className="text-xs text-white font-medium mb-1 block">Tipo de Conta *</Label>
               <Select value={formData.tipoConta} onValueChange={(v) => handleChange('tipoConta', v)}>
                 <SelectTrigger className="bg-white border-gray-300 text-black">
                   <SelectValue />
@@ -705,7 +705,7 @@ export default function ContratacaoPage() {
 
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <Label className="text-xs text-white/60">Banco</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Banco</Label>
                 <Input
                   value={formData.banco}
                   onChange={(e) => handleChange('banco', e.target.value)}
@@ -715,7 +715,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div>
-                <Label className="text-xs text-white/60">Agência</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Agência</Label>
                 <Input
                   value={formData.agencia}
                   onChange={(e) => handleChange('agencia', e.target.value)}
@@ -725,7 +725,7 @@ export default function ContratacaoPage() {
               </div>
 
               <div>
-                <Label className="text-xs text-white/60">Conta</Label>
+                <Label className="text-xs text-white font-medium mb-1 block">Conta</Label>
                 <Input
                   value={formData.conta}
                   onChange={(e) => handleChange('conta', e.target.value)}
@@ -736,7 +736,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white/60">Tipo de Chave PIX *</Label>
+              <Label className="text-xs text-white font-medium mb-1 block">Tipo de Chave PIX *</Label>
               <Select value={formData.tipoChavePix} onValueChange={(v) => handleChange('tipoChavePix', v)}>
                 <SelectTrigger className="bg-white border-gray-300 text-black">
                   <SelectValue />
@@ -750,7 +750,7 @@ export default function ContratacaoPage() {
             </div>
 
             <div>
-              <Label className="text-xs text-white/60">Chave PIX *</Label>
+              <Label className="text-xs text-white font-medium mb-1 block">Chave PIX *</Label>
               <Input
                 value={formData.chavePix}
                 onChange={(e) => handleChange('chavePix', e.target.value)}
@@ -759,12 +759,12 @@ export default function ContratacaoPage() {
                 disabled={formData.tipoChavePix === '1'} // Disabled if CPF
               />
               {formData.tipoChavePix === '1' && (
-                <p className="text-xs text-white/50 mt-1">Usando seu CPF como chave PIX</p>
+                <p className="text-xs text-white/70 mt-1">Usando seu CPF como chave PIX</p>
               )}
             </div>
 
             <div>
-              <Label className="text-xs text-white/60">Receber link de assinatura via *</Label>
+              <Label className="text-xs text-white font-medium mb-1 block">Receber link de assinatura via *</Label>
               <div className="flex gap-3 mt-2">
                 <Button
                   type="button"
