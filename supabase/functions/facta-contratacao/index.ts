@@ -9,7 +9,7 @@ const corsHeaders = {
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
 const PROXY_URL = "https://subsidiaries-flow-intelligent-clicking.trycloudflare.com/proxy";
 
-// Mapeamento de UF para código IBGE do estado
+// Mapeamento de UF para código IBGE do estado (2 dígitos)
 const UF_TO_IBGE: Record<string, string> = {
   'AC': '12', 'AL': '27', 'AP': '16', 'AM': '13', 'BA': '29',
   'CE': '23', 'DF': '53', 'ES': '32', 'GO': '52', 'MA': '21',
@@ -18,6 +18,10 @@ const UF_TO_IBGE: Record<string, string> = {
   'RS': '43', 'RO': '11', 'RR': '14', 'SC': '42', 'SP': '35',
   'SE': '28', 'TO': '17'
 };
+
+// Mapeamento de código IBGE (7 dígitos) para código SIAFI/TOM
+// SIAFI é usado em sistemas do governo brasileiro - pode ser o que a Facta espera
+// Por enquanto, vamos tentar com código IBGE completo + estado numérico
 
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;
@@ -236,16 +240,17 @@ serve(async (req) => {
     // Garante que CEP está apenas com números
     const cepLimpo = params.cep.replace(/\D/g, '');
     
-    // A API Facta espera código IBGE - testando só os 5 últimos dígitos (sem prefixo do estado)
-    const cidadeNaturalFull = params.cidadeNatural.replace(/\D/g, '');
-    const cidadeFull = params.cidade.replace(/\D/g, '');
+    // Tenta com código IBGE completo de 7 dígitos + estado como código IBGE de 2 dígitos
+    const cidadeNaturalCodigo = params.cidadeNatural.replace(/\D/g, '');
+    const cidadeCodigo = params.cidade.replace(/\D/g, '');
     
-    // Remove os 2 primeiros dígitos (código do estado) do IBGE de 7 dígitos
-    const cidadeNaturalCodigo = cidadeNaturalFull.length === 7 ? cidadeNaturalFull.substring(2) : cidadeNaturalFull;
-    const cidadeCodigo = cidadeFull.length === 7 ? cidadeFull.substring(2) : cidadeFull;
+    // Converte UF para código IBGE do estado (2 dígitos)
+    const estadoIbge = UF_TO_IBGE[params.estado] || params.estado;
+    const estadoNaturalIbge = UF_TO_IBGE[params.estadoNatural] || params.estadoNatural;
+    const estadoRgIbge = UF_TO_IBGE[params.estadoRg] || params.estadoRg;
     
-    console.log("Address data - cidade (5 dig):", cidadeCodigo, "estado:", params.estado, "cep:", cepLimpo);
-    console.log("Natural data - cidade_natural (5 dig):", cidadeNaturalCodigo, "estado_natural:", params.estadoNatural);
+    console.log("Address data - cidade (IBGE 7):", cidadeCodigo, "estado (IBGE 2):", estadoIbge, "cep:", cepLimpo);
+    console.log("Natural data - cidade_natural (IBGE 7):", cidadeNaturalCodigo, "estado_natural (IBGE 2):", estadoNaturalIbge);
     
     const dadosFormData: Record<string, string> = {
       id_simulador: idSimulador,
@@ -255,11 +260,11 @@ serve(async (req) => {
       estado_civil: params.estadoCivil,
       data_nascimento: params.dataNascimento,
       rg: params.rg,
-      estado_rg: params.estadoRg,
+      estado_rg: estadoRgIbge, // Código IBGE do estado (2 dígitos)
       orgao_emissor: params.orgaoEmissor,
       data_expedicao: params.dataExpedicao,
-      estado_natural: params.estadoNatural,
-      cidade_natural: cidadeNaturalCodigo, // Código IBGE numérico
+      estado_natural: estadoNaturalIbge, // Código IBGE do estado (2 dígitos)
+      cidade_natural: cidadeNaturalCodigo, // Código IBGE da cidade (7 dígitos)
       nacionalidade: '1',
       celular: params.celular,
       renda: params.valorRenda.toString(),
@@ -267,8 +272,8 @@ serve(async (req) => {
       endereco: params.endereco,
       numero: params.numero,
       bairro: params.bairro,
-      cidade: cidadeCodigo, // Código IBGE numérico
-      estado: params.estado,
+      cidade: cidadeCodigo, // Código IBGE da cidade (7 dígitos)
+      estado: estadoIbge, // Código IBGE do estado (2 dígitos)
       nome_mae: params.nomeMae,
       nome_pai: params.nomePai || 'NAO DECLARADO',
       valor_patrimonio: '1',
