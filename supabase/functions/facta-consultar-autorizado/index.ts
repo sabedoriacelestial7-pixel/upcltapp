@@ -222,14 +222,23 @@ serve(async (req) => {
     const trabalhador = dadosTrabalhador[0];
     const elegivel = trabalhador.elegivel === "S" || trabalhador.elegivel === "SIM" || trabalhador.elegivel === "1" || trabalhador.elegivel === true;
 
+    // Helper function to parse Brazilian number format (e.g., "891,65" -> 891.65)
+    const parseValor = (valor: string | number | undefined): number => {
+      if (valor === undefined || valor === null || valor === '') return 0;
+      if (typeof valor === 'number') return valor;
+      // Replace dots (thousands separator) and convert comma to decimal point
+      const normalized = valor.toString().replace(/\./g, '').replace(',', '.');
+      return parseFloat(normalized) || 0;
+    };
+
     const dadosFormatados = {
       nome: trabalhador.nome,
       cpf: trabalhador.cpf,
-      valorMargemDisponivel: parseFloat(trabalhador.valorMargemDisponivel) || 0,
-      valorBaseMargem: parseFloat(trabalhador.valorBaseMargem) || 0,
-      valorTotalVencimentos: parseFloat(trabalhador.valorTotalVencimentos) || 0,
+      valorMargemDisponivel: parseValor(trabalhador.valorMargemDisponivel),
+      valorBaseMargem: parseValor(trabalhador.valorBaseMargem),
+      valorTotalVencimentos: parseValor(trabalhador.valorTotalVencimentos),
       nomeEmpregador: trabalhador.nomeEmpregador,
-      cnpjEmpregador: trabalhador.cnpjEmpregador,
+      cnpjEmpregador: trabalhador.numeroInscricaoEmpregador || trabalhador.cnpjEmpregador,
       dataAdmissao: trabalhador.dataAdmissao,
       dataNascimento: trabalhador.dataNascimento,
       matricula: trabalhador.matricula,
