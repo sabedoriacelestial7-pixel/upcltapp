@@ -9,6 +9,16 @@ const corsHeaders = {
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
 const PROXY_URL = "https://subsidiaries-flow-intelligent-clicking.trycloudflare.com/proxy";
 
+// Mapeamento de UF para código IBGE do estado
+const UF_TO_IBGE: Record<string, string> = {
+  'AC': '12', 'AL': '27', 'AP': '16', 'AM': '13', 'BA': '29',
+  'CE': '23', 'DF': '53', 'ES': '32', 'GO': '52', 'MA': '21',
+  'MT': '51', 'MS': '50', 'MG': '31', 'PA': '15', 'PB': '25',
+  'PR': '41', 'PE': '26', 'PI': '22', 'RJ': '33', 'RN': '24',
+  'RS': '43', 'RO': '11', 'RR': '14', 'SC': '42', 'SP': '35',
+  'SE': '28', 'TO': '17'
+};
+
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;
 
@@ -220,7 +230,13 @@ serve(async (req) => {
 
     // Step 2: Save personal data
     console.log("Step 2: Saving personal data...");
-    console.log("Address data - cidade:", params.cidade, "estado:", params.estado, "cidade_natural:", params.cidadeNatural, "estado_natural:", params.estadoNatural);
+    // Convert UF abbreviations to IBGE state codes
+    const estadoIbge = UF_TO_IBGE[params.estado] || params.estado;
+    const estadoNaturalIbge = UF_TO_IBGE[params.estadoNatural] || params.estadoNatural;
+    const estadoRgIbge = UF_TO_IBGE[params.estadoRg] || params.estadoRg;
+    
+    console.log("Address data - cidade:", params.cidade, "estado:", estadoIbge, "cidade_natural:", params.cidadeNatural, "estado_natural:", estadoNaturalIbge);
+    
     const dadosFormData: Record<string, string> = {
       id_simulador: idSimulador,
       cpf: params.cpf,
@@ -229,10 +245,10 @@ serve(async (req) => {
       estado_civil: params.estadoCivil,
       data_nascimento: params.dataNascimento,
       rg: params.rg,
-      estado_rg: params.estadoRg,
+      estado_rg: estadoRgIbge,
       orgao_emissor: params.orgaoEmissor,
       data_expedicao: params.dataExpedicao,
-      estado_natural: params.estadoNatural,
+      estado_natural: estadoNaturalIbge,
       cidade_natural: params.cidadeNatural,
       nacionalidade: '1',
       celular: params.celular,
@@ -242,7 +258,7 @@ serve(async (req) => {
       numero: params.numero,
       bairro: params.bairro,
       cidade: params.cidade,
-      estado: params.estado,
+      estado: estadoIbge,
       nome_mae: params.nomeMae,
       nome_pai: params.nomePai || 'NAO DECLARADO',
       valor_patrimonio: '1',
