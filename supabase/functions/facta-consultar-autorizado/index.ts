@@ -173,6 +173,23 @@ serve(async (req) => {
       );
     }
 
+    // Check if token expired - needs new authorization request
+    const isTokenExpired = factaData.erro && (
+      factaData.mensagem?.includes('Token expirado') || 
+      factaData.mensagem?.includes('solicita-autorizacao')
+    );
+    
+    if (isTokenExpired) {
+      return new Response(
+        JSON.stringify({ 
+          sucesso: false, 
+          mensagem: "Código de autorização expirado. Solicite um novo código.",
+          status: 'expired'
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Check for other errors
     if (factaData.erro) {
       return new Response(
