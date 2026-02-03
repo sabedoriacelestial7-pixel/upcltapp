@@ -97,6 +97,49 @@ async function proxyPost(url: string, token: string, formData: Record<string, st
   }
 }
 
+// Consulta código da cidade na API Facta (eles usam códigos internos, não IBGE)
+async function consultarCodigoCidadeFacta(token: string, estado: string, nomeCidade: string): Promise<string | null> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const params = new URLSearchParams({
+      estado: estado.toLowerCase(),
+      nome_cidade: nomeCidade
+    });
+    
+    const response = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        method: 'GET',
+        url: `${FACTA_BASE_URL}/proposta-combos/cidade?${params}`,
+        headers: { 'Authorization': `Bearer ${token}` }
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    
+    const data = await response.json();
+    console.log(`Facta cidade lookup for "${nomeCidade}" in ${estado}:`, JSON.stringify(data));
+    
+    if (data.erro || !data.cidade) {
+      return null;
+    }
+    
+    // Retorna o primeiro código encontrado
+    const codigos = Object.keys(data.cidade);
+    if (codigos.length > 0) {
+      return codigos[0];
+    }
+    return null;
+  } catch (fetchError) {
+    clearTimeout(timeoutId);
+    console.error(`Failed to lookup city code: ${fetchError}`);
+    return null;
+  }
+}
+
 interface ContratacaoParams {
   cpf: string;
   dataNascimento: string;
@@ -240,17 +283,41 @@ serve(async (req) => {
     // Garante que CEP está apenas com números
     const cepLimpo = params.cep.replace(/\D/g, '');
     
-    // Tenta com código IBGE completo de 7 dígitos + estado como código IBGE de 2 dígitos
-    const cidadeNaturalCodigo = params.cidadeNatural.replace(/\D/g, '');
-    const cidadeCodigo = params.cidade.replace(/\D/g, '');
+    // A Facta usa códigos internos próprios para cidades, NÃO códigos IBGE!
+    // Precisamos consultar o código Facta usando o nome da cidade
+    console.log("Looking up Facta city codes...");
+    console.log("City name for address:", params.cidadeNome, "state:", params.estado);
+    console.log("City name for natural:", params.cidadeNaturalNome, "state:", params.estadoNatural);
     
-    // Converte UF para código IBGE do estado (2 dígitos)
-    const estadoIbge = UF_TO_IBGE[params.estado] || params.estado;
-    const estadoNaturalIbge = UF_TO_IBGE[params.estadoNatural] || params.estadoNatural;
-    const estadoRgIbge = UF_TO_IBGE[params.estadoRg] || params.estadoRg;
+    // Consulta códigos das cidades na API Facta
+    const [cidadeCodigoFacta, cidadeNaturalCodigoFacta] = await Promise.all([
+      consultarCodigoCidadeFacta(token, params.estado, params.cidadeNome),
+      consultarCodigoCidadeFacta(token, params.estadoNatural, params.cidadeNaturalNome)
+    ]);
     
-    console.log("Address data - cidade (IBGE 7):", cidadeCodigo, "estado (IBGE 2):", estadoIbge, "cep:", cepLimpo);
-    console.log("Natural data - cidade_natural (IBGE 7):", cidadeNaturalCodigo, "estado_natural (IBGE 2):", estadoNaturalIbge);
+    console.log("Facta city codes - cidade:", cidadeCodigoFacta, "cidade_natural:", cidadeNaturalCodigoFacta);
+    
+    if (!cidadeCodigoFacta) {
+      return new Response(
+        JSON.stringify({ 
+          erro: true, 
+          mensagem: `Cidade "${params.cidadeNome}" não encontrada no cadastro Facta para o estado ${params.estado}`,
+          etapa: 'dados-pessoais'
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    if (!cidadeNaturalCodigoFacta) {
+      return new Response(
+        JSON.stringify({ 
+          erro: true, 
+          mensagem: `Cidade natural "${params.cidadeNaturalNome}" não encontrada no cadastro Facta para o estado ${params.estadoNatural}`,
+          etapa: 'dados-pessoais'
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     
     const dadosFormData: Record<string, string> = {
       id_simulador: idSimulador,
@@ -260,11 +327,11 @@ serve(async (req) => {
       estado_civil: params.estadoCivil,
       data_nascimento: params.dataNascimento,
       rg: params.rg,
-      estado_rg: estadoRgIbge, // Código IBGE do estado (2 dígitos)
+      estado_rg: params.estadoRg, // UF string (ex: "ES")
       orgao_emissor: params.orgaoEmissor,
       data_expedicao: params.dataExpedicao,
-      estado_natural: estadoNaturalIbge, // Código IBGE do estado (2 dígitos)
-      cidade_natural: cidadeNaturalCodigo, // Código IBGE da cidade (7 dígitos)
+      estado_natural: params.estadoNatural, // UF string (ex: "ES")
+      cidade_natural: cidadeNaturalCodigoFacta, // Código interno Facta
       nacionalidade: '1',
       celular: params.celular,
       renda: params.valorRenda.toString(),
@@ -272,8 +339,8 @@ serve(async (req) => {
       endereco: params.endereco,
       numero: params.numero,
       bairro: params.bairro,
-      cidade: cidadeCodigo, // Código IBGE da cidade (7 dígitos)
-      estado: estadoIbge, // Código IBGE do estado (2 dígitos)
+      cidade: cidadeCodigoFacta, // Código interno Facta
+      estado: params.estado, // UF string (ex: "ES")
       nome_mae: params.nomeMae,
       nome_pai: params.nomePai || 'NAO DECLARADO',
       valor_patrimonio: '1',
