@@ -7,7 +7,8 @@ const corsHeaders = {
 };
 
 // Proxy na VPS do cliente com IP liberado na Facta (via Cloudflare Tunnel)
-const FACTA_BASE_URL = "https://subsidiaries-flow-intelligent-clicking.trycloudflare.com";
+const FACTA_BASE_URL = "https://webservice.facta.com.br";
+const PROXY_URL = "https://subsidiaries-flow-intelligent-clicking.trycloudflare.com/proxy";
 
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;
@@ -23,26 +24,45 @@ async function getFactaToken(): Promise<string> {
     throw new Error("FACTA_AUTH_BASIC not configured");
   }
 
-  console.log("Fetching new Facta token from webservice...");
+  console.log("Fetching new Facta token via proxy...");
   
-  const response = await fetch(`${FACTA_BASE_URL}/gera-token`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Basic ${authBasic}`,
-      'Accept': 'application/json'
-    }
-  });
-
-  const responseText = await response.text();
-  console.log("Token response status:", response.status);
-  console.log("Token response text:", responseText.substring(0, 200));
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
   
-  let data;
+  let response: Response;
   try {
-    data = JSON.parse(responseText);
-  } catch (e) {
-    throw new Error(`Failed to parse token response: ${responseText.substring(0, 100)}`);
+    response = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        method: 'GET',
+        url: `${FACTA_BASE_URL}/gera-token`,
+        headers: { 'Authorization': `Basic ${authBasic}` }
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+  } catch (fetchError) {
+    clearTimeout(timeoutId);
+    console.error(`Failed to connect to proxy: ${fetchError}`);
+    throw new Error("Não foi possível conectar ao servidor proxy.");
   }
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(`Token request failed: ${response.status} - ${errorText.substring(0, 200)}`);
+    throw new Error(`Falha na autenticação (HTTP ${response.status})`);
+  }
+
+  const contentType = response.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    const text = await response.text();
+    console.error(`Non-JSON response: ${text.substring(0, 200)}`);
+    throw new Error("API Facta indisponível. Tente novamente.");
+  }
+
+  const data = await response.json();
+  console.log("Token response:", JSON.stringify(data));
   
   if (data.erro) {
     throw new Error(data.mensagem || "Failed to get Facta token");
@@ -54,6 +74,39 @@ async function getFactaToken(): Promise<string> {
   };
 
   return data.token;
+}
+
+// Helper function to call Facta API via proxy
+async function callFactaApi(method: string, path: string, token: string, params?: Record<string, any>): Promise<any> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+  const requestBody: any = {
+    method: method,
+    url: `${FACTA_BASE_URL}${path}`,
+    headers: { 'Authorization': `Bearer ${token}` }
+  };
+
+  // For POST requests with form data
+  if (method === 'POST' && params) {
+    requestBody.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    requestBody.body = params;
+  }
+
+  try {
+    const response = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    return await response.json();
+  } catch (fetchError) {
+    clearTimeout(timeoutId);
+    console.error(`Failed to call Facta API: ${fetchError}`);
+    throw new Error("Erro ao comunicar com a API Facta.");
+  }
 }
 
 // Consulta operações disponíveis (tabelas e coeficientes)
@@ -84,17 +137,7 @@ async function consultarOperacoesDisponiveis(token: string, params: {
 
   console.log(`Consulting available operations for CPF: ${params.cpf.substring(0, 3)}...`);
 
-  const response = await fetch(
-    `${FACTA_BASE_URL}/proposta/operacoes-disponiveis?${queryParams}`,
-    {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
-  );
-
-  return await response.json();
+  return await callFactaApi('GET', `/proposta/operacoes-disponiveis?${queryParams}`, token);
 }
 
 // Etapa 1 - Simulador
@@ -111,36 +154,26 @@ async function etapa1Simulador(token: string, params: {
 }) {
   console.log(`Creating simulation for CPF: ${params.cpf.substring(0, 3)}...`);
 
-  const formData = new FormData();
-  formData.append('produto', 'D');
-  formData.append('tipo_operacao', '13');
-  formData.append('averbador', '10010');
-  formData.append('convenio', '3');
-  formData.append('cpf', params.cpf);
-  formData.append('data_nascimento', params.dataNascimento);
-  formData.append('login_certificado', params.loginCertificado);
-  formData.append('codigo_tabela', params.codigoTabela.toString());
-  formData.append('prazo', params.prazo.toString());
-  formData.append('valor_operacao', params.valorOperacao.toString());
-  formData.append('valor_parcela', params.valorParcela.toString());
-  formData.append('coeficiente', params.coeficiente);
+  const formParams: Record<string, string> = {
+    produto: 'D',
+    tipo_operacao: '13',
+    averbador: '10010',
+    convenio: '3',
+    cpf: params.cpf,
+    data_nascimento: params.dataNascimento,
+    login_certificado: params.loginCertificado,
+    codigo_tabela: params.codigoTabela.toString(),
+    prazo: params.prazo.toString(),
+    valor_operacao: params.valorOperacao.toString(),
+    valor_parcela: params.valorParcela.toString(),
+    coeficiente: params.coeficiente,
+  };
   
   if (params.vendedor) {
-    formData.append('vendedor', params.vendedor);
+    formParams.vendedor = params.vendedor;
   }
 
-  const response = await fetch(
-    `${FACTA_BASE_URL}/proposta/etapa1-simulador`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: formData
-    }
-  );
-
-  return await response.json();
+  return await callFactaApi('POST', '/proposta/etapa1-simulador', token, formParams);
 }
 
 // Etapa 2 - Dados Pessoais
@@ -184,61 +217,49 @@ async function etapa2DadosPessoais(token: string, params: {
 }) {
   console.log(`Saving personal data for CPF: ${params.cpf.substring(0, 3)}...`);
 
-  const formData = new FormData();
-  formData.append('id_simulador', params.idSimulador);
-  formData.append('cpf', params.cpf);
-  formData.append('nome', params.nome);
-  formData.append('sexo', params.sexo);
-  formData.append('estado_civil', params.estadoCivil);
-  formData.append('data_nascimento', params.dataNascimento);
-  formData.append('rg', params.rg);
-  formData.append('estado_rg', params.estadoRg);
-  formData.append('orgao_emissor', params.orgaoEmissor);
-  formData.append('data_expedicao', params.dataExpedicao);
-  formData.append('estado_natural', params.estadoNatural);
-  formData.append('cidade_natural', params.cidadeNatural);
-  formData.append('nacionalidade', params.nacionalidade || '1');
-  formData.append('celular', params.celular);
-  formData.append('renda', params.renda.toString());
-  formData.append('cep', params.cep);
-  formData.append('endereco', params.endereco);
-  formData.append('numero', params.numero);
-  if (params.complemento) formData.append('complemento', params.complemento);
-  formData.append('bairro', params.bairro);
-  formData.append('cidade', params.cidade);
-  formData.append('estado', params.estado);
-  formData.append('nome_mae', params.nomeMae);
-  formData.append('nome_pai', params.nomePai || 'NAO DECLARADO');
-  formData.append('valor_patrimonio', params.valorPatrimonio);
-  formData.append('cliente_iletrado_impossibilitado', params.clienteIletrado);
-  formData.append('tipo_conta', params.tipoConta);
-  
+  const formParams: Record<string, string> = {
+    id_simulador: params.idSimulador,
+    cpf: params.cpf,
+    nome: params.nome,
+    sexo: params.sexo,
+    estado_civil: params.estadoCivil,
+    data_nascimento: params.dataNascimento,
+    rg: params.rg,
+    estado_rg: params.estadoRg,
+    orgao_emissor: params.orgaoEmissor,
+    data_expedicao: params.dataExpedicao,
+    estado_natural: params.estadoNatural,
+    cidade_natural: params.cidadeNatural,
+    nacionalidade: params.nacionalidade || '1',
+    celular: params.celular,
+    renda: params.renda.toString(),
+    cep: params.cep,
+    endereco: params.endereco,
+    numero: params.numero,
+    bairro: params.bairro,
+    cidade: params.cidade,
+    estado: params.estado,
+    nome_mae: params.nomeMae,
+    nome_pai: params.nomePai || 'NAO DECLARADO',
+    valor_patrimonio: params.valorPatrimonio,
+    cliente_iletrado_impossibilitado: params.clienteIletrado,
+    tipo_conta: params.tipoConta,
+    matricula: params.matricula,
+    email: params.email,
+    tipo_chave_pix: params.tipoChavePix,
+    chave_pix: params.chavePix,
+  };
+
+  if (params.complemento) formParams.complemento = params.complemento;
   if (params.banco) {
-    formData.append('banco', params.banco);
-    if (params.agencia) formData.append('agencia', params.agencia);
-    if (params.conta) formData.append('conta', params.conta);
+    formParams.banco = params.banco;
+    if (params.agencia) formParams.agencia = params.agencia;
+    if (params.conta) formParams.conta = params.conta;
   }
-  
-  formData.append('matricula', params.matricula);
-  formData.append('email', params.email);
-  formData.append('tipo_chave_pix', params.tipoChavePix);
-  formData.append('chave_pix', params.chavePix);
-  
-  if (params.cnpjEmpregador) formData.append('cnpj_empregador', params.cnpjEmpregador);
-  if (params.dataAdmissao) formData.append('data_admissao', params.dataAdmissao);
+  if (params.cnpjEmpregador) formParams.cnpj_empregador = params.cnpjEmpregador;
+  if (params.dataAdmissao) formParams.data_admissao = params.dataAdmissao;
 
-  const response = await fetch(
-    `${FACTA_BASE_URL}/proposta/etapa2-dados-pessoais`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: formData
-    }
-  );
-
-  return await response.json();
+  return await callFactaApi('POST', '/proposta/etapa2-dados-pessoais', token, formParams);
 }
 
 // Etapa 3 - Proposta Cadastro
@@ -248,22 +269,10 @@ async function etapa3PropostaCadastro(token: string, params: {
 }) {
   console.log(`Creating proposal...`);
 
-  const formData = new FormData();
-  formData.append('codigo_cliente', params.codigoCliente);
-  formData.append('id_simulador', params.idSimulador);
-
-  const response = await fetch(
-    `${FACTA_BASE_URL}/proposta/etapa3-proposta-cadastro`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: formData
-    }
-  );
-
-  return await response.json();
+  return await callFactaApi('POST', '/proposta/etapa3-proposta-cadastro', token, {
+    codigo_cliente: params.codigoCliente,
+    id_simulador: params.idSimulador,
+  });
 }
 
 // Enviar link de formalização
@@ -273,22 +282,10 @@ async function enviarLinkFormalizacao(token: string, params: {
 }) {
   console.log(`Sending formalization link via ${params.tipoEnvio}...`);
 
-  const formData = new FormData();
-  formData.append('codigo_af', params.codigoAf);
-  formData.append('tipo_envio', params.tipoEnvio);
-
-  const response = await fetch(
-    `${FACTA_BASE_URL}/proposta/envio-link`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: formData
-    }
-  );
-
-  return await response.json();
+  return await callFactaApi('POST', '/proposta/envio-link', token, {
+    codigo_af: params.codigoAf,
+    tipo_envio: params.tipoEnvio,
+  });
 }
 
 // Consultar andamento de propostas
@@ -310,34 +307,14 @@ async function consultarAndamentoPropostas(token: string, params: {
 
   console.log(`Consulting proposals status...`);
 
-  const response = await fetch(
-    `${FACTA_BASE_URL}/proposta/andamento-propostas?${queryParams}`,
-    {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
-  );
-
-  return await response.json();
+  return await callFactaApi('GET', `/proposta/andamento-propostas?${queryParams}`, token);
 }
 
 // Consultar ocorrências de proposta
 async function consultarOcorrencias(token: string, codigoAf: string) {
   console.log(`Consulting occurrences for AF: ${codigoAf}...`);
 
-  const response = await fetch(
-    `${FACTA_BASE_URL}/proposta/consulta-ocorrencias?af=${codigoAf}`,
-    {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
-  );
-
-  return await response.json();
+  return await callFactaApi('GET', `/proposta/consulta-ocorrencias?af=${codigoAf}`, token);
 }
 
 serve(async (req) => {
