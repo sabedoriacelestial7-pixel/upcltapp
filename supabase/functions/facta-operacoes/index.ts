@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 // Proxy na VPS do cliente com IP liberado na Facta (via Cloudflare Tunnel)
-const FACTA_BASE_URL = "https://roger-removing-fits-individuals.trycloudflare.com";
+const FACTA_BASE_URL = "https://subsidiaries-flow-intelligent-clicking.trycloudflare.com";
 
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;
