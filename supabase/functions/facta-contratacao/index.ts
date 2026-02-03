@@ -220,6 +220,7 @@ serve(async (req) => {
 
     // Step 2: Save personal data
     console.log("Step 2: Saving personal data...");
+    console.log("Address data - cidade:", params.cidade, "estado:", params.estado, "cidade_natural:", params.cidadeNatural, "estado_natural:", params.estadoNatural);
     const dadosFormData: Record<string, string> = {
       id_simulador: idSimulador,
       cpf: params.cpf,
