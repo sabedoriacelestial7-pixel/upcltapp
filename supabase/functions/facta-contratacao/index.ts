@@ -7,6 +7,7 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
+const PROXY_URL = "https://roger-removing-fits-individuals.trycloudflare.com/proxy";
 
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;
@@ -21,10 +22,26 @@ async function getFactaToken(): Promise<string> {
     throw new Error("FACTA_AUTH_BASIC not configured");
   }
 
-  const response = await fetch(`${FACTA_BASE_URL}/gera-token`, {
-    method: 'GET',
-    headers: { 'Authorization': `Basic ${authBasic}` }
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+  let response: Response;
+  try {
+    response = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        method: 'GET',
+        url: `${FACTA_BASE_URL}/gera-token`,
+        headers: { 'Authorization': `Basic ${authBasic}` }
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+  } catch (fetchError) {
+    clearTimeout(timeoutId);
+    throw new Error("Não foi possível conectar ao servidor proxy.");
+  }
 
   const data = await response.json();
   if (data.erro) {
@@ -39,16 +56,40 @@ async function getFactaToken(): Promise<string> {
   return data.token;
 }
 
+async function proxyPost(url: string, token: string, formData: Record<string, string>): Promise<any> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+  try {
+    const response = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        method: 'POST',
+        url: url,
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    return await response.json();
+  } catch (fetchError) {
+    clearTimeout(timeoutId);
+    throw new Error("Não foi possível conectar ao servidor proxy.");
+  }
+}
+
 interface ContratacaoParams {
-  // Dados da margem/simulação
   cpf: string;
   dataNascimento: string;
   valorRenda: number;
   matricula: string;
   cnpjEmpregador?: string;
   dataAdmissao?: string;
-  
-  // Dados da operação
   codigoTabela: number;
   prazo: number;
   valorOperacao: number;
@@ -56,8 +97,6 @@ interface ContratacaoParams {
   coeficiente: string;
   bancoId: string;
   bancoNome: string;
-  
-  // Dados pessoais
   nome: string;
   sexo: string;
   estadoCivil: string;
@@ -69,8 +108,6 @@ interface ContratacaoParams {
   cidadeNatural: string;
   celular: string;
   email: string;
-  
-  // Endereço
   cep: string;
   endereco: string;
   numero: string;
@@ -78,20 +115,14 @@ interface ContratacaoParams {
   bairro: string;
   cidade: string;
   estado: string;
-  
-  // Filiação
   nomeMae: string;
   nomePai?: string;
-  
-  // Bancários
   tipoConta: string;
   banco?: string;
   agencia?: string;
   conta?: string;
   tipoChavePix: string;
   chavePix: string;
-  
-  // Envio
   tipoEnvio: 'sms' | 'whatsapp';
 }
 
@@ -101,7 +132,6 @@ serve(async (req) => {
   }
 
   try {
-    // Authenticate user
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return new Response(
@@ -131,39 +161,34 @@ serve(async (req) => {
 
     console.log(`Starting contracting process for CPF: ${params.cpf.substring(0, 3)}...`);
 
-    // Get Facta token
     const token = await getFactaToken();
-
-    // Get login_certificado from env or use default
     const loginCertificado = Deno.env.get('FACTA_LOGIN_CERTIFICADO') || '1024';
 
-    // Step 1: Create simulation (etapa1-simulador)
+    // Step 1: Create simulation
     console.log("Step 1: Creating simulation...");
-    const simuladorFormData = new FormData();
-    simuladorFormData.append('produto', 'D');
-    simuladorFormData.append('tipo_operacao', '13');
-    simuladorFormData.append('averbador', '10010');
-    simuladorFormData.append('convenio', '3');
-    simuladorFormData.append('cpf', params.cpf);
-    simuladorFormData.append('data_nascimento', params.dataNascimento);
-    simuladorFormData.append('login_certificado', loginCertificado);
-    simuladorFormData.append('codigo_tabela', params.codigoTabela.toString());
-    simuladorFormData.append('prazo', params.prazo.toString());
-    simuladorFormData.append('valor_operacao', params.valorOperacao.toString());
-    simuladorFormData.append('valor_parcela', params.valorParcela.toString());
-    simuladorFormData.append('coeficiente', params.coeficiente);
+    const simuladorFormData: Record<string, string> = {
+      produto: 'D',
+      tipo_operacao: '13',
+      averbador: '10010',
+      convenio: '3',
+      cpf: params.cpf,
+      data_nascimento: params.dataNascimento,
+      login_certificado: loginCertificado,
+      codigo_tabela: params.codigoTabela.toString(),
+      prazo: params.prazo.toString(),
+      valor_operacao: params.valorOperacao.toString(),
+      valor_parcela: params.valorParcela.toString(),
+      coeficiente: params.coeficiente
+    };
 
-    const simuladorResponse = await fetch(`${FACTA_BASE_URL}/proposta/etapa1-simulador`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` },
-      body: simuladorFormData
-    });
-
-    const simuladorResult = await simuladorResponse.json();
+    const simuladorResult = await proxyPost(
+      `${FACTA_BASE_URL}/proposta/etapa1-simulador`,
+      token,
+      simuladorFormData
+    );
     console.log("Simulator result:", JSON.stringify(simuladorResult));
 
     if (simuladorResult.erro) {
-      // Save failed proposal
       await supabase.from('proposals').insert({
         user_id: userId,
         cpf: params.cpf,
@@ -193,58 +218,55 @@ serve(async (req) => {
 
     const idSimulador = simuladorResult.id_simulador;
 
-    // Step 2: Save personal data (etapa2-dados-pessoais)
+    // Step 2: Save personal data
     console.log("Step 2: Saving personal data...");
-    const dadosFormData = new FormData();
-    dadosFormData.append('id_simulador', idSimulador);
-    dadosFormData.append('cpf', params.cpf);
-    dadosFormData.append('nome', params.nome);
-    dadosFormData.append('sexo', params.sexo);
-    dadosFormData.append('estado_civil', params.estadoCivil);
-    dadosFormData.append('data_nascimento', params.dataNascimento);
-    dadosFormData.append('rg', params.rg);
-    dadosFormData.append('estado_rg', params.estadoRg);
-    dadosFormData.append('orgao_emissor', params.orgaoEmissor);
-    dadosFormData.append('data_expedicao', params.dataExpedicao);
-    dadosFormData.append('estado_natural', params.estadoNatural);
-    dadosFormData.append('cidade_natural', params.cidadeNatural);
-    dadosFormData.append('nacionalidade', '1');
-    dadosFormData.append('celular', params.celular);
-    dadosFormData.append('renda', params.valorRenda.toString());
-    dadosFormData.append('cep', params.cep);
-    dadosFormData.append('endereco', params.endereco);
-    dadosFormData.append('numero', params.numero);
-    if (params.complemento) dadosFormData.append('complemento', params.complemento);
-    dadosFormData.append('bairro', params.bairro);
-    dadosFormData.append('cidade', params.cidade);
-    dadosFormData.append('estado', params.estado);
-    dadosFormData.append('nome_mae', params.nomeMae);
-    dadosFormData.append('nome_pai', params.nomePai || 'NAO DECLARADO');
-    dadosFormData.append('valor_patrimonio', '1');
-    dadosFormData.append('cliente_iletrado_impossibilitado', 'N');
-    dadosFormData.append('tipo_conta', params.tipoConta);
-    
+    const dadosFormData: Record<string, string> = {
+      id_simulador: idSimulador,
+      cpf: params.cpf,
+      nome: params.nome,
+      sexo: params.sexo,
+      estado_civil: params.estadoCivil,
+      data_nascimento: params.dataNascimento,
+      rg: params.rg,
+      estado_rg: params.estadoRg,
+      orgao_emissor: params.orgaoEmissor,
+      data_expedicao: params.dataExpedicao,
+      estado_natural: params.estadoNatural,
+      cidade_natural: params.cidadeNatural,
+      nacionalidade: '1',
+      celular: params.celular,
+      renda: params.valorRenda.toString(),
+      cep: params.cep,
+      endereco: params.endereco,
+      numero: params.numero,
+      bairro: params.bairro,
+      cidade: params.cidade,
+      estado: params.estado,
+      nome_mae: params.nomeMae,
+      nome_pai: params.nomePai || 'NAO DECLARADO',
+      valor_patrimonio: '1',
+      cliente_iletrado_impossibilitado: 'N',
+      tipo_conta: params.tipoConta,
+      matricula: params.matricula,
+      email: params.email,
+      tipo_chave_pix: params.tipoChavePix,
+      chave_pix: params.chavePix
+    };
+
+    if (params.complemento) dadosFormData.complemento = params.complemento;
     if (params.banco) {
-      dadosFormData.append('banco', params.banco);
-      if (params.agencia) dadosFormData.append('agencia', params.agencia);
-      if (params.conta) dadosFormData.append('conta', params.conta);
+      dadosFormData.banco = params.banco;
+      if (params.agencia) dadosFormData.agencia = params.agencia;
+      if (params.conta) dadosFormData.conta = params.conta;
     }
-    
-    dadosFormData.append('matricula', params.matricula);
-    dadosFormData.append('email', params.email);
-    dadosFormData.append('tipo_chave_pix', params.tipoChavePix);
-    dadosFormData.append('chave_pix', params.chavePix);
-    
-    if (params.cnpjEmpregador) dadosFormData.append('cnpj_empregador', params.cnpjEmpregador);
-    if (params.dataAdmissao) dadosFormData.append('data_admissao', params.dataAdmissao);
+    if (params.cnpjEmpregador) dadosFormData.cnpj_empregador = params.cnpjEmpregador;
+    if (params.dataAdmissao) dadosFormData.data_admissao = params.dataAdmissao;
 
-    const dadosResponse = await fetch(`${FACTA_BASE_URL}/proposta/etapa2-dados-pessoais`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` },
-      body: dadosFormData
-    });
-
-    const dadosResult = await dadosResponse.json();
+    const dadosResult = await proxyPost(
+      `${FACTA_BASE_URL}/proposta/etapa2-dados-pessoais`,
+      token,
+      dadosFormData
+    );
     console.log("Personal data result:", JSON.stringify(dadosResult));
 
     if (dadosResult.erro) {
@@ -278,19 +300,13 @@ serve(async (req) => {
 
     const codigoCliente = dadosResult.codigo_cliente;
 
-    // Step 3: Create proposal (etapa3-proposta-cadastro)
+    // Step 3: Create proposal
     console.log("Step 3: Creating proposal...");
-    const propostaFormData = new FormData();
-    propostaFormData.append('codigo_cliente', codigoCliente);
-    propostaFormData.append('id_simulador', idSimulador);
-
-    const propostaResponse = await fetch(`${FACTA_BASE_URL}/proposta/etapa3-proposta-cadastro`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` },
-      body: propostaFormData
-    });
-
-    const propostaResult = await propostaResponse.json();
+    const propostaResult = await proxyPost(
+      `${FACTA_BASE_URL}/proposta/etapa3-proposta-cadastro`,
+      token,
+      { codigo_cliente: codigoCliente, id_simulador: idSimulador }
+    );
     console.log("Proposal result:", JSON.stringify(propostaResult));
 
     if (propostaResult.erro) {
@@ -328,17 +344,11 @@ serve(async (req) => {
 
     // Step 4: Send formalization link
     console.log("Step 4: Sending formalization link...");
-    const linkFormData = new FormData();
-    linkFormData.append('codigo_af', codigoAf);
-    linkFormData.append('tipo_envio', params.tipoEnvio);
-
-    const linkResponse = await fetch(`${FACTA_BASE_URL}/proposta/envio-link`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` },
-      body: linkFormData
-    });
-
-    const linkResult = await linkResponse.json();
+    const linkResult = await proxyPost(
+      `${FACTA_BASE_URL}/proposta/envio-link`,
+      token,
+      { codigo_af: codigoAf, tipo_envio: params.tipoEnvio }
+    );
     console.log("Link sending result:", JSON.stringify(linkResult));
 
     // Save successful proposal

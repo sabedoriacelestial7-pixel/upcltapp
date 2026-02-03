@@ -7,6 +7,7 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
+const PROXY_URL = "https://roger-removing-fits-individuals.trycloudflare.com/proxy";
 
 let tokenCache: { token: string; expira: Date } | null = null;
 
@@ -20,10 +21,26 @@ async function getFactaToken(): Promise<string> {
     throw new Error("FACTA_AUTH_BASIC not configured");
   }
 
-  const response = await fetch(`${FACTA_BASE_URL}/gera-token`, {
-    method: 'GET',
-    headers: { 'Authorization': `Basic ${authBasic}` }
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+  let response: Response;
+  try {
+    response = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        method: 'GET',
+        url: `${FACTA_BASE_URL}/gera-token`,
+        headers: { 'Authorization': `Basic ${authBasic}` }
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+  } catch (fetchError) {
+    clearTimeout(timeoutId);
+    throw new Error("Não foi possível conectar ao servidor proxy.");
+  }
 
   const data = await response.json();
   if (data.erro) {
@@ -38,13 +55,35 @@ async function getFactaToken(): Promise<string> {
   return data.token;
 }
 
+async function proxyGet(url: string, token: string): Promise<any> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+  try {
+    const response = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        method: 'GET',
+        url: url,
+        headers: { 'Authorization': `Bearer ${token}` }
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    return await response.json();
+  } catch (fetchError) {
+    clearTimeout(timeoutId);
+    throw new Error("Não foi possível conectar ao servidor proxy.");
+  }
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
   try {
-    // Authenticate user
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return new Response(
@@ -101,7 +140,6 @@ serve(async (req) => {
       // Sync status with Facta API
       const token = await getFactaToken();
       
-      // Get status from Facta for all proposals with codigo_af
       const proposalsWithAf = proposals.filter(p => p.codigo_af);
       
       if (proposalsWithAf.length === 0) {
@@ -111,7 +149,6 @@ serve(async (req) => {
         );
       }
 
-      // Build query params for Facta API
       const codigosAf = proposalsWithAf.map(p => p.codigo_af).join(',');
       
       const queryParams = new URLSearchParams({
@@ -122,19 +159,13 @@ serve(async (req) => {
 
       console.log(`Fetching status from Facta for proposals: ${codigosAf}`);
 
-      const factaResponse = await fetch(
+      const factaResult = await proxyGet(
         `${FACTA_BASE_URL}/proposta/andamento-propostas?${queryParams}`,
-        {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${token}` }
-        }
+        token
       );
-
-      const factaResult = await factaResponse.json();
       console.log("Facta proposals status:", JSON.stringify(factaResult));
 
       if (!factaResult.erro && factaResult.propostas) {
-        // Update each proposal status
         for (const factaProposta of factaResult.propostas) {
           const localProposta = proposalsWithAf.find(p => p.codigo_af === factaProposta.codigo_af);
           if (localProposta) {
@@ -149,7 +180,6 @@ serve(async (req) => {
           }
         }
 
-        // Fetch updated proposals
         const { data: updatedProposals } = await supabase
           .from('proposals')
           .select('*')
@@ -179,15 +209,10 @@ serve(async (req) => {
     if (action === 'ocorrencias' && codigoAf) {
       const token = await getFactaToken();
 
-      const response = await fetch(
+      const result = await proxyGet(
         `${FACTA_BASE_URL}/proposta/consulta-ocorrencias?af=${codigoAf}`,
-        {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${token}` }
-        }
+        token
       );
-
-      const result = await response.json();
       console.log("Occurrences result:", JSON.stringify(result));
 
       return new Response(

@@ -6,8 +6,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-// Proxy na VPS do cliente com IP liberado na Facta
-const FACTA_BASE_URL = "http://179.0.176.151:3001";
+// Proxy na VPS do cliente com IP liberado na Facta (via Cloudflare Tunnel)
+const FACTA_BASE_URL = "https://roger-removing-fits-individuals.trycloudflare.com";
 
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;

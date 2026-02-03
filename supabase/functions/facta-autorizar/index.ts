@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
-const PROXY_URL = "http://179.0.176.151:3001/proxy";
+const PROXY_URL = "https://roger-removing-fits-individuals.trycloudflare.com/proxy";
 
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;

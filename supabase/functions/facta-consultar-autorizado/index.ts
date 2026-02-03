@@ -7,6 +7,7 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
+const PROXY_URL = "https://roger-removing-fits-individuals.trycloudflare.com/proxy";
 
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;
@@ -23,14 +24,42 @@ async function getFactaToken(): Promise<string> {
     throw new Error("FACTA_AUTH_BASIC not configured");
   }
 
-  console.log("Fetching new Facta token...");
+  console.log("Fetching new Facta token via proxy...");
   
-  const response = await fetch(`${FACTA_BASE_URL}/gera-token`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Basic ${authBasic}`
-    }
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
+  
+  let response: Response;
+  try {
+    response = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        method: 'GET',
+        url: `${FACTA_BASE_URL}/gera-token`,
+        headers: { 'Authorization': `Basic ${authBasic}` }
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+  } catch (fetchError) {
+    clearTimeout(timeoutId);
+    console.error(`Failed to connect to proxy: ${fetchError}`);
+    throw new Error("Não foi possível conectar ao servidor proxy.");
+  }
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(`Token request failed: ${response.status} - ${errorText.substring(0, 200)}`);
+    throw new Error(`Falha na autenticação (HTTP ${response.status})`);
+  }
+
+  const contentType = response.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    const text = await response.text();
+    console.error(`Non-JSON response: ${text.substring(0, 200)}`);
+    throw new Error("API Facta indisponível. Tente novamente.");
+  }
 
   const data = await response.json();
   console.log("Token response:", JSON.stringify(data));
@@ -39,7 +68,6 @@ async function getFactaToken(): Promise<string> {
     throw new Error(data.mensagem || "Failed to get Facta token");
   }
 
-  // Cache token for 55 minutes (tokens expire in 60 min)
   tokenCache = {
     token: data.token,
     expira: new Date(Date.now() + 55 * 60 * 1000)
@@ -107,17 +135,28 @@ serve(async (req) => {
     // Get Facta token
     const token = await getFactaToken();
 
-    // Call Facta API to check authorization and get data
-    // GET /consignado-trabalhador/autoriza-consulta
-    const factaResponse = await fetch(
-      `${FACTA_BASE_URL}/consignado-trabalhador/autoriza-consulta?cpf=${cpfLimpo}&celular=${celularLimpo}`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      }
-    );
+    // Call Facta API to check authorization and get data via proxy
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
+    
+    let factaResponse: Response;
+    try {
+      factaResponse = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          method: 'GET',
+          url: `${FACTA_BASE_URL}/consignado-trabalhador/autoriza-consulta?cpf=${cpfLimpo}&celular=${celularLimpo}`,
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+      console.error(`Failed to connect to proxy: ${fetchError}`);
+      throw new Error("Não foi possível conectar ao servidor proxy.");
+    }
 
     const factaData = await factaResponse.json();
     console.log("Facta authorization check response:", JSON.stringify(factaData));
