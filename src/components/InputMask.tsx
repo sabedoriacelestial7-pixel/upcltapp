@@ -61,9 +61,9 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
               'focus:outline-none',
               icon && 'pl-12',
               isDark ? [
-                'bg-white/10 border border-white/20 text-white',
-                'placeholder:text-white/40',
-                isFocused && 'border-primary ring-2 ring-primary/20',
+                'bg-white/90 border border-white/30 text-black',
+                'placeholder:text-gray-500',
+                isFocused && 'border-primary ring-2 ring-primary/20 bg-white',
                 error && 'border-red-500'
               ] : [
                 'bg-white border border-gray-200 text-foreground',
