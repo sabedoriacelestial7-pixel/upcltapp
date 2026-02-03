@@ -10,7 +10,7 @@ export interface AutorizacaoResult {
 export interface ConsultaAutorizadaResult {
   sucesso: boolean;
   mensagem: string;
-  status: 'pending' | 'authorized' | 'ineligible' | 'not_found' | 'error';
+  status: 'pending' | 'authorized' | 'ineligible' | 'not_found' | 'error' | 'expired';
   dados: TrabalhadorData | null;
 }
 

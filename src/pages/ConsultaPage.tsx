@@ -167,6 +167,15 @@ export default function ConsultaPage() {
         return;
       }
 
+      // Token expired - need to request new authorization
+      if (result.status === 'expired') {
+        setPollingActive(false);
+        setAuthRequested(false);
+        setTentativas(0);
+        toast.error('Código expirado. Solicite um novo código.');
+        return;
+      }
+
       if (result.status === 'ineligible') {
         setPollingActive(false);
         setErrorType('ineligible');
