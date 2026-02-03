@@ -220,7 +220,7 @@ serve(async (req) => {
     }
 
     const trabalhador = dadosTrabalhador[0];
-    const elegivel = trabalhador.elegivel === "S" || trabalhador.elegivel === "1" || trabalhador.elegivel === true;
+    const elegivel = trabalhador.elegivel === "S" || trabalhador.elegivel === "SIM" || trabalhador.elegivel === "1" || trabalhador.elegivel === true;
 
     const dadosFormatados = {
       nome: trabalhador.nome,
