@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { User, Bell, Banknote } from 'lucide-react';
+import { User, Bell, Banknote, Sparkles } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { useApp } from '@/contexts/AppContext';
 import { formatarMoeda } from '@/utils/formatters';
 import { cn } from '@/lib/utils';
+import { EmptyState } from '@/components/EmptyState';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -46,17 +47,17 @@ export default function HomePage() {
           <button
             onClick={() => navigate('/consulta')}
             className={cn(
-              'w-full bg-white rounded-xl p-4 shadow-card',
+              'w-full bg-white rounded-xl p-4 shadow-card group',
               'flex items-center gap-4 text-left',
               'hover:shadow-card-hover transition-all duration-200',
               'active:scale-[0.99] touch-manipulation'
             )}
           >
-            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
               <Banknote size={24} className="text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-bold text-foreground text-base">
+              <h3 className="font-bold text-foreground text-base group-hover:text-primary transition-colors">
                 Consignado CLT
               </h3>
               <p className="text-primary font-bold text-lg">

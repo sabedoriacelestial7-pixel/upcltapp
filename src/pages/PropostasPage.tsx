@@ -8,6 +8,8 @@ import { useApp } from '@/contexts/AppContext';
 import { listarPropostas, atualizarStatusPropostas, Proposta, getStatusInfo } from '@/services/contratacaoApi';
 import { formatarMoeda, formatarData } from '@/utils/formatters';
 import { cn } from '@/lib/utils';
+import { ProposalCardSkeleton } from '@/components/SkeletonLoaders';
+import { EmptyState } from '@/components/EmptyState';
 
 export default function PropostasPage() {
   const navigate = useNavigate();
@@ -62,8 +64,19 @@ export default function PropostasPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-background pb-20">
+        <main className="max-w-md mx-auto px-5 pt-[calc(env(safe-area-inset-top)+1rem)]">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-foreground mb-1">Contratações</h1>
+            <p className="text-muted-foreground text-sm">Acompanhe o status de cada operação.</p>
+          </div>
+          <div className="space-y-3">
+            <ProposalCardSkeleton />
+            <ProposalCardSkeleton />
+            <ProposalCardSkeleton />
+          </div>
+        </main>
+        <BottomNav />
       </div>
     );
   }
@@ -105,23 +118,13 @@ export default function PropostasPage() {
 
         {/* Empty state */}
         {propostas.length === 0 && !error && (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mb-6">
-              <FolderX size={36} className="text-primary-foreground" />
-            </div>
-            <h2 className="text-xl font-bold text-foreground mb-2">
-              Você não possui contratações.
-            </h2>
-            <p className="text-muted-foreground text-sm mb-6 max-w-xs">
-              Que tal dar uma olhada nas oportunidade disponíveis para você?
-            </p>
-            <button 
-              onClick={() => navigate('/consulta')}
-              className="text-primary font-medium hover:underline"
-            >
-              Ver oportunidades
-            </button>
-          </div>
+          <EmptyState
+            variant="proposals"
+            title="Você não possui contratações"
+            description="Que tal dar uma olhada nas oportunidades disponíveis para você?"
+            actionLabel="Ver oportunidades"
+            onAction={() => navigate('/consulta')}
+          />
         )}
 
         {/* Proposals list */}

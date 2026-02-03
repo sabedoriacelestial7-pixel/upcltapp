@@ -13,6 +13,7 @@ import { BancoCalculado } from '@/utils/calculos';
 import { formatarMoeda } from '@/utils/formatters';
 import { useToast } from '@/hooks/use-toast';
 import { buscarCidadesPorEstado, CidadeIBGE } from '@/services/ibgeApi';
+import { Confetti } from '@/components/Confetti';
 
 interface LocationState {
   banco: BancoCalculado;
@@ -400,15 +401,16 @@ export default function ContratacaoPage() {
   if (success) {
     return (
       <div className="min-h-screen min-h-[100dvh] bg-background">
+        <Confetti trigger={true} duration={3000} />
         <Header title="Contratação" showBack />
         
         <main className="max-w-md mx-auto px-5 py-8">
-          <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 text-center animate-fade-in">
-            <div className="w-16 h-16 rounded-full bg-white/20 mx-auto mb-4 flex items-center justify-center">
-              <CheckCircle size={32} className="text-white" />
+          <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 text-center animate-fade-in shadow-lg shadow-primary/25">
+            <div className="w-20 h-20 rounded-full bg-white/20 mx-auto mb-5 flex items-center justify-center animate-bounce-soft">
+              <CheckCircle size={40} className="text-white" />
             </div>
-            <h2 className="text-xl font-bold text-white mb-2">Proposta Criada!</h2>
-            <p className="text-white/90 text-sm mb-4">
+            <h2 className="text-2xl font-bold text-white mb-3">🎉 Proposta Criada!</h2>
+            <p className="text-white/90 text-sm mb-5">
               Enviamos o link de assinatura para o seu {formData.tipoEnvio === 'whatsapp' ? 'WhatsApp' : 'SMS'}.
             </p>
             
@@ -417,7 +419,7 @@ export default function ContratacaoPage() {
                 href={`https://${propostaUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-white text-primary font-semibold py-3 px-6 rounded-lg mb-4 hover:bg-white/90 transition-colors"
+                className="inline-block bg-white text-primary font-semibold py-3 px-8 rounded-xl mb-4 hover:bg-white/90 hover:scale-105 transition-all duration-200 shadow-lg"
               >
                 Assinar Agora
               </a>
@@ -427,14 +429,14 @@ export default function ContratacaoPage() {
           <div className="mt-6 space-y-3">
             <Button
               onClick={() => navigate('/propostas')}
-              className="w-full bg-card hover:bg-muted text-foreground border border-border"
+              className="w-full h-12 bg-card hover:bg-muted text-foreground border border-border transition-all duration-200 hover:scale-[1.02]"
             >
               Ver Minhas Propostas
             </Button>
             <Button
               onClick={() => navigate('/')}
               variant="ghost"
-              className="w-full text-muted-foreground"
+              className="w-full h-12 text-muted-foreground hover:text-foreground"
             >
               Voltar ao Início
             </Button>

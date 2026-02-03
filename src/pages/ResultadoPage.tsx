@@ -7,9 +7,9 @@ import { Input } from '@/components/ui/input';
 import { useApp } from '@/contexts/AppContext';
 import { formatarMoeda } from '@/utils/formatters';
 import { consultarOperacoesDisponiveis, TabelaFacta, getPrazosDisponiveis, getMelhorTabelaParaPrazo } from '@/services/factaOperacoesApi';
-import { LoadingScreen } from '@/components/LoadingScreen';
 import { Clock, ChevronRight, ChevronDown, RefreshCw, Edit3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SimulationCardSkeleton } from '@/components/SkeletonLoaders';
 
 export default function ResultadoPage() {
   const navigate = useNavigate();
@@ -115,7 +115,31 @@ export default function ResultadoPage() {
   if (!consulta) return null;
 
   if (loading) {
-    return <LoadingScreen variant="searching" message="Buscando as melhores taxas..." />;
+    return (
+      <div className="min-h-screen bg-background pb-24">
+        <Header showBack showChat />
+        <main className="max-w-md mx-auto px-5 py-5">
+          <h1 className="text-2xl font-bold text-foreground mb-1">Outras simulações</h1>
+          <p className="text-muted-foreground text-sm mb-5">Buscando as melhores taxas...</p>
+          
+          {/* Parcela Editor Skeleton */}
+          <div className="bg-card rounded-2xl p-4 shadow-card mb-5 animate-pulse">
+            <div className="flex items-center justify-between mb-2">
+              <div className="h-4 w-24 bg-muted rounded" />
+              <div className="h-3 w-20 bg-muted rounded" />
+            </div>
+            <div className="h-12 bg-muted rounded-xl" />
+          </div>
+          
+          <div className="space-y-4">
+            <SimulationCardSkeleton />
+            <SimulationCardSkeleton />
+            <SimulationCardSkeleton />
+          </div>
+        </main>
+        <BottomNav />
+      </div>
+    );
   }
 
   if (error) {

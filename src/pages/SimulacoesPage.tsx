@@ -5,9 +5,10 @@ import { BottomNav } from '@/components/BottomNav';
 import { useApp } from '@/contexts/AppContext';
 import { formatarMoeda } from '@/utils/formatters';
 import { consultarOperacoesDisponiveis, TabelaFacta, getPrazosDisponiveis, getMelhorTabelaParaPrazo } from '@/services/factaOperacoesApi';
-import { LoadingScreen } from '@/components/LoadingScreen';
 import { ChevronRight, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SimulationCardSkeleton } from '@/components/SkeletonLoaders';
+import { EmptyState } from '@/components/EmptyState';
 
 interface SimulacaoCard {
   banco: string;
@@ -80,7 +81,21 @@ export default function SimulacoesPage() {
   }, [consulta, navigate]);
 
   if (loading) {
-    return <LoadingScreen variant="searching" />;
+    return (
+      <div className="min-h-screen bg-background pb-20">
+        <Header showBack showChat title="" />
+        <main className="max-w-md mx-auto px-5 py-5">
+          <h1 className="text-2xl font-bold text-foreground mb-1">Outras simulações</h1>
+          <p className="text-muted-foreground text-sm mb-5">Taxas acessíveis e sem burocracia</p>
+          <div className="space-y-4">
+            <SimulationCardSkeleton />
+            <SimulationCardSkeleton />
+            <SimulationCardSkeleton />
+          </div>
+        </main>
+        <BottomNav />
+      </div>
+    );
   }
 
   const handleSelect = (sim: SimulacaoCard) => {
@@ -118,16 +133,25 @@ export default function SimulacoesPage() {
           Taxas acessíveis e sem burocracia
         </p>
 
-        <div className="space-y-4">
-          {simulacoes.map((sim, index) => (
-            <button
-              key={`${sim.parcelas}-${index}`}
-              onClick={() => handleSelect(sim)}
-              className={cn(
-                'w-full bg-white rounded-xl p-4 shadow-card text-left',
-                'hover:shadow-card-hover transition-all duration-200',
-                'active:scale-[0.99] touch-manipulation'
-              )}
+        {simulacoes.length === 0 ? (
+          <EmptyState
+            variant="search"
+            title="Nenhuma simulação disponível"
+            description="Não encontramos ofertas para seu perfil no momento."
+            actionLabel="Tentar novamente"
+            onAction={() => navigate('/consulta')}
+          />
+        ) : (
+          <div className="space-y-4">
+            {simulacoes.map((sim, index) => (
+              <button
+                key={`${sim.parcelas}-${index}`}
+                onClick={() => handleSelect(sim)}
+                className={cn(
+                  'w-full bg-white rounded-xl p-4 shadow-card text-left group',
+                  'hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200',
+                  'active:scale-[0.99] touch-manipulation'
+                )}
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-3">
@@ -162,8 +186,9 @@ export default function SimulacoesPage() {
                 <ChevronRight size={20} className="text-primary" />
               </div>
             </button>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </main>
 
       <BottomNav />
