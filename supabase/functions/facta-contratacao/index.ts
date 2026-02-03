@@ -230,8 +230,14 @@ serve(async (req) => {
 
     // Step 2: Save personal data
     console.log("Step 2: Saving personal data...");
-    // Keep UF abbreviations for estado fields, use IBGE codes for cities
-    console.log("Address data - cidade (ibge):", params.cidade, "estado (uf):", params.estado, "cidade_natural (ibge):", params.cidadeNatural, "estado_natural (uf):", params.estadoNatural);
+    
+    // A Facta pode usar apenas os últimos 5 dígitos do código IBGE da cidade
+    // Código IBGE completo: 3202405 → código Facta: 02405
+    const cidadeFacta = params.cidade.length === 7 ? params.cidade.slice(2) : params.cidade;
+    const cidadeNaturalFacta = params.cidadeNatural.length === 7 ? params.cidadeNatural.slice(2) : params.cidadeNatural;
+    
+    console.log("Address data - cidade (ibge):", params.cidade, "-> (facta):", cidadeFacta, "estado (uf):", params.estado);
+    console.log("Natural data - cidade_natural (ibge):", params.cidadeNatural, "-> (facta):", cidadeNaturalFacta, "estado_natural (uf):", params.estadoNatural);
     
     const dadosFormData: Record<string, string> = {
       id_simulador: idSimulador,
@@ -245,7 +251,7 @@ serve(async (req) => {
       orgao_emissor: params.orgaoEmissor,
       data_expedicao: params.dataExpedicao,
       estado_natural: params.estadoNatural,
-      cidade_natural: params.cidadeNatural,
+      cidade_natural: cidadeNaturalFacta,
       nacionalidade: '1',
       celular: params.celular,
       renda: params.valorRenda.toString(),
@@ -253,7 +259,7 @@ serve(async (req) => {
       endereco: params.endereco,
       numero: params.numero,
       bairro: params.bairro,
-      cidade: params.cidade,
+      cidade: cidadeFacta,
       estado: params.estado,
       nome_mae: params.nomeMae,
       nome_pai: params.nomePai || 'NAO DECLARADO',
