@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AppProvider } from "@/contexts/AppContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { OfflineBanner } from "@/components/OfflineBanner";
 
 import LoginPage from "@/pages/LoginPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
@@ -35,6 +36,7 @@ const App = () => (
     <AuthProvider>
       <AppProvider>
         <TooltipProvider>
+          <OfflineBanner />
           <Toaster />
           <Sonner />
           <BrowserRouter>
