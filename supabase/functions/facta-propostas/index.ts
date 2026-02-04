@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
-const PROXY_URL = "https://subsidiaries-flow-intelligent-clicking.trycloudflare.com/proxy";
+const PROXY_URL = "https://robinson-feeding-yale-perspectives.trycloudflare.com/proxy";
 
 let tokenCache: { token: string; expira: Date } | null = null;
 
