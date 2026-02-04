@@ -20,6 +20,7 @@ import PropostasPage from "@/pages/PropostasPage";
 import PropostaDetalhePage from "@/pages/PropostaDetalhePage";
 import PerfilPage from "@/pages/PerfilPage";
 import DadosTrabalhistas from "@/pages/DadosTrabalhistas";
+import SugestaoPage from "@/pages/SugestaoPage";
 import TermosUsoPage from "@/pages/TermosUsoPage";
 import PoliticaPrivacidadePage from "@/pages/PoliticaPrivacidadePage";
 import AjudaPage from "@/pages/AjudaPage";
@@ -119,6 +120,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <DadosTrabalhistas />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/sugestao"
+                element={
+                  <ProtectedRoute>
+                    <SugestaoPage />
                   </ProtectedRoute>
                 }
               />

@@ -25,6 +25,10 @@ export default function PerfilPage() {
   const { logout } = useApp();
 
   const handleMenuClick = (action: string) => {
+    if (action === 'sugestao') {
+      navigate('/sugestao');
+      return;
+    }
     if (action === 'termos') {
       navigate('/termos-uso');
       return;
@@ -37,7 +41,6 @@ export default function PerfilPage() {
       navigate('/dados-trabalhistas');
       return;
     }
-    toast.info('Em breve!', { description: 'Esta funcionalidade estará disponível em breve.' });
   };
 
   const handleLogout = () => {
