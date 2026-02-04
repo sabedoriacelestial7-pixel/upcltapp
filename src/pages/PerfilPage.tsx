@@ -25,6 +25,10 @@ export default function PerfilPage() {
   const { logout } = useApp();
 
   const handleMenuClick = (action: string) => {
+    if (action === 'termos') {
+      navigate('/termos-uso');
+      return;
+    }
     toast.info('Em breve!', { description: 'Esta funcionalidade estará disponível em breve.' });
   };
 
