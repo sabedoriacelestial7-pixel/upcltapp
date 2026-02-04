@@ -32,7 +32,8 @@ export default function ResultadoPage() {
     setError(null);
     
     try {
-      const parcelaMax = Math.floor(consulta.valorMargemDisponivel * 0.90 * 10) / 10;
+      // Valor Máximo Prestação = ~97% da Margem Disponível (conforme painel Facta)
+      const parcelaMax = Math.floor(consulta.valorMargemDisponivel * 0.97 * 10) / 10;
       setParcelaMaxima(parcelaMax);
       
       const parcelaParaConsulta = valorParcela || parcelaMax;
