@@ -64,9 +64,14 @@ export function LoadingScreen({ variant, message }: LoadingScreenProps) {
 
   if (variant === 'verifying') {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
+      <div 
+        className="min-h-screen bg-background flex flex-col items-center justify-center p-6"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
         <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mb-6">
-          <Wallet size={36} className="text-primary-foreground" />
+          <Wallet size={36} className="text-primary-foreground" aria-hidden="true" />
         </div>
         
         <h2 className="text-xl font-bold text-foreground text-center mb-2">
@@ -77,8 +82,9 @@ export function LoadingScreen({ variant, message }: LoadingScreenProps) {
         </p>
 
         <div className="mt-8">
-          <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+          <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" aria-hidden="true" />
         </div>
+        <span className="sr-only">Verificando autorização de consulta</span>
       </div>
     );
   }
@@ -86,7 +92,12 @@ export function LoadingScreen({ variant, message }: LoadingScreenProps) {
   const CurrentIcon = loadingMessages[currentMessageIndex].icon;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary via-primary to-emerald-700 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div 
+      className="min-h-screen bg-gradient-to-br from-primary via-primary to-emerald-700 flex flex-col items-center justify-center p-6 relative overflow-hidden"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
       {/* Animated background circles */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-20 -left-20 w-60 h-60 bg-white/5 rounded-full animate-pulse" />
@@ -178,13 +189,21 @@ export function LoadingScreen({ variant, message }: LoadingScreenProps) {
         </div>
 
         {/* Progress bar */}
-        <div className="w-64 h-2 bg-white/20 rounded-full overflow-hidden">
+        <div 
+          className="w-64 h-2 bg-white/20 rounded-full overflow-hidden"
+          role="progressbar"
+          aria-valuenow={Math.round(progress)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Progresso da busca"
+        >
           <div 
             className="h-full bg-white rounded-full transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="text-white/60 text-xs mt-2">{Math.round(progress)}% concluído</p>
+        <p className="text-white/60 text-xs mt-2" aria-hidden="true">{Math.round(progress)}% concluído</p>
+        <span className="sr-only">{message || loadingMessages[currentMessageIndex].text}</span>
       </div>
     </div>
   );

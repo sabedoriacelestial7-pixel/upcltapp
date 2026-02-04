@@ -15,12 +15,18 @@ const sizes = {
 
 export function LoadingSpinner({ size = 'md', className, text, subtext }: LoadingSpinnerProps) {
   return (
-    <div className={cn('flex flex-col items-center justify-center gap-4', className)}>
+    <div 
+      className={cn('flex flex-col items-center justify-center gap-4', className)}
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
       <div
         className={cn(
           'rounded-full border-secondary/30 border-t-secondary animate-spin',
           sizes[size]
         )}
+        aria-hidden="true"
       />
       {text && (
         <div className="text-center">
@@ -30,6 +36,7 @@ export function LoadingSpinner({ size = 'md', className, text, subtext }: Loadin
           )}
         </div>
       )}
+      <span className="sr-only">{text || 'Carregando...'}</span>
     </div>
   );
 }
