@@ -8,6 +8,8 @@ import { AppProvider } from "@/contexts/AppContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 import LoginPage from "@/pages/LoginPage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import WelcomePage from "@/pages/WelcomePage";
 import SobrePage from "@/pages/SobrePage";
 import HomePage from "@/pages/HomePage";
@@ -41,6 +43,8 @@ const App = () => (
               <Route path="/welcome" element={<WelcomePage />} />
               <Route path="/sobre" element={<SobrePage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
 
               {/* Protected Routes */}
               <Route

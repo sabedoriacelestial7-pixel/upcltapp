@@ -281,7 +281,11 @@ export default function LoginPage() {
           </form>
 
           {mode === 'login' && (
-            <button className="w-full text-center text-sm text-white/50 mt-3 hover:text-white/70 transition-colors touch-manipulation py-1">
+            <button
+              type="button"
+              onClick={() => navigate('/forgot-password')}
+              className="w-full text-center text-sm text-white/50 mt-3 hover:text-white/70 transition-colors touch-manipulation py-1"
+            >
               Esqueci minha senha
             </button>
           )}
