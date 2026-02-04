@@ -33,6 +33,10 @@ export default function PerfilPage() {
       navigate('/politica-privacidade');
       return;
     }
+    if (action === 'dados') {
+      navigate('/dados-trabalhistas');
+      return;
+    }
     toast.info('Em breve!', { description: 'Esta funcionalidade estará disponível em breve.' });
   };
 
