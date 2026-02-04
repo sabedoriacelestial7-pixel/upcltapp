@@ -131,22 +131,9 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/termos-uso"
-                element={
-                  <ProtectedRoute>
-                    <TermosUsoPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/politica-privacidade"
-                element={
-                  <ProtectedRoute>
-                    <PoliticaPrivacidadePage />
-                  </ProtectedRoute>
-                }
-              />
+              {/* Public Legal Pages - Required for Play Store */}
+              <Route path="/termos-uso" element={<TermosUsoPage />} />
+              <Route path="/politica-privacidade" element={<PoliticaPrivacidadePage />} />
               <Route
                 path="/ajuda"
                 element={
