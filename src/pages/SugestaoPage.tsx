@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { BottomNav } from '@/components/BottomNav';
@@ -13,17 +12,13 @@ import { cn } from '@/lib/utils';
 export default function SugestaoPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    nome: '',
-    email: '',
-    mensagem: ''
-  });
+  const [mensagem, setMensagem] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.nome.trim() || !formData.email.trim() || !formData.mensagem.trim()) {
-      toast.error('Preencha todos os campos');
+    if (!mensagem.trim()) {
+      toast.error('Escreva sua sugestão');
       return;
     }
 
@@ -37,13 +32,20 @@ export default function SugestaoPage() {
         return;
       }
 
+      // Buscar dados do perfil
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('nome, email')
+        .eq('user_id', user.id)
+        .single();
+
       const { error } = await supabase
         .from('suggestions')
         .insert({
           user_id: user.id,
-          nome: formData.nome.trim(),
-          email: formData.email.trim(),
-          mensagem: formData.mensagem.trim()
+          nome: profile?.nome || 'Usuário',
+          email: profile?.email || user.email || '',
+          mensagem: mensagem.trim()
         });
 
       if (error) throw error;
@@ -83,39 +85,14 @@ export default function SugestaoPage() {
       <main className="max-w-md mx-auto px-5 py-6">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="nome">Nome</Label>
-            <Input
-              id="nome"
-              placeholder="Seu nome"
-              value={formData.nome}
-              onChange={(e) => setFormData(prev => ({ ...prev, nome: e.target.value }))}
-              disabled={loading}
-              className="bg-white"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email">E-mail</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="seu@email.com"
-              value={formData.email}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              disabled={loading}
-              className="bg-white"
-            />
-          </div>
-
-          <div className="space-y-2">
             <Label htmlFor="mensagem">Sua sugestão</Label>
             <Textarea
               id="mensagem"
               placeholder="Escreva sua sugestão, crítica ou elogio..."
-              value={formData.mensagem}
-              onChange={(e) => setFormData(prev => ({ ...prev, mensagem: e.target.value }))}
+              value={mensagem}
+              onChange={(e) => setMensagem(e.target.value)}
               disabled={loading}
-              className="bg-white min-h-[150px] resize-none"
+              className="bg-white min-h-[180px] resize-none"
             />
           </div>
 
