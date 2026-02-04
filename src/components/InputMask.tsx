@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, useState } from 'react';
+import { forwardRef, InputHTMLAttributes, useState, useId } from 'react';
 import { cn } from '@/lib/utils';
 import { formatarCPF, formatarTelefone } from '@/utils/formatters';
 
@@ -12,9 +12,12 @@ interface InputMaskProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'on
 }
 
 export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
-  ({ label, error, mask = 'none', icon, variant = 'light', onChange, className, value, ...props }, ref) => {
+  ({ label, error, mask = 'none', icon, variant = 'light', onChange, className, value, id: providedId, ...props }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
     const isDark = variant === 'dark';
+    const generatedId = useId();
+    const inputId = providedId || generatedId;
+    const errorId = `${inputId}-error`;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       let newValue = e.target.value;
@@ -34,31 +37,40 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className={cn(
-            'block text-sm font-medium mb-2',
-            isDark ? 'text-white/80' : 'text-foreground'
-          )}>
+          <label 
+            htmlFor={inputId}
+            className={cn(
+              'block text-sm font-medium mb-2',
+              isDark ? 'text-white/80' : 'text-foreground'
+            )}
+          >
             {label}
           </label>
         )}
         <div className="relative">
           {icon && (
-            <div className={cn(
-              'absolute left-4 top-1/2 -translate-y-1/2',
-              isDark ? 'text-white/50' : 'text-muted-foreground'
-            )}>
+            <div 
+              className={cn(
+                'absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none',
+                isDark ? 'text-white/50' : 'text-muted-foreground'
+              )}
+              aria-hidden="true"
+            >
               {icon}
             </div>
           )}
           <input
             ref={ref}
+            id={inputId}
             value={value}
             onChange={handleChange}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
+            aria-invalid={!!error}
+            aria-describedby={error ? errorId : undefined}
             className={cn(
               'w-full h-14 px-4 rounded-xl transition-all duration-200',
-              'focus:outline-none',
+              'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
               icon && 'pl-12',
               isDark ? [
                 'bg-white/90 border border-white/30 text-black',
@@ -77,7 +89,9 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
           />
         </div>
         {error && (
-          <p className="mt-2 text-sm text-red-500">{error}</p>
+          <p id={errorId} className="mt-2 text-sm text-red-500" role="alert">
+            {error}
+          </p>
         )}
       </div>
     );
