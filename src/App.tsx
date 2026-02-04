@@ -20,6 +20,7 @@ import PropostasPage from "@/pages/PropostasPage";
 import PropostaDetalhePage from "@/pages/PropostaDetalhePage";
 import PerfilPage from "@/pages/PerfilPage";
 import TermosUsoPage from "@/pages/TermosUsoPage";
+import PoliticaPrivacidadePage from "@/pages/PoliticaPrivacidadePage";
 import AjudaPage from "@/pages/AjudaPage";
 import NotFound from "@/pages/NotFound";
 
@@ -117,6 +118,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <TermosUsoPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/politica-privacidade"
+                element={
+                  <ProtectedRoute>
+                    <PoliticaPrivacidadePage />
                   </ProtectedRoute>
                 }
               />

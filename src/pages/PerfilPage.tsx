@@ -29,6 +29,10 @@ export default function PerfilPage() {
       navigate('/termos-uso');
       return;
     }
+    if (action === 'privacidade') {
+      navigate('/politica-privacidade');
+      return;
+    }
     toast.info('Em breve!', { description: 'Esta funcionalidade estará disponível em breve.' });
   };
 
