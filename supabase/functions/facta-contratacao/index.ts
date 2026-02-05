@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
-const PROXY_URL = "https://theft-auctions-fabulous-lloyd.trycloudflare.com/proxy";
+const PROXY_URL = "https://joining-roles-americas-map.trycloudflare.com/proxy";
 
 // Mapeamento de UF para código IBGE do estado (2 dígitos)
 const UF_TO_IBGE: Record<string, string> = {
