@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
-const PROXY_URL = "https://joining-roles-americas-map.trycloudflare.com";
+const PROXY_URL = "https://mysql-metallica-solving-lined.trycloudflare.com";
 
 let tokenCache: { token: string; expira: Date } | null = null;
 
