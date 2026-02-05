@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+ import { PageTransition } from '@/components/PageTransition';
 import { Header } from '@/components/Header';
 import { FloatingButton } from '@/components/FloatingButton';
 import { LoadingScreen } from '@/components/LoadingScreen';
@@ -312,7 +313,7 @@ export default function ConsultaPage() {
   // Error state
   if (step === 'error') {
     return (
-      <div className="min-h-screen bg-background">
+       <PageTransition className="min-h-screen bg-background">
         <Header showChat />
         <ConsultaError
           type={errorType}
@@ -320,14 +321,14 @@ export default function ConsultaPage() {
           onRetry={handleRetry}
           onWhatsApp={handleWhatsApp}
         />
-      </div>
+       </PageTransition>
     );
   }
 
   // Authorization step
   if (step === 'authorization') {
     return (
-      <div className="min-h-screen bg-background">
+       <PageTransition className="min-h-screen bg-background">
         <Header progress={50} showChat />
         <main className="max-w-md mx-auto px-4 py-5">
           <AuthorizationStep
@@ -344,13 +345,13 @@ export default function ConsultaPage() {
             maxTentativas={MAX_TENTATIVAS}
           />
         </main>
-      </div>
+       </PageTransition>
     );
   }
 
   // CPF input step (default)
   return (
-    <div className="min-h-screen bg-background">
+     <PageTransition className="min-h-screen bg-background">
       <Header progress={25} showChat />
 
       <main className="max-w-md mx-auto px-4 py-5">
@@ -375,6 +376,6 @@ export default function ConsultaPage() {
           disabled={false}
         />
       )}
-    </div>
+     </PageTransition>
   );
 }

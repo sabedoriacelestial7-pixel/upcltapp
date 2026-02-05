@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+ import { PageTransition } from '@/components/PageTransition';
 import { 
   MessageSquare, 
   FileText, 
@@ -84,7 +85,7 @@ export default function PerfilPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+     <PageTransition className="min-h-screen bg-background pb-24">
       <main className="max-w-md mx-auto px-4 pt-[calc(env(safe-area-inset-top)+2.5rem)]">
         {/* Logo */}
         <div className="flex justify-center mb-8">
@@ -177,6 +178,6 @@ export default function PerfilPage() {
            </AlertDialogFooter>
          </AlertDialogContent>
        </AlertDialog>
-    </div>
+     </PageTransition>
   );
 }

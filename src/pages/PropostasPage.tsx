@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+ import { PageTransition } from '@/components/PageTransition';
 import { Clock, CheckCircle, XCircle, RefreshCw, ExternalLink, ChevronRight, Users, User } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { Button } from '@/components/ui/button';
@@ -261,7 +262,7 @@ export default function PropostasPage() {
   );
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+     <PageTransition className="min-h-screen bg-background pb-24">
       <main className={cn(
         "px-4 pt-[calc(env(safe-area-inset-top)+1rem)]",
         isAdmin && viewMode === 'all' ? "max-w-4xl mx-auto" : "max-w-md mx-auto"
@@ -349,6 +350,6 @@ export default function PropostasPage() {
       </main>
 
       <BottomNav />
-    </div>
+     </PageTransition>
   );
 }

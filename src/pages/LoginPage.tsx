@@ -5,6 +5,7 @@ import { Logo } from '@/components/Logo';
 import { InputMask } from '@/components/InputMask';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+ import { PageTransition } from '@/components/PageTransition';
 import { useAuth } from '@/contexts/AuthContext';
 import { validarEmail, validarTelefone } from '@/utils/formatters';
 import { useToast } from '@/hooks/use-toast';
@@ -162,7 +163,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen min-h-[100dvh] theme-dark bg-[hsl(220,13%,10%)] flex flex-col items-center justify-center p-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
+     <PageTransition className="min-h-screen min-h-[100dvh] theme-dark bg-[hsl(220,13%,10%)] flex flex-col items-center justify-center p-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
       <div className="w-full max-w-sm animate-fade-in">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -170,7 +171,7 @@ export default function LoginPage() {
           <p className="text-white/70 text-base">
             Crédito CLT sem burocracia
           </p>
-        </div>
+         </div>
 
         {/* Form Card */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-sm">
@@ -334,6 +335,6 @@ export default function LoginPage() {
           )}
         </p>
       </div>
-    </div>
+     </PageTransition>
   );
 }

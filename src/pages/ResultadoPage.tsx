@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+ import { PageTransition } from '@/components/PageTransition';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
 import { Button } from '@/components/ui/button';
@@ -117,7 +118,7 @@ export default function ResultadoPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pb-24">
+     <PageTransition className="min-h-screen bg-background pb-24">
         <Header showBack showChat />
         <main className="max-w-md mx-auto px-5 py-5">
           <h1 className="text-2xl font-bold text-foreground mb-1">Outras simulações</h1>
@@ -139,7 +140,7 @@ export default function ResultadoPage() {
           </div>
         </main>
         <BottomNav />
-      </div>
+     </PageTransition>
     );
   }
 

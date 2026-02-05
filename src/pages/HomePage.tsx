@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { User, Bell, Banknote } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+ import { PageTransition } from '@/components/PageTransition';
 import { useApp } from '@/contexts/AppContext';
 import { formatarMoeda } from '@/utils/formatters';
 import { cn } from '@/lib/utils';
@@ -15,7 +16,7 @@ export default function HomePage() {
     : null;
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-background pb-24">
+     <PageTransition className="min-h-screen min-h-[100dvh] bg-background pb-24">
       {/* Header */}
       <header className="bg-primary pt-[env(safe-area-inset-top)]">
         <div className="px-4 py-3 flex items-center justify-between">
@@ -83,6 +84,6 @@ export default function HomePage() {
       </main>
 
       <BottomNav />
-    </div>
+     </PageTransition>
   );
 }
