@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
-const PROXY_URL = "https://harris-fully-studio-cad.trycloudflare.com/proxy";
+const PROXY_URL = "https://theft-auctions-fabulous-lloyd.trycloudflare.com/proxy";
 
 let tokenCache: { token: string; expira: Date } | null = null;
 
