@@ -9,6 +9,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, metadata?: { nome?: string; telefone?: string }) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
+   deleteAccount: () => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -66,6 +67,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   };
 
+   const deleteAccount = async () => {
+     try {
+       // First delete user data from profiles table
+       if (user) {
+         await supabase.from('profiles').delete().eq('user_id', user.id);
+         await supabase.from('margin_queries').delete().eq('user_id', user.id);
+         await supabase.from('proposals').delete().eq('user_id', user.id);
+         await supabase.from('contract_requests').delete().eq('user_id', user.id);
+         await supabase.from('suggestions').delete().eq('user_id', user.id);
+       }
+       
+       // Sign out the user (account deletion requires admin API)
+       await supabase.auth.signOut();
+       
+       return { error: null };
+     } catch (error) {
+       return { error: error as Error };
+     }
+   };
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -73,7 +94,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       signUp,
       signIn,
-      signOut
+       signOut,
+       deleteAccount
     }}>
       {children}
     </AuthContext.Provider>
