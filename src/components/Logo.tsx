@@ -1,4 +1,4 @@
-import { TrendingUp, ChevronsLeft } from 'lucide-react';
+import { ChevronsUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface LogoProps {
@@ -21,7 +21,7 @@ export function Logo({ size = 'md', variant = 'light', className }: LogoProps) {
   return (
     <div className={cn('flex items-center gap-1', className)}>
       <div className="flex">
-        <ChevronsLeft 
+        <ChevronsUp 
           size={icon} 
           className="text-primary" 
           strokeWidth={3}
