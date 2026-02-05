@@ -8,6 +8,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { PageTransition } from '@/components/PageTransition';
 
 export default function SugestaoPage() {
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ export default function SugestaoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] pb-20">
+    <PageTransition className="min-h-screen bg-[#f5f5f5] pb-20">
       {/* Header */}
       <header className="bg-primary text-primary-foreground px-5 pt-[calc(env(safe-area-inset-top)+1rem)] pb-6">
         <button
@@ -120,6 +121,6 @@ export default function SugestaoPage() {
       </main>
 
       <BottomNav />
-    </div>
+    </PageTransition>
   );
 }

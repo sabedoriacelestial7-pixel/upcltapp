@@ -9,6 +9,7 @@ import { ChevronRight, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SimulationCardSkeleton } from '@/components/SkeletonLoaders';
 import { EmptyState } from '@/components/EmptyState';
+import { PageTransition } from '@/components/PageTransition';
 
 interface SimulacaoCard {
   banco: string;
@@ -122,7 +123,7 @@ export default function SimulacoesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] pb-20">
+    <PageTransition className="min-h-screen bg-[#f5f5f5] pb-20">
       <Header showBack showChat title="" />
 
       <main className="max-w-md mx-auto px-5 py-5">
@@ -192,6 +193,6 @@ export default function SimulacoesPage() {
       </main>
 
       <BottomNav />
-    </div>
+    </PageTransition>
   );
 }

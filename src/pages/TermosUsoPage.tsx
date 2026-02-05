@@ -2,12 +2,13 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { cn } from '@/lib/utils';
+import { PageTransition } from '@/components/PageTransition';
 
 export default function TermosUsoPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] pb-20">
+    <PageTransition className="min-h-screen bg-[#f5f5f5] pb-20">
       {/* Header */}
       <header className="bg-primary text-primary-foreground px-4 py-4 pt-[calc(env(safe-area-inset-top)+1rem)]">
         <div className="max-w-md mx-auto flex items-center gap-3">
@@ -185,6 +186,6 @@ export default function TermosUsoPage() {
       </main>
 
       <BottomNav />
-    </div>
+    </PageTransition>
   );
 }

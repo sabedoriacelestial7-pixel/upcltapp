@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/accordion';
 import { abrirWhatsAppSimples } from '@/utils/whatsapp';
 import { cn } from '@/lib/utils';
+import { PageTransition } from '@/components/PageTransition';
 
 const faqItems = [
   {
@@ -46,7 +47,7 @@ const faqItems = [
 
 export default function AjudaPage() {
   return (
-    <div className="min-h-screen bg-[#f5f5f5] pb-20">
+    <PageTransition className="min-h-screen bg-[#f5f5f5] pb-20">
       <main className="max-w-md mx-auto px-5 pt-[calc(env(safe-area-inset-top)+1rem)]">
         {/* Header */}
         <div className="mb-6">
@@ -87,6 +88,6 @@ export default function AjudaPage() {
       </main>
 
       <BottomNav />
-    </div>
+    </PageTransition>
   );
 }

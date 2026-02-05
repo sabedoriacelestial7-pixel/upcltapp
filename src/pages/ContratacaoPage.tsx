@@ -14,6 +14,7 @@ import { formatarMoeda } from '@/utils/formatters';
 import { useToast } from '@/hooks/use-toast';
 import { buscarCidadesPorEstado, CidadeIBGE } from '@/services/ibgeApi';
 import { Confetti } from '@/components/Confetti';
+import { PageTransition } from '@/components/PageTransition';
 
 interface LocationState {
   banco: BancoCalculado;
@@ -352,7 +353,7 @@ export default function ContratacaoPage() {
   // Tela de erro de política de crédito - amigável para o usuário
   if (creditPolicyError) {
     return (
-      <div className="min-h-screen min-h-[100dvh] bg-background">
+      <PageTransition className="min-h-screen min-h-[100dvh] bg-background">
         <Header title="Contratação" showBack />
         
         <main className="max-w-md mx-auto px-5 py-8">
@@ -394,13 +395,13 @@ export default function ContratacaoPage() {
             </p>
           </div>
         </main>
-      </div>
+      </PageTransition>
     );
   }
 
   if (success) {
     return (
-      <div className="min-h-screen min-h-[100dvh] bg-background">
+      <PageTransition className="min-h-screen min-h-[100dvh] bg-background">
         <Confetti trigger={true} duration={3000} />
         <Header title="Contratação" showBack />
         
@@ -442,12 +443,12 @@ export default function ContratacaoPage() {
             </Button>
           </div>
         </main>
-      </div>
+      </PageTransition>
     );
   }
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-background pb-8">
+    <PageTransition className="min-h-screen min-h-[100dvh] bg-background pb-8">
       <Header title="Contratação" showBack />
 
       <main className="max-w-md mx-auto px-5 py-5 space-y-4">
@@ -907,6 +908,6 @@ export default function ContratacaoPage() {
           </div>
         )}
       </main>
-    </div>
+    </PageTransition>
   );
 }

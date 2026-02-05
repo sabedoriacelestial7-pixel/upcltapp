@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { listarPropostas, consultarOcorrencias, Proposta, Ocorrencia, getStatusInfo } from '@/services/contratacaoApi';
 import { formatarMoeda, formatarData, formatarCPF } from '@/utils/formatters';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { PageTransition } from '@/components/PageTransition';
 
 export default function PropostaDetalhePage() {
   const { id } = useParams<{ id: string }>();
@@ -51,7 +52,7 @@ export default function PropostaDetalhePage() {
 
   if (!proposta) {
     return (
-      <div className="min-h-screen min-h-[100dvh] bg-background pb-20">
+      <PageTransition className="min-h-screen min-h-[100dvh] bg-background pb-20">
         <Header title="Proposta" showBack />
         <main className="max-w-md mx-auto px-5 py-5">
           <div className="bg-card border border-border rounded-xl p-8 text-center">
@@ -59,14 +60,14 @@ export default function PropostaDetalhePage() {
           </div>
         </main>
         <BottomNav />
-      </div>
+      </PageTransition>
     );
   }
 
   const statusInfo = getStatusInfo(proposta.status_facta || proposta.status);
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-background pb-20">
+    <PageTransition className="min-h-screen min-h-[100dvh] bg-background pb-20">
       <Header title="Detalhes da Proposta" showBack />
 
       <main className="max-w-md mx-auto px-5 py-5 space-y-4">
@@ -206,6 +207,6 @@ export default function PropostaDetalhePage() {
       </main>
 
       <BottomNav />
-    </div>
+    </PageTransition>
   );
 }

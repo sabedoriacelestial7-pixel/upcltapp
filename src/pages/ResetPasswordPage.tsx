@@ -6,6 +6,7 @@ import { InputMask } from '@/components/InputMask';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { PageTransition } from '@/components/PageTransition';
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
@@ -90,7 +91,7 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen min-h-[100dvh] theme-dark bg-[hsl(220,13%,10%)] flex flex-col items-center justify-center p-5">
+      <PageTransition className="min-h-screen min-h-[100dvh] theme-dark bg-[hsl(220,13%,10%)] flex flex-col items-center justify-center p-5">
         <div className="w-full max-w-sm animate-fade-in text-center">
           <div className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
             <CheckCircle className="w-16 h-16 text-primary mx-auto mb-4" />
@@ -98,12 +99,12 @@ export default function ResetPasswordPage() {
             <p className="text-white/70">Redirecionando para o app...</p>
           </div>
         </div>
-      </div>
+      </PageTransition>
     );
   }
 
   return (
-    <div className="min-h-screen min-h-[100dvh] theme-dark bg-[hsl(220,13%,10%)] flex flex-col items-center justify-center p-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
+    <PageTransition className="min-h-screen min-h-[100dvh] theme-dark bg-[hsl(220,13%,10%)] flex flex-col items-center justify-center p-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
       <div className="w-full max-w-sm animate-fade-in">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -172,6 +173,6 @@ export default function ResetPasswordPage() {
           Voltar para o login
         </button>
       </div>
-    </div>
+    </PageTransition>
   );
 }

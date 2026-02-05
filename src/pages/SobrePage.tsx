@@ -4,6 +4,7 @@ import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
+import { PageTransition } from '@/components/PageTransition';
 import welcomeHero from '@/assets/welcome-hero.png';
 
 export default function SobrePage() {
@@ -49,7 +50,7 @@ export default function SobrePage() {
   ];
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-background flex flex-col">
+    <PageTransition className="min-h-screen min-h-[100dvh] bg-background flex flex-col">
       {/* Header with back button */}
       <header className="relative z-10 pt-[env(safe-area-inset-top)] px-4 pt-4">
         <button
@@ -229,6 +230,6 @@ export default function SobrePage() {
           Vamos começar
         </Button>
       </div>
-    </div>
+    </PageTransition>
   );
 }

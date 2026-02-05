@@ -6,6 +6,7 @@ import { useApp } from '@/contexts/AppContext';
 import { formatarMoeda } from '@/utils/formatters';
 import { TabelaFacta } from '@/services/factaOperacoesApi';
 import { Info } from 'lucide-react';
+import { PageTransition } from '@/components/PageTransition';
 
 // Calcular IOF conforme regras do Banco Central
 // IOF = 0,38% flat + 0,0082% ao dia (limitado a 3% do valor financiado)
@@ -35,7 +36,7 @@ export default function ResultadoDetalhesPage() {
 
   if (!consulta || !tabela) {
     return (
-      <div className="min-h-screen bg-[#f5f5f5]">
+      <PageTransition className="min-h-screen bg-[#f5f5f5]">
         <Header showBack showChat />
         <main className="max-w-md mx-auto px-5 py-8 text-center">
           <p className="text-muted-foreground">Dados não encontrados</p>
@@ -44,7 +45,7 @@ export default function ResultadoDetalhesPage() {
           </Button>
         </main>
         <BottomNav />
-      </div>
+      </PageTransition>
     );
   }
 
@@ -93,7 +94,7 @@ export default function ResultadoDetalhesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] pb-32">
+    <PageTransition className="min-h-screen bg-[#f5f5f5] pb-32">
       <Header showBack showChat />
 
       <main className="max-w-md mx-auto px-5 py-5">
@@ -196,6 +197,6 @@ export default function ResultadoDetalhesPage() {
       </div>
 
       <BottomNav />
-    </div>
+    </PageTransition>
   );
 }

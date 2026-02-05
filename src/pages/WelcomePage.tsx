@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { ParticleBackground } from '@/components/ParticleBackground';
+import { PageTransition } from '@/components/PageTransition';
 import welcomeHero from '@/assets/welcome-hero.png';
 
 export default function WelcomePage() {
@@ -61,7 +62,7 @@ export default function WelcomePage() {
       )}
 
       {/* Main Content - appears after splash */}
-      <div 
+      <PageTransition 
         className={`flex flex-col flex-1 transition-all duration-500 ${
           showSplash ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
         }`}
@@ -145,7 +146,7 @@ export default function WelcomePage() {
             </button>
           </div>
         </main>
-      </div>
+      </PageTransition>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { PageTransition } from '@/components/PageTransition';
 
 interface MarginQueryData {
   id: string;
@@ -121,7 +122,7 @@ export default function DadosTrabalhistas() {
   }, [user]);
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] pb-24">
+    <PageTransition className="min-h-screen bg-[#f5f5f5] pb-24">
       {/* Header */}
       <header className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 py-3">
         <div className="max-w-md mx-auto flex items-center gap-3">
@@ -249,6 +250,6 @@ export default function DadosTrabalhistas() {
       </main>
 
       <BottomNav />
-    </div>
+    </PageTransition>
   );
 }
