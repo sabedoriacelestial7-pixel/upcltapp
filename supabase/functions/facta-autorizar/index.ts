@@ -7,7 +7,6 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
-const PROXY_URL = "https://harris-fully-studio-cad.trycloudflare.com/proxy";
 
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;
@@ -24,54 +23,14 @@ async function getFactaToken(): Promise<string> {
     throw new Error("FACTA_AUTH_BASIC not configured");
   }
 
-  console.log("Fetching new Facta token via proxy...");
-  console.log(`Proxy URL: ${PROXY_URL}`);
+  console.log("Fetching new Facta token...");
   
-  // Create AbortController for timeout
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => {
-    console.error("Token request timed out after 25 seconds");
-    controller.abort();
-  }, 25000);
-  
-  let response: Response;
-  try {
-    response = await fetch(PROXY_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        method: 'GET',
-        url: `${FACTA_BASE_URL}/gera-token`,
-        headers: {
-          'Authorization': `Basic ${authBasic}`
-        }
-      }),
-      signal: controller.signal
-    });
-    clearTimeout(timeoutId);
-    console.log(`Token proxy response status: ${response.status}`);
-  } catch (fetchError) {
-    clearTimeout(timeoutId);
-    console.error(`Failed to connect to proxy: ${fetchError}`);
-    throw new Error("Não foi possível conectar ao servidor proxy. Verifique se o serviço está ativo.");
-  }
-
-  // Check if response is OK
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error(`Facta token request failed: ${response.status} - ${errorText.substring(0, 200)}`);
-    throw new Error(`Falha na autenticação com Facta (HTTP ${response.status})`);
-  }
-
-  // Check content type before parsing
-  const contentType = response.headers.get('content-type') || '';
-  if (!contentType.includes('application/json')) {
-    const text = await response.text();
-    console.error(`Facta returned non-JSON response: ${text.substring(0, 200)}`);
-    throw new Error("API Facta indisponível. Tente novamente em alguns minutos.");
-  }
+  const response = await fetch(`${FACTA_BASE_URL}/gera-token`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Basic ${authBasic}`
+    }
+  });
 
   const data = await response.json();
   console.log("Token response:", JSON.stringify(data));
@@ -111,10 +70,9 @@ serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const userToken = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(userToken);
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
     
-    if (claimsError || !claimsData?.claims) {
+    if (userError || !user) {
       return new Response(
         JSON.stringify({ sucesso: false, mensagem: 'Unauthorized' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -148,44 +106,25 @@ serve(async (req) => {
     // Get Facta token
     const token = await getFactaToken();
 
-    // Create AbortController for authorization request
-    const authController = new AbortController();
-    const authTimeoutId = setTimeout(() => {
-      console.error("Authorization request timed out after 25 seconds");
-      authController.abort();
-    }, 25000);
-    
-    let factaResponse: Response;
-    try {
-      factaResponse = await fetch(PROXY_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          method: 'POST',
-          url: `${FACTA_BASE_URL}/solicita-autorizacao-consulta`,
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: {
-            averbador: '10010',
-            nome: nomeCliente,
-            cpf: cpfLimpo,
-            celular: celularLimpo,
-            tipo_envio: tipoEnvio
-          }
-        }),
-        signal: authController.signal
-      });
-      clearTimeout(authTimeoutId);
-      console.log(`Authorization proxy response status: ${factaResponse.status}`);
-    } catch (fetchError) {
-      clearTimeout(authTimeoutId);
-      console.error(`Failed to connect to proxy for authorization: ${fetchError}`);
-      throw new Error("Não foi possível conectar ao servidor proxy para autorização.");
-    }
+    // Build form data
+    const formData = new URLSearchParams();
+    formData.append('averbador', '10010');
+    formData.append('nome', nomeCliente);
+    formData.append('cpf', cpfLimpo);
+    formData.append('celular', celularLimpo);
+    formData.append('tipo_envio', tipoEnvio);
+
+    // Call Facta API directly
+    const factaResponse = await fetch(`${FACTA_BASE_URL}/solicita-autorizacao-consulta`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formData.toString()
+    });
+
+    console.log(`Facta authorization response status: ${factaResponse.status}`);
 
     const factaData = await factaResponse.json();
     console.log("Facta authorization response:", JSON.stringify(factaData));
