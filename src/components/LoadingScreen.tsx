@@ -153,6 +153,8 @@ export function LoadingScreen({ variant, message }: LoadingScreenProps) {
                   src={bank.logo} 
                   alt={bank.name}
                   className="w-full h-full object-contain"
+                  loading="lazy"
+                  decoding="async"
                   onError={(e) => {
                     e.currentTarget.src = '/placeholder.svg';
                   }}

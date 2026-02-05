@@ -7,9 +7,17 @@
     <meta name="description" content="Compare e contrate o empréstimo consignado CLT mais barato do Brasil. Simule agora e encontre as melhores taxas para trabalhadores CLT." />
     <meta name="author" content="I9 Consultoria e Negócios LTDA" />
     <meta name="theme-color" content="#10b981" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="UpCLT" />
+ 
+    <!-- Performance: Preconnect to critical origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Preload critical font for LCP -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -29,10 +37,24 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/upclt-logo.png" />
+    
+    <!-- PWA: Prevent Flash of Unstyled Content -->
+    <style>
+      /* Critical CSS for initial render */
+      html { background-color: #0f172a; }
+      body { margin: 0; min-height: 100vh; }
+      #root { min-height: 100vh; }
+    </style>
   </head>
 
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="padding: 2rem; text-align: center; background: #0f172a; color: white; min-height: 100vh;">
+        <h1>UpCLT</h1>
+        <p>Para usar o UpCLT, ative o JavaScript no seu navegador.</p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
