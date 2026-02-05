@@ -261,8 +261,26 @@ export default function LoginPage() {
                     htmlFor="terms" 
                     className="text-sm text-white/80 cursor-pointer leading-snug"
                   >
-                    Aceito os <span className="text-primary font-medium">Termos de Uso</span> e{' '}
-                    <span className="text-primary font-medium">Política de Privacidade</span>
+                     Aceito os{' '}
+                     <a 
+                       href="/termos-uso" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       className="text-primary font-medium hover:underline"
+                       onClick={(e) => e.stopPropagation()}
+                     >
+                       Termos de Uso
+                     </a>{' '}
+                     e{' '}
+                     <a 
+                       href="/politica-privacidade" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       className="text-primary font-medium hover:underline"
+                       onClick={(e) => e.stopPropagation()}
+                     >
+                       Política de Privacidade
+                     </a>
                   </label>
                 </div>
                 {errors.terms && (

@@ -1,17 +1,30 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   MessageSquare, 
   FileText, 
   Shield, 
   CreditCard, 
-  LogOut,
-  ChevronRight
+   LogOut,
+   ChevronRight,
+   Trash2
 } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { Logo } from '@/components/Logo';
 import { useApp } from '@/contexts/AppContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import {
+   AlertDialog,
+   AlertDialogAction,
+   AlertDialogCancel,
+   AlertDialogContent,
+   AlertDialogDescription,
+   AlertDialogFooter,
+   AlertDialogHeader,
+   AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const menuItems = [
   { icon: MessageSquare, label: 'Deixar sugestão', action: 'sugestao' },
@@ -23,6 +36,9 @@ const menuItems = [
 export default function PerfilPage() {
   const navigate = useNavigate();
   const { logout } = useApp();
+   const { deleteAccount } = useAuth();
+   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleMenuClick = (action: string) => {
     if (action === 'sugestao') {
@@ -42,6 +58,25 @@ export default function PerfilPage() {
       return;
     }
   };
+
+   const handleDeleteAccount = async () => {
+     setIsDeleting(true);
+     try {
+       const { error } = await deleteAccount();
+       if (error) {
+         toast.error('Erro ao excluir conta. Tente novamente.');
+         return;
+       }
+       toast.success('Seus dados foram excluídos com sucesso.');
+       logout();
+       navigate('/login');
+     } catch {
+       toast.error('Erro inesperado. Tente novamente.');
+     } finally {
+       setIsDeleting(false);
+       setShowDeleteDialog(false);
+     }
+   };
 
   const handleLogout = () => {
     logout();
@@ -94,10 +129,54 @@ export default function PerfilPage() {
             </div>
             <span className="font-medium text-foreground text-sm">Sair</span>
           </button>
+
+           {/* Delete Account */}
+           <button
+             onClick={() => setShowDeleteDialog(true)}
+             className={cn(
+               'w-full flex items-center gap-3 p-4',
+               'bg-transparent',
+               'hover:bg-red-50 transition-colors',
+               'active:bg-red-100 touch-manipulation'
+             )}
+           >
+             <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0">
+               <Trash2 size={20} className="text-destructive" />
+             </div>
+             <span className="font-medium text-destructive text-sm">Excluir minha conta</span>
+           </button>
         </div>
       </main>
 
       <BottomNav />
+
+       {/* Delete Account Confirmation Dialog */}
+       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+         <AlertDialogContent className="max-w-sm mx-4">
+           <AlertDialogHeader>
+             <AlertDialogTitle className="text-destructive">
+               Excluir conta permanentemente?
+             </AlertDialogTitle>
+             <AlertDialogDescription>
+               Esta ação não pode ser desfeita. Todos os seus dados, incluindo 
+               consultas, propostas e informações pessoais serão permanentemente 
+               removidos dos nossos servidores.
+             </AlertDialogDescription>
+           </AlertDialogHeader>
+           <AlertDialogFooter className="flex-col gap-2 sm:flex-row">
+             <AlertDialogCancel disabled={isDeleting}>
+               Cancelar
+             </AlertDialogCancel>
+             <AlertDialogAction
+               onClick={handleDeleteAccount}
+               disabled={isDeleting}
+               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+             >
+               {isDeleting ? 'Excluindo...' : 'Sim, excluir minha conta'}
+             </AlertDialogAction>
+           </AlertDialogFooter>
+         </AlertDialogContent>
+       </AlertDialog>
     </div>
   );
 }
