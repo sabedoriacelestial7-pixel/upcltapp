@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, useState, useId } from 'react';
+import { forwardRef, InputHTMLAttributes, useState, useId, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { formatarCPF, formatarTelefone } from '@/utils/formatters';
 
@@ -18,6 +18,30 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
     const generatedId = useId();
     const inputId = providedId || generatedId;
     const errorId = `${inputId}-error`;
+
+    // Mobile keyboard optimizations
+    const inputProps = useMemo(() => {
+      switch (mask) {
+        case 'cpf':
+          return {
+            inputMode: 'numeric' as const,
+            autoComplete: 'off',
+            pattern: '[0-9]*',
+            maxLength: 14,
+            enterKeyHint: 'next' as const,
+          };
+        case 'telefone':
+          return {
+            inputMode: 'tel' as const,
+            autoComplete: 'tel',
+            pattern: '[0-9]*',
+            maxLength: 15,
+            enterKeyHint: 'next' as const,
+          };
+        default:
+          return {};
+      }
+    }, [mask]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       let newValue = e.target.value;
@@ -68,9 +92,11 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
             onBlur={() => setIsFocused(false)}
             aria-invalid={!!error}
             aria-describedby={error ? errorId : undefined}
+            {...inputProps}
             className={cn(
               'w-full h-14 px-4 rounded-xl transition-all duration-200',
               'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+              'text-base', // Prevents zoom on iOS
               icon && 'pl-12',
               isDark ? [
                 'bg-white/90 border border-white/30 text-black',

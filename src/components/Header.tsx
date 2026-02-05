@@ -50,17 +50,17 @@ export function Header({
         </div>
       )}
 
-      <div className="px-4 h-14 pt-[env(safe-area-inset-top)] flex items-center justify-between">
-        <div className="flex items-center gap-2 min-w-[44px]">
+      <div className="px-3 h-14 pt-[env(safe-area-inset-top)] flex items-center justify-between">
+        <div className="flex items-center gap-1 min-w-[48px]">
           {showBack && (
             <button
               onClick={() => navigate(-1)}
               aria-label="Voltar para página anterior"
               className={cn(
-                'p-2 -ml-2 rounded-full transition-colors active:scale-95 touch-manipulation',
-                'min-w-[44px] min-h-[44px] flex items-center justify-center',
+                'p-2 -ml-1 rounded-full transition-colors active:scale-95 touch-manipulation',
+                'min-w-[48px] min-h-[48px] flex items-center justify-center',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                isLight ? 'text-primary hover:bg-gray-100' : 'text-primary hover:bg-white/10'
+                isLight ? 'text-primary hover:bg-muted' : 'text-primary hover:bg-primary-foreground/10'
               )}
             >
               <ChevronLeft size={28} strokeWidth={2} aria-hidden="true" />
@@ -77,15 +77,15 @@ export function Header({
           </h1>
         )}
 
-        <div className="flex items-center gap-2 min-w-[44px] justify-end">
+        <div className="flex items-center gap-1 min-w-[48px] justify-end">
           {showChat && (
             <button
               aria-label="Abrir chat de suporte"
               className={cn(
                 'p-2 rounded-full transition-colors active:scale-95 touch-manipulation',
-                'min-w-[44px] min-h-[44px] flex items-center justify-center',
+                'min-w-[48px] min-h-[48px] flex items-center justify-center',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                isLight ? 'text-primary hover:bg-gray-100' : 'text-primary hover:bg-white/10'
+                isLight ? 'text-primary hover:bg-muted' : 'text-primary hover:bg-primary-foreground/10'
               )}
             >
               <MessageSquare size={24} aria-hidden="true" />

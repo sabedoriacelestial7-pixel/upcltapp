@@ -73,6 +73,11 @@ export default {
         "2xl": "calc(var(--radius) + 8px)",
         "3xl": "calc(var(--radius) + 16px)",
       },
+      spacing: {
+        "13": "3.25rem",
+        "15": "3.75rem",
+        "18": "4.5rem",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

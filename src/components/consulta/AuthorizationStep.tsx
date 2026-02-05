@@ -50,17 +50,16 @@ export function AuthorizationStep({
 
   if (!authRequested) {
     return (
-      <div className="space-y-6">
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
+      <div className="space-y-5">
+        <div className="text-center mb-5">
+          <div className="w-14 h-14 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
             <Smartphone size={32} className="text-primary" />
           </div>
-          <h2 className="text-xl font-bold text-foreground mb-2">
+          <h2 className="text-lg font-bold text-foreground mb-1.5">
             Autorização Necessária
           </h2>
-          <p className="text-muted-foreground text-sm">
-            Para consultar sua margem, você precisa autorizar o acesso aos seus dados 
-            através de um código enviado por SMS ou WhatsApp.
+          <p className="text-muted-foreground text-sm px-2">
+            Autorize o acesso aos seus dados através de código SMS ou WhatsApp.
           </p>
         </div>
 
@@ -81,7 +80,7 @@ export function AuthorizationStep({
           <Button
             onClick={() => handleSolicitar('S')}
             disabled={!isTelefoneValido || isRequesting}
-            className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold"
+            className="w-full h-13 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
           >
             {isRequesting ? (
               <RefreshCw className="animate-spin mr-2" size={18} />
@@ -95,7 +94,7 @@ export function AuthorizationStep({
             onClick={() => handleSolicitar('W')}
             disabled={!isTelefoneValido || isRequesting}
             variant="outline"
-            className="w-full h-12 border-green-500 text-green-600 hover:bg-green-50"
+            className="w-full h-13 border-success text-success hover:bg-success/10"
           >
             {isRequesting ? (
               <RefreshCw className="animate-spin mr-2" size={18} />
@@ -115,31 +114,31 @@ export function AuthorizationStep({
 
   // Authorization requested - show waiting state
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <div className="w-16 h-16 rounded-full bg-amber-100 mx-auto mb-4 flex items-center justify-center animate-pulse">
-          <Clock size={32} className="text-amber-600" />
+    <div className="space-y-5">
+      <div className="text-center mb-5">
+        <div className="w-14 h-14 rounded-full bg-accent mx-auto mb-4 flex items-center justify-center animate-pulse">
+          <Clock size={28} className="text-primary" />
         </div>
-        <h2 className="text-xl font-bold text-foreground mb-2">
+        <h2 className="text-lg font-bold text-foreground mb-1.5">
           Aguardando Autorização
         </h2>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-muted-foreground text-sm px-2">
           Enviamos um código para seu {canalEnvio === 'W' ? 'WhatsApp' : 'SMS'}.
         </p>
       </div>
 
       {/* Clear instructions */}
-      <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
-        <h3 className="font-semibold text-foreground mb-2 text-sm">📱 Siga estes passos:</h3>
+      <div className="bg-accent/30 border border-primary/20 rounded-xl p-3.5">
+        <h3 className="font-semibold text-foreground mb-1.5 text-sm">📱 Siga estes passos:</h3>
         <ol className="text-sm text-muted-foreground space-y-2 list-decimal list-inside">
           <li>Abra o {canalEnvio === 'W' ? 'WhatsApp' : 'SMS'} no seu celular</li>
           <li><strong className="text-foreground">Responda a mensagem com o código recebido</strong></li>
-          <li>Volte aqui e clique no botão abaixo <strong>imediatamente</strong></li>
+          <li>Clique no botão abaixo <strong>imediatamente</strong></li>
         </ol>
       </div>
 
-      <div className="bg-muted/50 rounded-xl p-4 text-center">
-        <p className="text-sm text-muted-foreground mb-1">
+      <div className="bg-muted/50 rounded-xl p-3.5 text-center">
+        <p className="text-sm text-muted-foreground mb-0.5">
           Telefone: <span className="font-mono">{telefone}</span>
         </p>
         <p className="text-xs text-muted-foreground">
@@ -151,7 +150,7 @@ export function AuthorizationStep({
         <Button
           onClick={onVerificarAutorizacao}
           disabled={isChecking}
-          className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-semibold text-base"
+          className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base"
         >
           {isChecking ? (
             <>
@@ -170,7 +169,7 @@ export function AuthorizationStep({
           onClick={() => handleSolicitar(canalEnvio)}
           disabled={countdown > 0 || isRequesting}
           variant="outline"
-          className="w-full h-12"
+          className="w-full h-13"
         >
           {countdown > 0 ? (
             `Reenviar em ${countdown}s`

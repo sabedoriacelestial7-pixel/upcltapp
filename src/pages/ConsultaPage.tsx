@@ -298,7 +298,7 @@ export default function ConsultaPage() {
   // Loading state
   if (loadingProfile) {
     return (
-      <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
@@ -312,7 +312,7 @@ export default function ConsultaPage() {
   // Error state
   if (step === 'error') {
     return (
-      <div className="min-h-screen bg-[#f5f5f5]">
+      <div className="min-h-screen bg-background">
         <Header showChat />
         <ConsultaError
           type={errorType}
@@ -327,9 +327,9 @@ export default function ConsultaPage() {
   // Authorization step
   if (step === 'authorization') {
     return (
-      <div className="min-h-screen bg-[#f5f5f5]">
+      <div className="min-h-screen bg-background">
         <Header progress={50} showChat />
-        <main className="max-w-md mx-auto px-5 py-6">
+        <main className="max-w-md mx-auto px-4 py-5">
           <AuthorizationStep
             cpf={formatarCPF(cpf)}
             telefone={telefone}
@@ -350,10 +350,10 @@ export default function ConsultaPage() {
 
   // CPF input step (default)
   return (
-    <div className="min-h-screen bg-[#f5f5f5]">
+    <div className="min-h-screen bg-background">
       <Header progress={25} showChat />
 
-      <main className="max-w-md mx-auto px-5 py-6">
+      <main className="max-w-md mx-auto px-4 py-5">
         <CpfInputStep
           cpf={cpf}
           onCpfChange={setCpf}

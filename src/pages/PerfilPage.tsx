@@ -84,28 +84,28 @@ export default function PerfilPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] pb-20">
-      <main className="max-w-md mx-auto px-5 pt-[calc(env(safe-area-inset-top)+3rem)]">
+    <div className="min-h-screen bg-background pb-24">
+      <main className="max-w-md mx-auto px-4 pt-[calc(env(safe-area-inset-top)+2.5rem)]">
         {/* Logo */}
-        <div className="flex justify-center mb-10">
+        <div className="flex justify-center mb-8">
           <Logo size="lg" variant="light" />
         </div>
 
         {/* Menu Items */}
-        <div className="space-y-1">
+        <div className="space-y-0.5">
           {menuItems.map(({ icon: Icon, label, action }) => (
             <button
               key={action}
               onClick={() => handleMenuClick(action)}
               className={cn(
-                'w-full flex items-center justify-between p-4',
-                'bg-transparent border-b border-gray-200',
-                'hover:bg-gray-100 transition-colors',
-                'active:bg-gray-200 touch-manipulation'
+                'w-full flex items-center justify-between py-3.5 px-4',
+                'bg-transparent border-b border-border',
+                'hover:bg-muted transition-colors',
+                'active:bg-muted/80 touch-manipulation min-h-[52px]'
               )}
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <Icon size={20} className="text-primary" />
                 </div>
                 <span className="font-medium text-foreground text-sm">{label}</span>
@@ -118,13 +118,13 @@ export default function PerfilPage() {
           <button
             onClick={handleLogout}
             className={cn(
-              'w-full flex items-center gap-3 p-4',
-              'bg-transparent border-b border-gray-200',
-              'hover:bg-gray-100 transition-colors',
-              'active:bg-gray-200 touch-manipulation'
+              'w-full flex items-center gap-3 py-3.5 px-4',
+              'bg-transparent border-b border-border',
+              'hover:bg-muted transition-colors',
+              'active:bg-muted/80 touch-manipulation min-h-[52px]'
             )}
           >
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
               <LogOut size={20} className="text-primary" />
             </div>
             <span className="font-medium text-foreground text-sm">Sair</span>
@@ -134,13 +134,13 @@ export default function PerfilPage() {
            <button
              onClick={() => setShowDeleteDialog(true)}
              className={cn(
-               'w-full flex items-center gap-3 p-4',
+               'w-full flex items-center gap-3 py-3.5 px-4',
                'bg-transparent',
-               'hover:bg-red-50 transition-colors',
-               'active:bg-red-100 touch-manipulation'
+               'hover:bg-destructive/10 transition-colors',
+               'active:bg-destructive/20 touch-manipulation min-h-[52px]'
              )}
            >
-             <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0">
+             <div className="w-11 h-11 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0">
                <Trash2 size={20} className="text-destructive" />
              </div>
              <span className="font-medium text-destructive text-sm">Excluir minha conta</span>

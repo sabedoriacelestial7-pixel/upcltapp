@@ -145,10 +145,10 @@ export default function ResultadoPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#f5f5f5]">
+      <div className="min-h-screen bg-background">
         <Header showChat />
-        <main className="max-w-md mx-auto px-5 py-8 text-center">
-          <p className="text-red-500">{error}</p>
+        <main className="max-w-md mx-auto px-4 py-8 text-center">
+          <p className="text-destructive">{error}</p>
           <Button onClick={() => navigate('/consulta')} className="mt-4">
             Tentar novamente
           </Button>
@@ -162,10 +162,10 @@ export default function ResultadoPage() {
   const prazosDisponiveis = getPrazosDisponiveis(tabelas);
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] pb-24">
+    <div className="min-h-screen bg-background pb-24">
       <Header showBack showChat />
 
-      <main className="max-w-md mx-auto px-5 py-5">
+      <main className="max-w-md mx-auto px-4 py-4">
         {/* Title */}
         <h1 className="text-2xl font-bold text-foreground mb-1">
           Outras simulações
@@ -175,7 +175,7 @@ export default function ResultadoPage() {
         </p>
 
         {/* Parcela Editor */}
-        <div className="bg-white rounded-2xl p-4 shadow-card mb-5">
+        <div className="bg-card rounded-2xl p-4 shadow-card mb-5">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-muted-foreground">Parcela desejada</span>
             <span className="text-xs text-muted-foreground">
@@ -226,7 +226,7 @@ export default function ResultadoPage() {
             return (
               <div 
                 key={prazo}
-                className="bg-white rounded-2xl shadow-card overflow-hidden"
+                className="bg-card rounded-2xl shadow-card overflow-hidden"
               >
                 {/* Card Header - Clicável */}
                 <button

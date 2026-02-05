@@ -87,12 +87,15 @@
 
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     min-height: 100vh;
     min-height: 100dvh;
+    overscroll-behavior-y: contain;
   }
 }
 
@@ -123,6 +126,17 @@
 
   .safe-top {
     padding-top: env(safe-area-inset-top, 0);
+  }
+
+  /* Mobile-first touch target utilities */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .touch-target-lg {
+    min-width: 48px;
+    min-height: 48px;
   }
 
   /* Animation utilities */

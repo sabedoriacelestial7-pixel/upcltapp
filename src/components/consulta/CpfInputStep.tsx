@@ -41,17 +41,17 @@ export function CpfInputStep({
   const isCelularValido = celularLimpo.length >= 10;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Admin Badge */}
       {isAdmin && (
-        <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 px-3 py-2 rounded-lg">
+        <div className="flex items-center gap-2 bg-accent/50 border border-accent text-accent-foreground px-3 py-2.5 rounded-lg">
           <Shield size={16} />
           <span className="text-sm font-medium">Modo Administrador - Consulta livre de CPFs</span>
         </div>
       )}
 
       <div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">
+        <h1 className="text-xl font-bold text-foreground mb-1.5">
           Vamos começar
         </h1>
         <p className="text-muted-foreground">
@@ -64,7 +64,7 @@ export function CpfInputStep({
       </div>
 
       {/* Nome */}
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <Label htmlFor="nome" className="text-sm font-medium text-foreground">
           Nome completo
         </Label>
@@ -74,7 +74,9 @@ export function CpfInputStep({
           placeholder="Digite seu nome completo"
           value={nome}
           onChange={(e) => onNomeChange(e.target.value)}
-          className="h-12 text-base"
+          className="h-13 text-base"
+          autoComplete="name"
+          enterKeyHint="next"
         />
       </div>
 
@@ -93,8 +95,8 @@ export function CpfInputStep({
           }
         />
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <label className="block text-sm font-medium text-muted-foreground mb-2">
+        <div className="bg-card rounded-xl border border-border p-4">
+          <label className="block text-sm font-medium text-muted-foreground mb-1.5">
             CPF Vinculado
           </label>
           <div className="flex items-center gap-3">
@@ -107,7 +109,7 @@ export function CpfInputStep({
       )}
 
       {/* Data de Nascimento */}
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <Label className="text-sm font-medium text-foreground">
           Data de nascimento
         </Label>
@@ -116,7 +118,7 @@ export function CpfInputStep({
             <Button
               variant="outline"
               className={cn(
-                "w-full h-12 justify-start text-left font-normal",
+                "w-full h-13 justify-start text-left font-normal text-base",
                 !dataNascimento && "text-muted-foreground"
               )}
             >
@@ -161,7 +163,7 @@ export function CpfInputStep({
       />
 
       <p className="text-xs text-muted-foreground text-center">
-        Você receberá um código de autorização no celular informado.
+        Você receberá um código de autorização no celular.
       </p>
     </div>
   );

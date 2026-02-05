@@ -1,10 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { User, Bell, Banknote, Sparkles } from 'lucide-react';
+import { User, Bell, Banknote } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { useApp } from '@/contexts/AppContext';
 import { formatarMoeda } from '@/utils/formatters';
 import { cn } from '@/lib/utils';
-import { EmptyState } from '@/components/EmptyState';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -16,38 +15,42 @@ export default function HomePage() {
     : null;
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-[#f5f5f5] pb-20">
+    <div className="min-h-screen min-h-[100dvh] bg-background pb-24">
       {/* Header */}
       <header className="bg-primary pt-[env(safe-area-inset-top)]">
-        <div className="px-5 py-4 flex items-center justify-between">
-          <p className="text-white text-lg font-medium">
+        <div className="px-4 py-3 flex items-center justify-between">
+          <p className="text-primary-foreground text-lg font-medium">
             Olá, {firstName}
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <button 
               onClick={() => navigate('/perfil')}
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white/80 hover:bg-white/10 transition-colors touch-manipulation"
+              className="w-11 h-11 rounded-full flex items-center justify-center text-primary-foreground/80 hover:bg-primary-foreground/10 transition-colors touch-manipulation"
+              aria-label="Ir para perfil"
             >
               <User size={22} />
             </button>
-            <button className="w-10 h-10 rounded-full flex items-center justify-center text-white/80 hover:bg-white/10 transition-colors touch-manipulation">
+            <button 
+              className="w-11 h-11 rounded-full flex items-center justify-center text-primary-foreground/80 hover:bg-primary-foreground/10 transition-colors touch-manipulation"
+              aria-label="Notificações"
+            >
               <Bell size={22} />
             </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-5 py-5">
+      <main className="max-w-md mx-auto px-4 py-4">
         {/* Credit Opportunities Section */}
         <section>
-          <h2 className="text-muted-foreground text-sm mb-3">
+          <h2 className="text-muted-foreground text-sm font-medium mb-3">
             Oportunidades de crédito
           </h2>
 
           <button
             onClick={() => navigate('/consulta')}
             className={cn(
-              'w-full bg-white rounded-xl p-4 shadow-card group',
+              'w-full bg-card rounded-xl p-4 shadow-card group',
               'flex items-center gap-4 text-left',
               'hover:shadow-card-hover transition-all duration-200',
               'active:scale-[0.99] touch-manipulation'
@@ -71,8 +74,8 @@ export default function HomePage() {
 
         {/* Empty state hint */}
         {!consulta && (
-          <div className="mt-8 text-center">
-            <p className="text-muted-foreground text-sm">
+          <div className="mt-6 text-center">
+            <p className="text-muted-foreground text-sm px-4">
               Consulte sua margem para ver ofertas personalizadas
             </p>
           </div>

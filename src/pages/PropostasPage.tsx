@@ -261,9 +261,9 @@ export default function PropostasPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] pb-20">
+    <div className="min-h-screen bg-background pb-24">
       <main className={cn(
-        "px-5 pt-[calc(env(safe-area-inset-top)+1rem)]",
+        "px-4 pt-[calc(env(safe-area-inset-top)+1rem)]",
         isAdmin && viewMode === 'all' ? "max-w-4xl mx-auto" : "max-w-md mx-auto"
       )}>
         {/* Header */}
