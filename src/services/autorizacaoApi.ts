@@ -40,18 +40,25 @@ export async function solicitarAutorizacao(
     if (error) {
       console.error('Error calling facta-autorizar:', error);
       
-      // Check for specific error types
-      if (error.message?.includes('non-2xx') || error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+      // Check for specific auth errors (401 Unauthorized)
+      const errorMsg = error.message || '';
+      if (errorMsg.includes('401') || errorMsg.includes('Unauthorized')) {
         return {
           sucesso: false,
           mensagem: 'Sessão expirada. Por favor, faça login novamente.'
         };
       }
       
+      // For other errors, return a generic message
       return {
         sucesso: false,
-        mensagem: error.message || 'Erro ao solicitar autorização. Tente novamente.'
+        mensagem: 'Erro ao solicitar autorização. Tente novamente.'
       };
+    }
+
+    // If data contains the actual error from the edge function
+    if (data && !data.sucesso) {
+      return data as AutorizacaoResult;
     }
 
     return data as AutorizacaoResult;
