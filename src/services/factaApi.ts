@@ -1,7 +1,7 @@
 import { TrabalhadorData } from '@/contexts/AppContext';
 
 // Proxy via Cloudflare Tunnel
-const PROXY_BASE_URL = 'https://robinson-feeding-yale-perspectives.trycloudflare.com';
+const PROXY_BASE_URL = 'https://theft-auctions-fabulous-lloyd.trycloudflare.com';
 
 export interface ConsultaResult {
   sucesso: boolean;
