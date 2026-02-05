@@ -27,24 +27,41 @@ export async function solicitarAutorizacao(
   const cpfLimpo = cpf.replace(/\D/g, '');
   const celularLimpo = celular.replace(/\D/g, '');
 
-  const { data, error } = await supabase.functions.invoke('facta-autorizar', {
-    body: { 
-      cpf: cpfLimpo, 
-      celular: celularLimpo, 
-      canal,
-      nome: nome || 'Cliente'
-    }
-  });
+  try {
+    const { data, error } = await supabase.functions.invoke('facta-autorizar', {
+      body: { 
+        cpf: cpfLimpo, 
+        celular: celularLimpo, 
+        canal,
+        nome: nome || 'Cliente'
+      }
+    });
 
-  if (error) {
-    console.error('Error calling facta-autorizar:', error);
+    if (error) {
+      console.error('Error calling facta-autorizar:', error);
+      
+      // Check for specific error types
+      if (error.message?.includes('non-2xx') || error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+        return {
+          sucesso: false,
+          mensagem: 'Sessão expirada. Por favor, faça login novamente.'
+        };
+      }
+      
+      return {
+        sucesso: false,
+        mensagem: error.message || 'Erro ao solicitar autorização. Tente novamente.'
+      };
+    }
+
+    return data as AutorizacaoResult;
+  } catch (err) {
+    console.error('Exception calling facta-autorizar:', err);
     return {
       sucesso: false,
-      mensagem: error.message || 'Erro ao solicitar autorização'
+      mensagem: 'Erro de conexão. Verifique sua internet e tente novamente.'
     };
   }
-
-  return data as AutorizacaoResult;
 }
 
 /**

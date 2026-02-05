@@ -107,7 +107,11 @@ export default function ConsultaPage() {
 
   // Request authorization via SMS/WhatsApp
   const handleSolicitarAutorizacao = async (canal: 'S' | 'W') => {
-    if (!user) return;
+    if (!user) {
+      toast.error('Sessão expirada. Faça login novamente.');
+      navigate('/login');
+      return;
+    }
 
     setIsRequesting(true);
     setCanalEnvio(canal);
@@ -132,10 +136,22 @@ export default function ConsultaPage() {
         setPollingActive(true);
         toast.success(`Código enviado por ${canal === 'W' ? 'WhatsApp' : 'SMS'}!`);
       } else {
-        toast.error(result.mensagem || 'Erro ao enviar código');
+        // Mostrar mensagem de erro específica
+        const errorMsg = result.mensagem || 'Erro ao enviar código';
+        toast.error(errorMsg);
+        console.error('Erro ao solicitar autorização:', errorMsg);
       }
     } catch (error) {
-      toast.error('Erro ao solicitar autorização');
+      console.error('Erro na solicitação de autorização:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao solicitar autorização';
+      
+      // Check for session/auth errors
+      if (errorMessage.includes('Unauthorized') || errorMessage.includes('401')) {
+        toast.error('Sessão expirada. Faça login novamente.');
+        navigate('/login');
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setIsRequesting(false);
     }
