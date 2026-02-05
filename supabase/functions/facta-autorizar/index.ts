@@ -20,23 +20,57 @@ async function getFactaToken(): Promise<string> {
 
   const authBasic = Deno.env.get('FACTA_AUTH_BASIC');
   if (!authBasic) {
-    throw new Error("FACTA_AUTH_BASIC not configured");
+    throw new Error("Credenciais Facta não configuradas. Contate o suporte.");
   }
 
   console.log("Fetching new Facta token...");
   
-  const response = await fetch(`${FACTA_BASE_URL}/gera-token`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Basic ${authBasic}`
-    }
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${FACTA_BASE_URL}/gera-token`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Basic ${authBasic}`
+      }
+    });
+  } catch (fetchError) {
+    console.error("Fetch error getting token:", fetchError);
+    throw new Error("Erro de conexão com o servidor Facta. Tente novamente.");
+  }
 
-  const data = await response.json();
+  console.log(`Token response status: ${response.status}`);
+
+  // Check if response is OK
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(`Token request failed: ${response.status} - ${errorText.substring(0, 200)}`);
+    throw new Error("Servidor Facta indisponível. Tente novamente em alguns minutos.");
+  }
+
+  // Check content type before parsing
+  const contentType = response.headers.get('content-type') || '';
+  const responseText = await response.text();
+  
+  console.log(`Token response content-type: ${contentType}`);
+  console.log(`Token response body (first 200 chars): ${responseText.substring(0, 200)}`);
+  
+  if (!contentType.includes('application/json') && !responseText.startsWith('{')) {
+    console.error("Non-JSON response from Facta:", responseText.substring(0, 500));
+    throw new Error("API Facta indisponível. Tente novamente em alguns minutos.");
+  }
+
+  let data;
+  try {
+    data = JSON.parse(responseText);
+  } catch (parseError) {
+    console.error("Failed to parse token response:", responseText.substring(0, 200));
+    throw new Error("Resposta inválida do servidor Facta. Tente novamente.");
+  }
+  
   console.log("Token response:", JSON.stringify(data));
   
   if (data.erro) {
-    throw new Error(data.mensagem || "Failed to get Facta token");
+    throw new Error(data.mensagem || "Falha na autenticação com Facta");
   }
 
   // Cache token for 55 minutes (tokens expire in 60 min)
@@ -59,7 +93,7 @@ serve(async (req) => {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return new Response(
-        JSON.stringify({ sucesso: false, mensagem: 'Unauthorized' }),
+        JSON.stringify({ sucesso: false, mensagem: 'Não autorizado. Faça login novamente.' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -73,8 +107,9 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     
     if (userError || !user) {
+      console.error("Auth error:", userError);
       return new Response(
-        JSON.stringify({ sucesso: false, mensagem: 'Unauthorized' }),
+        JSON.stringify({ sucesso: false, mensagem: 'Sessão inválida. Faça login novamente.' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -115,18 +150,49 @@ serve(async (req) => {
     formData.append('tipo_envio', tipoEnvio);
 
     // Call Facta API directly
-    const factaResponse = await fetch(`${FACTA_BASE_URL}/solicita-autorizacao-consulta`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: formData.toString()
-    });
+    let factaResponse: Response;
+    try {
+      factaResponse = await fetch(`${FACTA_BASE_URL}/solicita-autorizacao-consulta`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData.toString()
+      });
+    } catch (fetchError) {
+      console.error("Fetch error calling authorization:", fetchError);
+      return new Response(
+        JSON.stringify({ sucesso: false, mensagem: "Erro de conexão. Tente novamente." }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     console.log(`Facta authorization response status: ${factaResponse.status}`);
 
-    const factaData = await factaResponse.json();
+    // Check content type and parse response
+    const responseText = await factaResponse.text();
+    console.log(`Authorization response (first 200 chars): ${responseText.substring(0, 200)}`);
+    
+    if (!responseText.startsWith('{') && !responseText.startsWith('[')) {
+      console.error("Non-JSON authorization response:", responseText.substring(0, 500));
+      return new Response(
+        JSON.stringify({ sucesso: false, mensagem: "Serviço temporariamente indisponível. Tente novamente em alguns minutos." }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    let factaData;
+    try {
+      factaData = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error("Failed to parse authorization response:", responseText.substring(0, 200));
+      return new Response(
+        JSON.stringify({ sucesso: false, mensagem: "Resposta inválida do servidor. Tente novamente." }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
     console.log("Facta authorization response:", JSON.stringify(factaData));
 
     // Check for explicit errors
