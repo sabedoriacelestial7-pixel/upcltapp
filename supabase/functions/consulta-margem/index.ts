@@ -25,10 +25,11 @@ async function getFactaToken(): Promise<string> {
 
   console.log("Fetching new Facta token...");
   
+  // authBasic already includes "Basic " prefix
   const response = await fetch(`${FACTA_BASE_URL}/gera-token`, {
     method: 'GET',
     headers: {
-      'Authorization': `Basic ${authBasic}`
+      'Authorization': authBasic
     }
   });
 

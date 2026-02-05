@@ -27,10 +27,11 @@ async function getFactaToken(): Promise<string> {
   
   let response: Response;
   try {
+    // authBasic already includes "Basic " prefix
     response = await fetch(`${FACTA_BASE_URL}/gera-token`, {
       method: 'GET',
       headers: {
-        'Authorization': `Basic ${authBasic}`
+        'Authorization': authBasic
       }
     });
   } catch (fetchError) {
