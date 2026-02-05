@@ -1,7 +1,7 @@
 import { TrabalhadorData } from '@/contexts/AppContext';
 
-// Proxy local - porta 3001
-const PROXY_BASE_URL = 'http://localhost:3001';
+// Proxy via Cloudflare Tunnel
+const PROXY_BASE_URL = 'https://robinson-feeding-yale-perspectives.trycloudflare.com';
 
 export interface ConsultaResult {
   sucesso: boolean;
