@@ -8,9 +8,18 @@ export function formatarCPF(value: string): string {
 
 export function formatarTelefone(value: string): string {
   const cleaned = value.replace(/\D/g, '').slice(0, 11);
-  return cleaned
-    .replace(/(\d{2})(\d)/, '($1) $2')
-    .replace(/(\d{5})(\d)/, '$1-$2');
+  
+  if (cleaned.length <= 2) {
+    return cleaned.length > 0 ? `(${cleaned}` : '';
+  }
+  if (cleaned.length <= 7) {
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
+  }
+  // Celular: 11 dígitos (DDD + 9 dígitos)
+  if (cleaned.length <= 11) {
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
+  }
+  return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`;
 }
 
 export function formatarMoeda(valor: number): string {
