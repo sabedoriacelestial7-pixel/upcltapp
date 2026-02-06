@@ -1,3 +1,4 @@
+// Edge function for Facta operations (simulation, proposal creation) - v2.0
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -8,7 +9,7 @@ const corsHeaders = {
 
 // Proxy na VPS do cliente com IP liberado na Facta (via Cloudflare Tunnel)
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
-const PROXY_URL = "https://mysql-metallica-solving-lined.trycloudflare.com";
+const PROXY_URL = "https://activation-accuracy-england-looks.trycloudflare.com";
 
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;
@@ -55,9 +56,7 @@ async function getFactaToken(): Promise<string> {
       headers: { 
         'Content-Type': 'application/json',
         'User-Agent': 'Mozilla/5.0 (compatible; UpCLT/1.0)',
-        'Accept': 'application/json',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive'
+        'Accept': 'application/json'
       },
       body: JSON.stringify(requestBody),
       signal: controller.signal
@@ -74,7 +73,6 @@ async function getFactaToken(): Promise<string> {
     console.error("✗ ERRO AO CONECTAR NO PROXY:");
     console.error("  - Nome:", fetchError.name);
     console.error("  - Mensagem:", fetchError.message);
-    console.error("  - Stack:", fetchError.stack);
     
     throw new Error(`Não foi possível conectar ao servidor proxy. Verifique se o túnel Cloudflare está ativo na VPS.`);
   }
@@ -150,9 +148,7 @@ async function callFactaApi(method: string, path: string, token: string, params?
       headers: { 
         'Content-Type': 'application/json',
         'User-Agent': 'Mozilla/5.0 (compatible; UpCLT/1.0)',
-        'Accept': 'application/json',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive'
+        'Accept': 'application/json'
       },
       body: JSON.stringify(requestBody),
       signal: controller.signal
@@ -357,7 +353,7 @@ async function enviarLinkFormalizacao(token: string, params: {
   });
 }
 
-// Consultar andamento de propostas
+// Consultar andamento de propostas - conforme doc v8.0
 async function consultarAndamentoPropostas(token: string, params: {
   cpf?: string;
   propostas?: string;
@@ -370,7 +366,7 @@ async function consultarAndamentoPropostas(token: string, params: {
   });
 
   if (params.cpf) queryParams.append('cpf', params.cpf);
-  if (params.propostas) queryParams.append('propostas', params.propostas);
+  if (params.propostas) queryParams.append('af', params.propostas);
   if (params.dataIni) queryParams.append('data_ini', params.dataIni);
   if (params.dataFim) queryParams.append('data_fim', params.dataFim);
 
@@ -379,7 +375,7 @@ async function consultarAndamentoPropostas(token: string, params: {
   return await callFactaApi('GET', `/proposta/andamento-propostas?${queryParams}`, token);
 }
 
-// Consultar ocorrências de proposta
+// Consultar ocorrências de proposta - conforme doc v8.0
 async function consultarOcorrencias(token: string, codigoAf: string) {
   console.log(`→ Consultando ocorrências para AF: ${codigoAf}...`);
 

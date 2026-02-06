@@ -1,3 +1,4 @@
+// Edge function for proposals management - v2.0 (API Consulta Propostas v8.0)
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -7,7 +8,7 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
-const PROXY_URL = "https://mysql-metallica-solving-lined.trycloudflare.com";
+const PROXY_URL = "https://activation-accuracy-england-looks.trycloudflare.com";
 
 let tokenCache: { token: string; expira: Date } | null = null;
 
@@ -137,7 +138,7 @@ serve(async (req) => {
     }
 
     if (action === 'atualizar' && proposals && proposals.length > 0) {
-      // Sync status with Facta API
+      // Sync status with Facta API - conforme doc v8.0
       const token = await getFactaToken();
       
       const proposalsWithAf = proposals.filter(p => p.codigo_af);
@@ -149,13 +150,19 @@ serve(async (req) => {
         );
       }
 
+      // Conforme doc v8.0, podemos filtrar por código AF específico ou lista
       const codigosAf = proposalsWithAf.map(p => p.codigo_af).join(',');
       
+      // Parâmetros conforme doc v8.0: convenio, averbador, af, data_ini, data_fim, etc
       const queryParams = new URLSearchParams({
         convenio: '3',
-        averbador: '10010',
-        propostas: codigosAf
+        averbador: '10010'
       });
+      
+      // Adiciona filtro por código AF se específico
+      if (codigosAf) {
+        queryParams.append('af', codigosAf);
+      }
 
       console.log(`Fetching status from Facta for proposals: ${codigosAf}`);
 
@@ -169,11 +176,13 @@ serve(async (req) => {
         for (const factaProposta of factaResult.propostas) {
           const localProposta = proposalsWithAf.find(p => p.codigo_af === factaProposta.codigo_af);
           if (localProposta) {
+            // Campos conforme doc v8.0
             await supabase
               .from('proposals')
               .update({
                 status_facta: factaProposta.status_proposta,
                 status_crivo: factaProposta.status_crivo,
+                taxa_mensal: factaProposta.taxa ? parseFloat(factaProposta.taxa) : null,
                 updated_at: new Date().toISOString()
               })
               .eq('id', localProposta.id);
@@ -206,6 +215,7 @@ serve(async (req) => {
       );
     }
 
+    // Consultar ocorrências - conforme doc v8.0: GET /proposta/consulta-ocorrencias?af=X
     if (action === 'ocorrencias' && codigoAf) {
       const token = await getFactaToken();
 

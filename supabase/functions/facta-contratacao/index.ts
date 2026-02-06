@@ -1,3 +1,4 @@
+// Edge function for Facta contract creation - v2.0
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -7,7 +8,7 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
-const PROXY_URL = "https://mysql-metallica-solving-lined.trycloudflare.com";
+const PROXY_URL = "https://activation-accuracy-england-looks.trycloudflare.com";
 
 // Mapeamento de UF para código IBGE do estado (2 dígitos)
 const UF_TO_IBGE: Record<string, string> = {
@@ -18,10 +19,6 @@ const UF_TO_IBGE: Record<string, string> = {
   'RS': '43', 'RO': '11', 'RR': '14', 'SC': '42', 'SP': '35',
   'SE': '28', 'TO': '17'
 };
-
-// Mapeamento de código IBGE (7 dígitos) para código SIAFI/TOM
-// SIAFI é usado em sistemas do governo brasileiro - pode ser o que a Facta espera
-// Por enquanto, vamos tentar com código IBGE completo + estado numérico
 
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;
@@ -98,6 +95,7 @@ async function proxyPost(url: string, token: string, formData: Record<string, st
 }
 
 // Consulta código da cidade na API Facta (eles usam códigos internos, não IBGE)
+// Endpoint: GET /proposta-combos/cidade?estado=X&nome_cidade=Y
 async function consultarCodigoCidadeFacta(token: string, estado: string, nomeCidade: string): Promise<string | null> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 15000);
@@ -163,7 +161,7 @@ interface ContratacaoParams {
   dataExpedicao: string;
   estadoNatural: string;
   cidadeNatural: string;
-  cidadeNaturalNome: string; // Nome da cidade natural (ex: "Cariacica")
+  cidadeNaturalNome: string;
   celular: string;
   email: string;
   cep: string;
@@ -172,7 +170,7 @@ interface ContratacaoParams {
   complemento?: string;
   bairro: string;
   cidade: string;
-  cidadeNome: string; // Nome da cidade do endereço (ex: "Guarapari")
+  cidadeNome: string;
   estado: string;
   nomeMae: string;
   nomePai?: string;
@@ -224,7 +222,7 @@ serve(async (req) => {
     const token = await getFactaToken();
     const loginCertificado = Deno.env.get('FACTA_LOGIN_CERTIFICADO') || '1024';
 
-    // Step 1: Create simulation
+    // Step 1: Create simulation - conforme doc API Facta
     console.log("Step 1: Creating simulation...");
     const simuladorFormData: Record<string, string> = {
       produto: 'D',
@@ -285,7 +283,7 @@ serve(async (req) => {
     const cepLimpo = params.cep.replace(/\D/g, '');
     
     // A Facta usa códigos internos próprios para cidades, NÃO códigos IBGE!
-    // Precisamos consultar o código Facta usando o nome da cidade
+    // Consulta via endpoint /proposta-combos/cidade
     console.log("Looking up Facta city codes...");
     console.log("City name for address:", params.cidadeNome, "state:", params.estado);
     console.log("City name for natural:", params.cidadeNaturalNome, "state:", params.estadoNatural);
@@ -328,11 +326,11 @@ serve(async (req) => {
       estado_civil: params.estadoCivil,
       data_nascimento: params.dataNascimento,
       rg: params.rg,
-      estado_rg: params.estadoRg, // UF string (ex: "ES")
+      estado_rg: params.estadoRg,
       orgao_emissor: params.orgaoEmissor,
       data_expedicao: params.dataExpedicao,
-      estado_natural: params.estadoNatural, // UF string (ex: "ES")
-      cidade_natural: cidadeNaturalCodigoFacta, // Código interno Facta
+      estado_natural: params.estadoNatural,
+      cidade_natural: cidadeNaturalCodigoFacta,
       nacionalidade: '1',
       celular: params.celular,
       renda: params.valorRenda.toString(),
@@ -340,8 +338,8 @@ serve(async (req) => {
       endereco: params.endereco,
       numero: params.numero,
       bairro: params.bairro,
-      cidade: cidadeCodigoFacta, // Código interno Facta
-      estado: params.estado, // UF string (ex: "ES")
+      cidade: cidadeCodigoFacta,
+      estado: params.estado,
       nome_mae: params.nomeMae,
       nome_pai: params.nomePai || 'NAO DECLARADO',
       valor_patrimonio: '1',
