@@ -1,7 +1,5 @@
+import { supabase } from '@/integrations/supabase/client';
 import { TrabalhadorData } from '@/contexts/AppContext';
-
-// Proxy via Cloudflare Tunnel
-const PROXY_BASE_URL = 'https://theft-auctions-fabulous-lloyd.trycloudflare.com';
 
 export interface AutorizacaoResult {
   sucesso: boolean;
@@ -19,7 +17,7 @@ export interface ConsultaAutorizadaResult {
 
 /**
  * Solicita autorização do cliente via SMS ou WhatsApp
- * Usa o proxy local na porta 3001
+ * Usa a Edge Function facta-autorizar
  */
 export async function solicitarAutorizacao(
   cpf: string, 
@@ -31,42 +29,36 @@ export async function solicitarAutorizacao(
   const celularLimpo = celular.replace(/\D/g, '');
 
   try {
-    const response = await fetch(`${PROXY_BASE_URL}/api/facta/autorizar`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
+    const { data, error } = await supabase.functions.invoke('facta-autorizar', {
+      body: { 
         cpf: cpfLimpo, 
         celular: celularLimpo, 
         canal,
         nome: nome || 'Cliente'
-      })
+      }
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('Error calling proxy facta-autorizar:', data);
+    if (error) {
+      console.error('Error calling facta-autorizar:', error);
       return {
         sucesso: false,
-        mensagem: data.mensagem || data.error || 'Erro ao solicitar autorização'
+        mensagem: error.message || 'Erro ao solicitar autorização'
       };
     }
 
     return data as AutorizacaoResult;
   } catch (err) {
-    console.error('Exception calling proxy facta-autorizar:', err);
+    console.error('Exception calling facta-autorizar:', err);
     return {
       sucesso: false,
-      mensagem: 'Erro de conexão com o servidor. Verifique se o túnel Cloudflare está ativo.'
+      mensagem: 'Erro de conexão com o servidor.'
     };
   }
 }
 
 /**
  * Verifica se o cliente autorizou e retorna os dados de margem
- * Usa o proxy local na porta 3001
+ * Usa a Edge Function facta-consultar-autorizado
  */
 export async function verificarAutorizacao(
   cpf: string, 
@@ -76,24 +68,18 @@ export async function verificarAutorizacao(
   const celularLimpo = celular.replace(/\D/g, '');
 
   try {
-    const response = await fetch(`${PROXY_BASE_URL}/api/facta/consultar-autorizado`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
+    const { data, error } = await supabase.functions.invoke('facta-consultar-autorizado', {
+      body: { 
         cpf: cpfLimpo, 
         celular: celularLimpo 
-      })
+      }
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('Error calling proxy facta-consultar-autorizado:', data);
+    if (error) {
+      console.error('Error calling facta-consultar-autorizado:', error);
       return {
         sucesso: false,
-        mensagem: data.mensagem || data.error || 'Erro ao verificar autorização',
+        mensagem: error.message || 'Erro ao verificar autorização',
         status: 'error',
         dados: null
       };
@@ -101,10 +87,10 @@ export async function verificarAutorizacao(
 
     return data as ConsultaAutorizadaResult;
   } catch (err) {
-    console.error('Exception calling proxy facta-consultar-autorizado:', err);
+    console.error('Exception calling facta-consultar-autorizado:', err);
     return {
       sucesso: false,
-      mensagem: 'Erro de conexão com o servidor. Verifique se o túnel Cloudflare está ativo.',
+      mensagem: 'Erro de conexão com o servidor.',
       status: 'error',
       dados: null
     };

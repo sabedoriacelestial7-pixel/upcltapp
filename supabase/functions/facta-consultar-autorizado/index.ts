@@ -13,6 +13,55 @@ const FACTA_BASE_URL = "https://webservice.facta.com.br";
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;
 
+// Helper function to call Facta API via proxy
+async function callFactaApi(method: string, url: string, headers: Record<string, string>, body?: string): Promise<Response> {
+  const proxyUrl = Deno.env.get('FACTA_API_URL');
+  
+  if (!proxyUrl) {
+    console.log("FACTA_API_URL not configured, calling Facta directly");
+    return await fetch(url, {
+      method,
+      headers,
+      body
+    });
+  }
+
+  console.log(`Calling Facta via proxy: ${proxyUrl}`);
+  
+  const proxyBody: Record<string, unknown> = {
+    method,
+    url,
+    headers
+  };
+  
+  if (body) {
+    proxyBody.body = body;
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+  try {
+    const response = await fetch(proxyUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'UpCLT-EdgeFunction/1.0',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive'
+      },
+      body: JSON.stringify(proxyBody),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (err) {
+    clearTimeout(timeoutId);
+    console.error("Proxy connection error:", err);
+    throw new Error("Não foi possível conectar ao servidor proxy. Verifique se o túnel está ativo.");
+  }
+}
+
 async function getFactaToken(): Promise<string> {
   if (tokenCache && new Date() < tokenCache.expira) {
     console.log("Using cached Facta token");
@@ -26,19 +75,26 @@ async function getFactaToken(): Promise<string> {
 
   console.log("Fetching new Facta token...");
   
-  const response = await fetch(`${FACTA_BASE_URL}/gera-token`, {
-    method: 'GET',
-    headers: { 'Authorization': authBasic }
+  const response = await callFactaApi('GET', `${FACTA_BASE_URL}/gera-token`, {
+    'Authorization': authBasic
   });
 
-  const contentType = response.headers.get('content-type') || '';
-  if (!contentType.includes('application/json')) {
-    const text = await response.text();
-    console.error("Invalid response type:", contentType, "Body:", text.substring(0, 200));
-    throw new Error("Servidor Facta retornou resposta inválida");
+  const responseText = await response.text();
+  console.log("Token response text:", responseText.substring(0, 200));
+
+  if (responseText.startsWith('<!DOCTYPE') || responseText.startsWith('<html')) {
+    console.error("Facta returned HTML instead of JSON");
+    throw new Error("Servidor Facta temporariamente indisponível");
   }
 
-  const data = await response.json();
+  let data;
+  try {
+    data = JSON.parse(responseText);
+  } catch {
+    console.error("Failed to parse token response:", responseText.substring(0, 200));
+    throw new Error("Resposta inválida do servidor Facta");
+  }
+
   console.log("Token response:", JSON.stringify(data));
   
   if (data.erro) {
@@ -57,7 +113,6 @@ async function getFactaToken(): Promise<string> {
 function parseValor(valor: string | number | undefined): number {
   if (valor === undefined || valor === null || valor === '') return 0;
   if (typeof valor === 'number') return valor;
-  // Replace dots (thousands separator) and convert comma to decimal point
   const normalized = valor.toString().replace(/\./g, '').replace(',', '.');
   return parseFloat(normalized) || 0;
 }
@@ -111,22 +166,18 @@ serve(async (req) => {
     // Get Facta token
     const token = await getFactaToken();
 
-    // Call Facta API - conforme doc v2.0: GET /consignado-trabalhador/autoriza-consulta?cpf=X
-    // Nota: Este endpoint retorna os dados do trabalhador se já autorizado
-    const factaResponse = await fetch(
+    // Call Facta API via proxy
+    const factaResponse = await callFactaApi(
+      'GET',
       `${FACTA_BASE_URL}/consignado-trabalhador/autoriza-consulta?cpf=${cpfLimpo}`,
       {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        'Authorization': `Bearer ${token}`
       }
     );
 
     const responseText = await factaResponse.text();
     console.log("Raw Facta response:", responseText.substring(0, 500));
 
-    // Check if response is HTML (error page)
     if (responseText.startsWith('<!DOCTYPE') || responseText.startsWith('<html')) {
       console.error("Facta returned HTML instead of JSON");
       return new Response(
@@ -157,7 +208,7 @@ serve(async (req) => {
 
     console.log("Facta authorization check response:", JSON.stringify(factaData));
 
-    // Check if token expired - doc v2.0: "Token expirado, necessário utilizar o endpoint {solicita-autorizacao-consulta}"
+    // Check if token expired
     const isTokenExpired = factaData.erro && (
       factaData.mensagem?.includes('Token expirado') || 
       factaData.mensagem?.includes('solicita-autorizacao')
@@ -174,7 +225,7 @@ serve(async (req) => {
       );
     }
 
-    // Check for "virada de folha" - indisponibilidade temporária
+    // Check for "virada de folha"
     if (factaData.mensagem?.includes('virada de folha')) {
       return new Response(
         JSON.stringify({ 
@@ -200,7 +251,6 @@ serve(async (req) => {
     }
 
     // Authorization granted - extract worker data
-    // Conforme doc v2.0, dados estão em dados_trabalhador.dados
     const dadosTrabalhador = factaData.dados_trabalhador?.dados || [];
     
     if (!dadosTrabalhador || dadosTrabalhador.length === 0) {
@@ -217,12 +267,12 @@ serve(async (req) => {
 
     const trabalhador = dadosTrabalhador[0];
     
-    // Check eligibility - pode ser "S", "SIM", "1", true ou vazio
+    // Check eligibility
     const elegivelRaw = trabalhador.elegivel;
     const elegivel = elegivelRaw === "S" || elegivelRaw === "SIM" || elegivelRaw === "1" || 
                      elegivelRaw === true || elegivelRaw === "true";
 
-    // Build formatted response - campos conforme doc v2.0
+    // Build formatted response
     const dadosFormatados = {
       nome: trabalhador.nome,
       cpf: trabalhador.cpf,
