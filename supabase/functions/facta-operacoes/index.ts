@@ -7,15 +7,15 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-// Proxy na VPS do cliente com IP liberado na Facta (via Cloudflare Tunnel)
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
-const PROXY_URL = "https://activation-accuracy-england-looks.trycloudflare.com";
 
 // Token cache
 let tokenCache: { token: string; expira: Date } | null = null;
 
 async function getFactaToken(): Promise<string> {
   console.log("=== INÍCIO OBTENÇÃO TOKEN ===");
+  
+  const proxyUrl = Deno.env.get('FACTA_API_URL');
   
   if (tokenCache && new Date() < tokenCache.expira) {
     console.log("✓ Usando token em cache");
@@ -27,14 +27,18 @@ async function getFactaToken(): Promise<string> {
     throw new Error("FACTA_AUTH_BASIC não configurado");
   }
 
+  if (!proxyUrl) {
+    throw new Error("FACTA_API_URL não configurado");
+  }
+
   console.log("→ Buscando novo token via proxy...");
-  console.log("→ Proxy URL:", PROXY_URL);
+  console.log("→ Proxy URL:", proxyUrl);
   
   const requestBody = {
     method: 'GET',
     url: `${FACTA_BASE_URL}/gera-token`,
     headers: { 
-      'Authorization': `Basic ${authBasic}`,
+      'Authorization': authBasic,
       'Accept': 'application/json'
     }
   };
@@ -51,11 +55,11 @@ async function getFactaToken(): Promise<string> {
     const startTime = Date.now();
     console.log("→ Enviando requisição ao proxy...");
     
-    response = await fetch(PROXY_URL, {
+    response = await fetch(proxyUrl, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (compatible; UpCLT/1.0)',
+        'User-Agent': 'UpCLT-EdgeFunction/1.0',
         'Accept': 'application/json'
       },
       body: JSON.stringify(requestBody),
@@ -117,6 +121,11 @@ async function getFactaToken(): Promise<string> {
 async function callFactaApi(method: string, path: string, token: string, params?: Record<string, any>): Promise<any> {
   console.log(`=== CHAMADA API FACTA: ${method} ${path} ===`);
   
+  const proxyUrl = Deno.env.get('FACTA_API_URL');
+  if (!proxyUrl) {
+    throw new Error("FACTA_API_URL não configurado");
+  }
+  
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
     console.error("✗ TIMEOUT atingido (30s)");
@@ -143,11 +152,11 @@ async function callFactaApi(method: string, path: string, token: string, params?
     const startTime = Date.now();
     console.log("→ Enviando requisição ao proxy...");
     
-    const response = await fetch(PROXY_URL, {
+    const response = await fetch(proxyUrl, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (compatible; UpCLT/1.0)',
+        'User-Agent': 'UpCLT-EdgeFunction/1.0',
         'Accept': 'application/json'
       },
       body: JSON.stringify(requestBody),
