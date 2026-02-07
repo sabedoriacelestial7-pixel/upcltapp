@@ -375,10 +375,9 @@ serve(async (req) => {
       estado: params.estado,
     };
 
-    // Adiciona CPF do cônjuge se estado civil for casado(a) ou união estável
-    if (params.cpfConjuge) {
-      dadosFormData.cpf_conjuge = params.cpfConjuge;
-    }
+    // A Facta SEMPRE exige cpf_conjuge, mesmo para solteiros/divorciados
+    // Para não-casados, envia o próprio CPF do cliente
+    dadosFormData.cpf_conjuge = params.cpfConjuge || params.cpf;
 
     dadosFormData.nome_mae = params.nomeMae;
     dadosFormData.nome_pai = params.nomePai || 'NAO DECLARADO';
