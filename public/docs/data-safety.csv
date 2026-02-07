@@ -1,0 +1,60 @@
+Question ID (machine readable - do not modify),Response ID (machine readable - do not modify),Response value (machine readable - do not modify),Answer requirement (human readable),Question (human readable),Answer (human readable)
+PSL_DATA_TYPES_PERSONAL,PSL_DATA_TYPES_PERSONAL_NAME,true,Multiple choice,Personal info: Name,Selected
+PSL_DATA_TYPES_PERSONAL,PSL_DATA_TYPES_PERSONAL_EMAIL,true,Multiple choice,Personal info: Email address,Selected
+PSL_DATA_TYPES_PERSONAL,PSL_DATA_TYPES_PERSONAL_PHONE,true,Multiple choice,Personal info: Phone number,Selected
+PSL_DATA_TYPES_PERSONAL,PSL_DATA_TYPES_PERSONAL_OTHER_USER_IDS,true,Multiple choice,Personal info: Other info,Selected
+PSL_DATA_TYPES_FINANCIAL,PSL_DATA_TYPES_FINANCIAL_CREDIT_INFO,true,Multiple choice,Financial info: Credit info,Selected
+PSL_DATA_TYPES_FINANCIAL,PSL_DATA_TYPES_FINANCIAL_OTHER,true,Multiple choice,Financial info: Other financial info,Selected
+PSL_DATA_USAGE_PERSONAL_NAME,PSL_DATA_USAGE_COLLECTION_AND_SHARING,DATA_USAGE_COLLECTION_AND_SHARING_COLLECTED,Multiple choice,Name: Is data collected or shared?,Collected
+PSL_DATA_USAGE_PERSONAL_NAME,PSL_DATA_USAGE_COLLECTION_AND_SHARING,DATA_USAGE_COLLECTION_AND_SHARING_SHARED,Multiple choice,Name: Is data collected or shared?,Shared
+PSL_DATA_USAGE_PERSONAL_NAME,PSL_DATA_USAGE_EPHEMERAL,false,Single choice,Name: Is this data processed ephemerally?,No
+PSL_DATA_USAGE_PERSONAL_NAME,PSL_DATA_USAGE_REQUIRED,true,Single choice,Name: Is this data required?,Yes
+PSL_DATA_USAGE_PERSONAL_NAME,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_APP_FUNCTIONALITY,Multiple choice,Name: Why is this data collected?,App functionality
+PSL_DATA_USAGE_PERSONAL_NAME,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_ACCOUNT_MANAGEMENT,Multiple choice,Name: Why is this data collected?,Account management
+PSL_DATA_USAGE_PERSONAL_NAME,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_FRAUD_PREVENTION_SECURITY,Multiple choice,Name: Why is this data collected?,Fraud prevention and security
+PSL_DATA_USAGE_PERSONAL_NAME,PSL_DATA_USAGE_PURPOSES_SHARED,DATA_USAGE_PURPOSE_APP_FUNCTIONALITY,Multiple choice,Name: Why is this data shared?,App functionality
+PSL_DATA_USAGE_PERSONAL_NAME,PSL_DATA_USAGE_PURPOSES_SHARED,DATA_USAGE_PURPOSE_FRAUD_PREVENTION_SECURITY,Multiple choice,Name: Why is this data shared?,Fraud prevention and security
+PSL_DATA_USAGE_PERSONAL_EMAIL,PSL_DATA_USAGE_COLLECTION_AND_SHARING,DATA_USAGE_COLLECTION_AND_SHARING_COLLECTED,Multiple choice,Email: Is data collected or shared?,Collected
+PSL_DATA_USAGE_PERSONAL_EMAIL,PSL_DATA_USAGE_COLLECTION_AND_SHARING,DATA_USAGE_COLLECTION_AND_SHARING_SHARED,Multiple choice,Email: Is data collected or shared?,Shared
+PSL_DATA_USAGE_PERSONAL_EMAIL,PSL_DATA_USAGE_EPHEMERAL,false,Single choice,Email: Is this data processed ephemerally?,No
+PSL_DATA_USAGE_PERSONAL_EMAIL,PSL_DATA_USAGE_REQUIRED,true,Single choice,Email: Is this data required?,Yes
+PSL_DATA_USAGE_PERSONAL_EMAIL,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_APP_FUNCTIONALITY,Multiple choice,Email: Why is this data collected?,App functionality
+PSL_DATA_USAGE_PERSONAL_EMAIL,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_ACCOUNT_MANAGEMENT,Multiple choice,Email: Why is this data collected?,Account management
+PSL_DATA_USAGE_PERSONAL_EMAIL,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_FRAUD_PREVENTION_SECURITY,Multiple choice,Email: Why is this data collected?,Fraud prevention and security
+PSL_DATA_USAGE_PERSONAL_EMAIL,PSL_DATA_USAGE_PURPOSES_SHARED,DATA_USAGE_PURPOSE_APP_FUNCTIONALITY,Multiple choice,Email: Why is this data shared?,App functionality
+PSL_DATA_USAGE_PERSONAL_EMAIL,PSL_DATA_USAGE_PURPOSES_SHARED,DATA_USAGE_PURPOSE_FRAUD_PREVENTION_SECURITY,Multiple choice,Email: Why is this data shared?,Fraud prevention and security
+PSL_DATA_USAGE_PERSONAL_PHONE,PSL_DATA_USAGE_COLLECTION_AND_SHARING,DATA_USAGE_COLLECTION_AND_SHARING_COLLECTED,Multiple choice,Phone: Is data collected or shared?,Collected
+PSL_DATA_USAGE_PERSONAL_PHONE,PSL_DATA_USAGE_COLLECTION_AND_SHARING,DATA_USAGE_COLLECTION_AND_SHARING_SHARED,Multiple choice,Phone: Is data collected or shared?,Shared
+PSL_DATA_USAGE_PERSONAL_PHONE,PSL_DATA_USAGE_EPHEMERAL,false,Single choice,Phone: Is this data processed ephemerally?,No
+PSL_DATA_USAGE_PERSONAL_PHONE,PSL_DATA_USAGE_REQUIRED,true,Single choice,Phone: Is this data required?,Yes
+PSL_DATA_USAGE_PERSONAL_PHONE,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_APP_FUNCTIONALITY,Multiple choice,Phone: Why is this data collected?,App functionality
+PSL_DATA_USAGE_PERSONAL_PHONE,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_ACCOUNT_MANAGEMENT,Multiple choice,Phone: Why is this data collected?,Account management
+PSL_DATA_USAGE_PERSONAL_PHONE,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_FRAUD_PREVENTION_SECURITY,Multiple choice,Phone: Why is this data collected?,Fraud prevention and security
+PSL_DATA_USAGE_PERSONAL_PHONE,PSL_DATA_USAGE_PURPOSES_SHARED,DATA_USAGE_PURPOSE_APP_FUNCTIONALITY,Multiple choice,Phone: Why is this data shared?,App functionality
+PSL_DATA_USAGE_PERSONAL_PHONE,PSL_DATA_USAGE_PURPOSES_SHARED,DATA_USAGE_PURPOSE_FRAUD_PREVENTION_SECURITY,Multiple choice,Phone: Why is this data shared?,Fraud prevention and security
+PSL_DATA_USAGE_PERSONAL_OTHER_USER_IDS,PSL_DATA_USAGE_COLLECTION_AND_SHARING,DATA_USAGE_COLLECTION_AND_SHARING_COLLECTED,Multiple choice,Other IDs (CPF): Is data collected or shared?,Collected
+PSL_DATA_USAGE_PERSONAL_OTHER_USER_IDS,PSL_DATA_USAGE_COLLECTION_AND_SHARING,DATA_USAGE_COLLECTION_AND_SHARING_SHARED,Multiple choice,Other IDs (CPF): Is data collected or shared?,Shared
+PSL_DATA_USAGE_PERSONAL_OTHER_USER_IDS,PSL_DATA_USAGE_EPHEMERAL,false,Single choice,Other IDs (CPF): Is this data processed ephemerally?,No
+PSL_DATA_USAGE_PERSONAL_OTHER_USER_IDS,PSL_DATA_USAGE_REQUIRED,true,Single choice,Other IDs (CPF): Is this data required?,Yes
+PSL_DATA_USAGE_PERSONAL_OTHER_USER_IDS,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_APP_FUNCTIONALITY,Multiple choice,Other IDs (CPF): Why is this data collected?,App functionality
+PSL_DATA_USAGE_PERSONAL_OTHER_USER_IDS,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_FRAUD_PREVENTION_SECURITY,Multiple choice,Other IDs (CPF): Why is this data collected?,Fraud prevention and security
+PSL_DATA_USAGE_PERSONAL_OTHER_USER_IDS,PSL_DATA_USAGE_PURPOSES_SHARED,DATA_USAGE_PURPOSE_APP_FUNCTIONALITY,Multiple choice,Other IDs (CPF): Why is this data shared?,App functionality
+PSL_DATA_USAGE_PERSONAL_OTHER_USER_IDS,PSL_DATA_USAGE_PURPOSES_SHARED,DATA_USAGE_PURPOSE_FRAUD_PREVENTION_SECURITY,Multiple choice,Other IDs (CPF): Why is this data shared?,Fraud prevention and security
+PSL_DATA_USAGE_FINANCIAL_CREDIT_INFO,PSL_DATA_USAGE_COLLECTION_AND_SHARING,DATA_USAGE_COLLECTION_AND_SHARING_COLLECTED,Multiple choice,Credit info: Is data collected or shared?,Collected
+PSL_DATA_USAGE_FINANCIAL_CREDIT_INFO,PSL_DATA_USAGE_COLLECTION_AND_SHARING,DATA_USAGE_COLLECTION_AND_SHARING_SHARED,Multiple choice,Credit info: Is data collected or shared?,Shared
+PSL_DATA_USAGE_FINANCIAL_CREDIT_INFO,PSL_DATA_USAGE_EPHEMERAL,false,Single choice,Credit info: Is this data processed ephemerally?,No
+PSL_DATA_USAGE_FINANCIAL_CREDIT_INFO,PSL_DATA_USAGE_REQUIRED,true,Single choice,Credit info: Is this data required?,Yes
+PSL_DATA_USAGE_FINANCIAL_CREDIT_INFO,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_APP_FUNCTIONALITY,Multiple choice,Credit info: Why is this data collected?,App functionality
+PSL_DATA_USAGE_FINANCIAL_CREDIT_INFO,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_FRAUD_PREVENTION_SECURITY,Multiple choice,Credit info: Why is this data collected?,Fraud prevention and security
+PSL_DATA_USAGE_FINANCIAL_CREDIT_INFO,PSL_DATA_USAGE_PURPOSES_SHARED,DATA_USAGE_PURPOSE_APP_FUNCTIONALITY,Multiple choice,Credit info: Why is this data shared?,App functionality
+PSL_DATA_USAGE_FINANCIAL_CREDIT_INFO,PSL_DATA_USAGE_PURPOSES_SHARED,DATA_USAGE_PURPOSE_FRAUD_PREVENTION_SECURITY,Multiple choice,Credit info: Why is this data shared?,Fraud prevention and security
+PSL_DATA_USAGE_FINANCIAL_OTHER,PSL_DATA_USAGE_COLLECTION_AND_SHARING,DATA_USAGE_COLLECTION_AND_SHARING_COLLECTED,Multiple choice,Other financial info: Is data collected or shared?,Collected
+PSL_DATA_USAGE_FINANCIAL_OTHER,PSL_DATA_USAGE_COLLECTION_AND_SHARING,DATA_USAGE_COLLECTION_AND_SHARING_SHARED,Multiple choice,Other financial info: Is data collected or shared?,Shared
+PSL_DATA_USAGE_FINANCIAL_OTHER,PSL_DATA_USAGE_EPHEMERAL,false,Single choice,Other financial info: Is this data processed ephemerally?,No
+PSL_DATA_USAGE_FINANCIAL_OTHER,PSL_DATA_USAGE_REQUIRED,true,Single choice,Other financial info: Is this data required?,Yes
+PSL_DATA_USAGE_FINANCIAL_OTHER,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_APP_FUNCTIONALITY,Multiple choice,Other financial info: Why is this data collected?,App functionality
+PSL_DATA_USAGE_FINANCIAL_OTHER,PSL_DATA_USAGE_PURPOSES_COLLECTED,DATA_USAGE_PURPOSE_FRAUD_PREVENTION_SECURITY,Multiple choice,Other financial info: Why is this data collected?,Fraud prevention and security
+PSL_DATA_USAGE_FINANCIAL_OTHER,PSL_DATA_USAGE_PURPOSES_SHARED,DATA_USAGE_PURPOSE_APP_FUNCTIONALITY,Multiple choice,Other financial info: Why is this data shared?,App functionality
+PSL_DATA_USAGE_FINANCIAL_OTHER,PSL_DATA_USAGE_PURPOSES_SHARED,DATA_USAGE_PURPOSE_FRAUD_PREVENTION_SECURITY,Multiple choice,Other financial info: Why is this data shared?,Fraud prevention and security
+PSL_DATA_SECURITY,PSL_DATA_SECURITY_ENCRYPTED_IN_TRANSIT,true,Single choice,Is all data encrypted in transit?,Yes
+PSL_DATA_SECURITY,PSL_DATA_SECURITY_DELETION_REQUEST,true,Single choice,Can users request data deletion?,Yes
