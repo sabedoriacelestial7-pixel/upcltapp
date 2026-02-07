@@ -158,6 +158,7 @@ interface ContratacaoParams {
   sexo: string;
   estadoCivil: string;
   cpfConjuge?: string;
+  nomeConjuge?: string;
   rg: string;
   estadoRg: string;
   orgaoEmissor: string;
@@ -375,9 +376,9 @@ serve(async (req) => {
       estado: params.estado,
     };
 
-    // A Facta SEMPRE exige cpf_conjuge, mesmo para solteiros/divorciados
-    // Para não-casados, envia o próprio CPF do cliente
+    // A Facta SEMPRE exige cpf_conjuge e nome_conjuge, mesmo para solteiros/divorciados
     dadosFormData.cpf_conjuge = params.cpfConjuge || params.cpf;
+    dadosFormData.nome_conjuge = params.nomeConjuge || 'NAO DECLARADO';
 
     dadosFormData.nome_mae = params.nomeMae;
     dadosFormData.nome_pai = params.nomePai || 'NAO DECLARADO';

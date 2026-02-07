@@ -73,6 +73,7 @@ export interface DadosPessoaisContratacao {
   sexo: string;
   estadoCivil: string;
   cpfConjuge?: string;
+  nomeConjuge?: string;
   rg: string;
   estadoRg: string;
   orgaoEmissor: string;
