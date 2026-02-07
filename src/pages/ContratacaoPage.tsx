@@ -416,7 +416,7 @@ export default function ContratacaoPage() {
                 
                 <div className="space-y-3">
                   <Button
-                    onClick={() => navigate('/resultado')}
+                    onClick={() => navigate('/resultado', { state: { policyLimits } })}
                     className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base gap-2"
                   >
                     <RefreshCw size={20} />

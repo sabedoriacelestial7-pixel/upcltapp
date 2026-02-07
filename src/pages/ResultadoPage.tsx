@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
  import { PageTransition } from '@/components/PageTransition';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
@@ -8,13 +8,17 @@ import { Input } from '@/components/ui/input';
 import { useApp } from '@/contexts/AppContext';
 import { formatarMoeda } from '@/utils/formatters';
 import { consultarOperacoesDisponiveis, TabelaFacta, getPrazosDisponiveis, getMelhorTabelaParaPrazo } from '@/services/factaOperacoesApi';
-import { Clock, ChevronRight, ChevronDown, RefreshCw, Edit3 } from 'lucide-react';
+import { Clock, ChevronRight, ChevronDown, RefreshCw, Edit3, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SimulationCardSkeleton } from '@/components/SkeletonLoaders';
 
 export default function ResultadoPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { consulta } = useApp();
+  
+  // Limites de política de crédito vindos da tela de contratação
+  const policyLimits = (location.state as any)?.policyLimits as { prestacaoMaxima: number | null; prazoMaximo: number | null; prazoMinimo: number | null } | undefined;
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -51,7 +55,24 @@ export default function ResultadoPage() {
         return;
       }
 
-      setTabelas(result.tabelas);
+      let tabelasFiltradas = result.tabelas;
+      
+      // Filtra por limites de política de crédito se disponíveis
+      if (policyLimits) {
+        tabelasFiltradas = tabelasFiltradas.filter(t => {
+          if (policyLimits.prazoMinimo && t.prazo < policyLimits.prazoMinimo) return false;
+          if (policyLimits.prazoMaximo && t.prazo > policyLimits.prazoMaximo) return false;
+          if (policyLimits.prestacaoMaxima && t.contrato > policyLimits.prestacaoMaxima) return false;
+          return true;
+        });
+      }
+
+      if (tabelasFiltradas.length === 0) {
+        setError('Nenhuma operação disponível dentro dos limites permitidos para este CPF');
+        return;
+      }
+
+      setTabelas(tabelasFiltradas);
       
       // Inicializa parcela desejada se ainda não definida
       if (!parcelaDesejada) {
@@ -175,7 +196,21 @@ export default function ResultadoPage() {
           Taxas acessíveis e sem burocracia
         </p>
 
-        {/* Parcela Editor */}
+        {/* Aviso de limites de política de crédito */}
+        {policyLimits && (
+          <div className="bg-primary/10 border border-primary/20 rounded-xl p-3 mb-4 flex items-start gap-2">
+            <AlertCircle size={18} className="text-primary mt-0.5 shrink-0" />
+            <p className="text-xs text-foreground leading-relaxed">
+              Exibindo apenas opções dentro dos limites aprovados
+              {policyLimits.prestacaoMaxima && ` (máx. ${formatarMoeda(policyLimits.prestacaoMaxima)})`}
+              {policyLimits.prazoMinimo && policyLimits.prazoMaximo 
+                ? ` e prazo de ${policyLimits.prazoMinimo}x a ${policyLimits.prazoMaximo}x`
+                : policyLimits.prazoMaximo ? ` e até ${policyLimits.prazoMaximo}x` : ''}
+              .
+            </p>
+          </div>
+        )}
+
         <div className="bg-card rounded-2xl p-4 shadow-card mb-5">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-muted-foreground">Parcela desejada</span>
