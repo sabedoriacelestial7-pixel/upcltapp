@@ -3,6 +3,7 @@ import { X, Send, Bot, User, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -23,11 +24,19 @@ async function streamChat({
   onError: (error: string) => void;
 }) {
   try {
+    // Get the current session token for authentication
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session?.access_token) {
+      onError('Você precisa estar logado para usar a Bia.');
+      return;
+    }
+
     const resp = await fetch(CHAT_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        Authorization: `Bearer ${session.access_token}`,
       },
       body: JSON.stringify({ messages }),
     });
