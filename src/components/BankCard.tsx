@@ -25,7 +25,7 @@ export function BankCard({ banco, isFirst = false, onContratar }: BankCardProps)
       )}
     >
       {isFirst && (
-        <div className="absolute -top-3 left-4 bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 shadow-lg shadow-green-500/25">
+        <div className="absolute -top-3 left-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 shadow-lg shadow-primary/25">
           <Trophy size={12} className="animate-pulse" />
           MELHOR TAXA
         </div>
@@ -35,7 +35,7 @@ export function BankCard({ banco, isFirst = false, onContratar }: BankCardProps)
         <div className="flex items-center gap-3">
           <div 
             className={cn(
-              'w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-white border border-border',
+              'w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-card border border-border',
               'transition-all duration-300 group-hover:scale-110 group-hover:rotate-3'
             )}
           >
@@ -89,11 +89,11 @@ export function BankCard({ banco, isFirst = false, onContratar }: BankCardProps)
         onClick={onContratar}
         className={cn(
           'w-full h-11 font-semibold touch-manipulation',
-          'bg-gradient-to-r from-[#22c55e] to-[#16a34a]',
-          'hover:from-[#16a34a] hover:to-[#15803d]',
-          'shadow-lg shadow-green-500/20',
+          'bg-gradient-to-r from-primary to-primary/80',
+          'hover:from-primary/90 hover:to-primary/70',
+          'shadow-lg shadow-primary/20',
           'transition-all duration-300',
-          'group-hover:shadow-xl group-hover:shadow-green-500/30'
+          'group-hover:shadow-xl group-hover:shadow-primary/30'
         )}
       >
         <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />

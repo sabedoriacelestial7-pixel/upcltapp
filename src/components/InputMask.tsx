@@ -98,15 +98,15 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
               'text-base', // Prevents zoom on iOS
               icon && 'pl-12',
               isDark ? [
-                'bg-white/90 border border-white/30 text-black',
-                'placeholder:text-gray-500',
-                isFocused && 'border-primary ring-2 ring-primary/20 bg-white',
-                error && 'border-red-500'
+                'bg-card/90 border border-border text-foreground',
+                'placeholder:text-muted-foreground',
+                isFocused && 'border-primary ring-2 ring-primary/20 bg-card',
+                error && 'border-destructive'
               ] : [
-                'bg-white border border-gray-200 text-foreground',
+                'bg-card border border-border text-foreground',
                 'placeholder:text-muted-foreground',
                 isFocused && 'border-primary ring-2 ring-primary/20',
-                error && 'border-red-500'
+                error && 'border-destructive'
               ],
               className
             )}
@@ -114,7 +114,7 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
           />
         </div>
         {error && (
-          <p id={errorId} className="mt-2 text-sm text-red-500" role="alert">
+          <p id={errorId} className="mt-2 text-sm text-destructive" role="alert">
             {error}
           </p>
         )}

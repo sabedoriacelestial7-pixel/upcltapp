@@ -123,7 +123,7 @@ export default function SimulacoesPage() {
   };
 
   return (
-    <PageTransition className="min-h-screen bg-[#f5f5f5] pb-20">
+    <PageTransition className="min-h-screen bg-background pb-20">
       <Header showBack showChat title="" />
 
       <main className="max-w-md mx-auto px-5 py-5">
@@ -149,7 +149,7 @@ export default function SimulacoesPage() {
                 key={`${sim.parcelas}-${index}`}
                 onClick={() => handleSelect(sim)}
                 className={cn(
-                  'w-full bg-white rounded-xl p-4 shadow-card text-left group',
+                  'w-full bg-card rounded-xl p-4 shadow-card text-left group',
                   'hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200',
                   'active:scale-[0.99] touch-manipulation'
                 )}
@@ -180,7 +180,7 @@ export default function SimulacoesPage() {
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-between pt-3 border-t border-border">
                 <p className="text-primary font-bold text-xl">
                   {formatarMoeda(sim.valorLiberado)}
                 </p>

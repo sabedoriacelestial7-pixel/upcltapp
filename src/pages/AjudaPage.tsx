@@ -47,7 +47,7 @@ const faqItems = [
 
 export default function AjudaPage() {
   return (
-    <PageTransition className="min-h-screen bg-[#f5f5f5] pb-20">
+    <PageTransition className="min-h-screen bg-background pb-20">
       <main className="max-w-md mx-auto px-5 pt-[calc(env(safe-area-inset-top)+1rem)]">
         {/* Header */}
         <div className="mb-6">
@@ -62,7 +62,7 @@ export default function AjudaPage() {
         {/* WhatsApp CTA */}
         <Button
           onClick={abrirWhatsAppSimples}
-          className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-semibold text-base shadow-button mb-6"
+          className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base shadow-button mb-6"
         >
           <MessageCircle size={20} />
           Converse com a gente
@@ -74,9 +74,9 @@ export default function AjudaPage() {
             <AccordionItem 
               key={item.id} 
               value={item.id} 
-              className="bg-white rounded-xl border-none shadow-card overflow-hidden"
+              className="bg-card rounded-xl border-none shadow-card overflow-hidden"
             >
-              <AccordionTrigger className="px-4 py-4 text-left text-sm font-medium text-foreground hover:no-underline hover:bg-gray-50 transition-colors [&[data-state=open]>svg]:rotate-180">
+              <AccordionTrigger className="px-4 py-4 text-left text-sm font-medium text-foreground hover:no-underline hover:bg-muted transition-colors [&[data-state=open]>svg]:rotate-180">
                 {item.question}
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 text-sm text-muted-foreground leading-relaxed">

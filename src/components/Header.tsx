@@ -35,7 +35,7 @@ export function Header({
     <header 
       className={cn(
         'sticky top-0 z-40',
-        isLight ? 'bg-[#f5f5f5]' : 'bg-transparent',
+        isLight ? 'bg-background' : 'bg-transparent',
         className
       )}
       role="banner"

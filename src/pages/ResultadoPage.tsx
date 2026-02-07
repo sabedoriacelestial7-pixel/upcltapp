@@ -241,7 +241,7 @@ export default function ResultadoPage() {
           ) : (
             <button
               onClick={() => setEditandoParcela(true)}
-              className="w-full flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-muted rounded-xl hover:bg-muted/80 transition-colors"
             >
               <span className="text-xl font-bold text-foreground">
                 {formatarMoeda(parseFloat(parcelaDesejada.replace(',', '.')) || 0)}
@@ -295,7 +295,7 @@ export default function ResultadoPage() {
                   </div>
 
                   {/* Valor Líquido + Arrow */}
-                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
                     <span className="text-xl font-bold text-primary">
                       {formatarMoeda(tabela.valor_liquido)}
                     </span>
@@ -309,9 +309,9 @@ export default function ResultadoPage() {
 
                 {/* Expanded Content */}
                 {isExpanded && (
-                  <div className="px-4 pb-4 border-t border-gray-100 pt-4 space-y-3 animate-in slide-in-from-top-2 duration-200">
+                  <div className="px-4 pb-4 border-t border-border pt-4 space-y-3 animate-in slide-in-from-top-2 duration-200">
                     {/* Detalhes extras */}
-                    <div className="bg-gray-50 rounded-xl p-3 space-y-2">
+                    <div className="bg-muted rounded-xl p-3 space-y-2">
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-muted-foreground">Taxa mensal</span>
                         <span className="font-medium text-foreground">{tabela.taxa.toFixed(2)}% a.m.</span>

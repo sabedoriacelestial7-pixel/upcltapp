@@ -7,7 +7,7 @@ export default function PoliticaPrivacidadePage() {
   const navigate = useNavigate();
 
   return (
-    <PageTransition className="min-h-screen bg-[#f5f5f5] pb-20">
+    <PageTransition className="min-h-screen bg-background pb-20">
       {/* Header */}
       <header className="bg-primary text-primary-foreground px-4 py-4 pt-[calc(env(safe-area-inset-top)+1rem)]">
         <div className="max-w-md mx-auto flex items-center gap-3">
@@ -22,7 +22,7 @@ export default function PoliticaPrivacidadePage() {
       </header>
 
       <main className="max-w-md mx-auto px-5 py-6">
-        <div className="bg-white rounded-xl p-5 shadow-sm space-y-6">
+        <div className="bg-card rounded-xl p-5 shadow-sm space-y-6">
           {/* Title */}
           <h2 className="text-xl font-bold text-foreground text-center">
             POLÍTICA DE PRIVACIDADE – APLICATIVO UP CLT

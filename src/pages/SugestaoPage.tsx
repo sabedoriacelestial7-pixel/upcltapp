@@ -67,7 +67,7 @@ export default function SugestaoPage() {
   };
 
   return (
-    <PageTransition className="min-h-screen bg-[#f5f5f5] pb-20">
+    <PageTransition className="min-h-screen bg-background pb-20">
       {/* Header */}
       <header className="bg-primary text-primary-foreground px-5 pt-[calc(env(safe-area-inset-top)+1rem)] pb-6">
         <button
@@ -93,7 +93,7 @@ export default function SugestaoPage() {
               value={mensagem}
               onChange={(e) => setMensagem(e.target.value)}
               disabled={loading}
-              className="bg-white min-h-[180px] resize-none"
+              className="bg-card min-h-[180px] resize-none"
             />
           </div>
 

@@ -36,7 +36,7 @@ export default function ResultadoDetalhesPage() {
 
   if (!consulta || !tabela) {
     return (
-      <PageTransition className="min-h-screen bg-[#f5f5f5]">
+      <PageTransition className="min-h-screen bg-background">
         <Header showBack showChat />
         <main className="max-w-md mx-auto px-5 py-8 text-center">
           <p className="text-muted-foreground">Dados não encontrados</p>
@@ -94,7 +94,7 @@ export default function ResultadoDetalhesPage() {
   };
 
   return (
-    <PageTransition className="min-h-screen bg-[#f5f5f5] pb-32">
+    <PageTransition className="min-h-screen bg-background pb-32">
       <Header showBack showChat />
 
       <main className="max-w-md mx-auto px-5 py-5">
@@ -107,7 +107,7 @@ export default function ResultadoDetalhesPage() {
         </p>
 
         {/* Details Card */}
-        <div className="bg-white rounded-2xl shadow-card overflow-hidden">
+        <div className="bg-card rounded-2xl shadow-card overflow-hidden">
           {/* Bank Logo */}
           <div className="p-5 pb-4">
             <img 
@@ -120,19 +120,19 @@ export default function ResultadoDetalhesPage() {
           {/* Details List */}
           <div className="px-5">
             {/* Parcela */}
-            <div className="flex justify-between items-center py-4 border-b border-gray-100">
+            <div className="flex justify-between items-center py-4 border-b border-border">
               <span className="text-muted-foreground text-sm">Quanto vai pagar por mês</span>
               <span className="font-semibold text-foreground">{formatarMoeda(valorParcela)}</span>
             </div>
 
             {/* Prazo */}
-            <div className="flex justify-between items-center py-4 border-b border-gray-100">
+            <div className="flex justify-between items-center py-4 border-b border-border">
               <span className="text-muted-foreground text-sm">Por quantos meses vai pagar</span>
               <span className="font-semibold text-foreground">{prazo}</span>
             </div>
 
             {/* IOF */}
-            <div className="flex justify-between items-center py-4 border-b border-gray-100">
+            <div className="flex justify-between items-center py-4 border-b border-border">
               <div className="flex items-center gap-1">
                 <span className="text-muted-foreground text-sm">IOF</span>
                 <Info size={14} className="text-muted-foreground/50" />
@@ -142,31 +142,31 @@ export default function ResultadoDetalhesPage() {
 
             {/* Seguro (if applicable) */}
             {valorSeguro > 0 && (
-              <div className="flex justify-between items-center py-4 border-b border-gray-100">
+              <div className="flex justify-between items-center py-4 border-b border-border">
                 <span className="text-muted-foreground text-sm">Seguro</span>
                 <span className="font-semibold text-foreground">{formatarMoeda(valorSeguro)}</span>
               </div>
             )}
 
             {/* Taxas de juros */}
-            <div className="flex justify-between items-center py-4 border-b border-gray-100">
+            <div className="flex justify-between items-center py-4 border-b border-border">
               <span className="text-muted-foreground text-sm">Taxas de juros</span>
               <div className="flex items-center gap-3">
                 <span className="font-semibold text-foreground">{taxaMensal.toFixed(2)}% a.m.</span>
-                <div className="w-px h-4 bg-gray-300" />
+                <div className="w-px h-4 bg-border" />
                 <span className="font-semibold text-foreground">{taxaAnual.toFixed(2)}% a.a.</span>
               </div>
             </div>
 
             {/* CET */}
-            <div className="flex justify-between items-center py-4 border-b border-gray-100">
+            <div className="flex justify-between items-center py-4 border-b border-border">
               <div className="flex items-center gap-1">
                 <span className="text-muted-foreground text-sm">Custo efetivo total</span>
                 <Info size={14} className="text-muted-foreground/50" />
               </div>
               <div className="flex items-center gap-3">
                 <span className="font-semibold text-foreground">{cet.mensal.toFixed(2)}% a.m.</span>
-                <div className="w-px h-4 bg-gray-300" />
+                <div className="w-px h-4 bg-border" />
                 <span className="font-semibold text-foreground">{cet.anual.toFixed(2)}% a.a.</span>
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function ResultadoDetalhesPage() {
       </main>
 
       {/* Fixed bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gray-100 border-t border-gray-200 p-4 safe-area-pb">
+      <div className="fixed bottom-0 left-0 right-0 bg-muted border-t border-border p-4 safe-area-pb">
         <div className="max-w-md mx-auto">
           <div className="flex justify-between items-center mb-3">
             <span className="text-muted-foreground">Você vai receber até</span>
@@ -189,7 +189,7 @@ export default function ResultadoDetalhesPage() {
           </div>
           <Button
             onClick={handleContratar}
-            className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-semibold text-base"
+            className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base"
           >
             Quero essa proposta!
           </Button>

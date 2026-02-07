@@ -92,7 +92,7 @@ export default function PropostasPage() {
   }, [isLoggedIn, adminLoading, viewMode, isAdmin]);
 
   const getStatusIcon = (status: string | null) => {
-    if (!status) return <Clock className="text-gray-400" size={20} />;
+    if (!status) return <Clock className="text-muted-foreground" size={20} />;
     
     if (status.includes('EFETIVADA') || status.includes('PAGA') || status.includes('sucesso')) {
       return <CheckCircle className="text-green-500" size={20} />;
@@ -124,7 +124,7 @@ export default function PropostasPage() {
 
   // Admin Table View
   const AdminTableView = () => (
-    <ScrollArea className="w-full whitespace-nowrap rounded-xl border bg-white shadow-card">
+    <ScrollArea className="w-full whitespace-nowrap rounded-xl border bg-card shadow-card">
       <Table>
         <TableHeader>
           <TableRow>
@@ -206,7 +206,7 @@ export default function PropostasPage() {
           <button
             key={proposta.id}
             className={cn(
-              'w-full bg-white rounded-xl p-4 text-left shadow-card',
+              'w-full bg-card rounded-xl p-4 text-left shadow-card',
               'hover:shadow-card-hover transition-all duration-200',
               'active:scale-[0.99] touch-manipulation'
             )}
@@ -224,10 +224,10 @@ export default function PropostasPage() {
                   </p>
                 </div>
               </div>
-              <ChevronRight size={20} className="text-gray-400" />
+              <ChevronRight size={20} className="text-muted-foreground" />
             </div>
 
-            <div className="mt-3 pt-3 border-t border-gray-100 grid grid-cols-2 gap-2">
+            <div className="mt-3 pt-3 border-t border-border grid grid-cols-2 gap-2">
               <div>
                 <p className="text-xs text-muted-foreground">Valor</p>
                 <p className="text-sm font-semibold text-foreground">

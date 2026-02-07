@@ -65,7 +65,7 @@ interface DataItemProps {
 
 function DataItem({ icon: Icon, label, value }: DataItemProps) {
   return (
-    <div className="flex items-start gap-3 py-3 border-b border-gray-100 last:border-0">
+    <div className="flex items-start gap-3 py-3 border-b border-border last:border-0">
       <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
         <Icon size={18} className="text-primary" />
       </div>
@@ -122,13 +122,13 @@ export default function DadosTrabalhistas() {
   }, [user]);
 
   return (
-    <PageTransition className="min-h-screen bg-[#f5f5f5] pb-24">
+    <PageTransition className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 py-3">
+      <header className="sticky top-0 z-10 bg-card border-b border-border px-4 py-3">
         <div className="max-w-md mx-auto flex items-center gap-3">
           <button
             onClick={() => navigate('/perfil')}
-            className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 -ml-2 hover:bg-muted rounded-full transition-colors"
           >
             <ArrowLeft size={20} className="text-foreground" />
           </button>
@@ -138,7 +138,7 @@ export default function DadosTrabalhistas() {
 
       <main className="max-w-md mx-auto px-4 pt-6">
         {loading ? (
-          <div className="bg-white rounded-xl p-4 space-y-4">
+          <div className="bg-card rounded-xl p-4 space-y-4">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="flex items-start gap-3">
                 <Skeleton className="w-9 h-9 rounded-lg" />
@@ -150,7 +150,7 @@ export default function DadosTrabalhistas() {
             ))}
           </div>
         ) : error ? (
-          <div className="bg-white rounded-xl p-6 text-center">
+          <div className="bg-card rounded-xl p-6 text-center">
             <p className="text-sm text-muted-foreground mb-4">{error}</p>
             <Button onClick={fetchData} variant="outline" size="sm">
               <RefreshCw size={16} className="mr-2" />
@@ -158,7 +158,7 @@ export default function DadosTrabalhistas() {
             </Button>
           </div>
         ) : !data ? (
-          <div className="bg-white rounded-xl p-6 text-center">
+          <div className="bg-card rounded-xl p-6 text-center">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
               <Briefcase size={28} className="text-primary" />
             </div>
@@ -175,7 +175,7 @@ export default function DadosTrabalhistas() {
         ) : (
           <div className="space-y-4">
             {/* Card Principal */}
-            <div className="bg-white rounded-xl p-4">
+            <div className="bg-card rounded-xl p-4">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-sm font-semibold text-foreground">Dados do Trabalhador</h2>
                 <span className={cn(
@@ -211,7 +211,7 @@ export default function DadosTrabalhistas() {
             </div>
 
             {/* Card Financeiro */}
-            <div className="bg-white rounded-xl p-4">
+            <div className="bg-card rounded-xl p-4">
               <h2 className="text-sm font-semibold text-foreground mb-3">Dados Financeiros</h2>
               
               <DataItem 
