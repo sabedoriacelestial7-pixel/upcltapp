@@ -74,9 +74,9 @@ export default function AjudaPage() {
             <AccordionItem 
               key={item.id} 
               value={item.id} 
-              className="bg-card rounded-xl border-none shadow-card overflow-hidden"
+              className="bg-card rounded-xl border border-border shadow-card overflow-hidden"
             >
-              <AccordionTrigger className="px-4 py-4 text-left text-sm font-medium text-foreground hover:no-underline hover:bg-muted transition-colors [&[data-state=open]>svg]:rotate-180">
+              <AccordionTrigger className="px-4 py-4 text-left text-sm font-medium text-card-foreground hover:no-underline hover:bg-muted/50 transition-colors [&[data-state=open]>svg]:rotate-180">
                 {item.question}
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 text-sm text-muted-foreground leading-relaxed">
