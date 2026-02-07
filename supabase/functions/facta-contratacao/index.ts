@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 const FACTA_BASE_URL = "https://webservice.facta.com.br";
-const PROXY_URL = "https://activation-accuracy-england-looks.trycloudflare.com";
+const PROXY_URL = Deno.env.get('FACTA_API_URL') || "https://api.upclt.app";
 
 // Mapeamento de UF para código IBGE do estado (2 dígitos)
 const UF_TO_IBGE: Record<string, string> = {
@@ -32,6 +32,8 @@ async function getFactaToken(): Promise<string> {
   if (!authBasic) {
     throw new Error("FACTA_AUTH_BASIC not configured");
   }
+  // Garantir que o header tenha o prefixo "Basic "
+  const authHeader = authBasic.startsWith('Basic ') ? authBasic : `Basic ${authBasic}`;
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 25000);
@@ -44,7 +46,7 @@ async function getFactaToken(): Promise<string> {
       body: JSON.stringify({
         method: 'GET',
         url: `${FACTA_BASE_URL}/gera-token`,
-        headers: { 'Authorization': `Basic ${authBasic}` }
+        headers: { 'Authorization': authHeader }
       }),
       signal: controller.signal
     });
@@ -203,17 +205,16 @@ serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const userToken = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(userToken);
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
     
-    if (claimsError || !claimsData?.claims) {
+    if (userError || !user) {
       return new Response(
         JSON.stringify({ erro: true, mensagem: 'Unauthorized' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    const userId = claimsData.claims.sub as string;
+    const userId = user.id;
     const params: ContratacaoParams = await req.json();
 
     console.log(`Starting contracting process for CPF: ${params.cpf.substring(0, 3)}...`);
