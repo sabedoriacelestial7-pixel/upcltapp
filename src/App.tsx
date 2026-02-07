@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { AppProvider } from "@/contexts/AppContext";
 import { BiaChatProvider } from "@/contexts/BiaChatContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { BiaChatDrawer } from "@/components/BiaChatDrawer";
@@ -94,7 +95,9 @@ const App = () => (
         <AppProvider>
           <TooltipProvider>
             <BiaChatProvider>
-              <AppContent />
+              <NotificationProvider>
+                <AppContent />
+              </NotificationProvider>
             </BiaChatProvider>
           </TooltipProvider>
         </AppProvider>

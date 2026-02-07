@@ -2,11 +2,14 @@ import { ChevronLeft, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useBiaChat } from '@/contexts/BiaChatContext';
+import { useNotificationContext } from '@/contexts/NotificationContext';
+import { NotificationBell } from '@/components/NotificationBell';
 
 interface HeaderProps {
   title?: string;
   showBack?: boolean;
   showChat?: boolean;
+  showNotifications?: boolean;
   variant?: 'light' | 'transparent';
   className?: string;
   rightElement?: React.ReactNode;
@@ -17,6 +20,7 @@ export function Header({
   title, 
   showBack = true, 
   showChat = false,
+  showNotifications = true,
   variant = 'light',
   className, 
   rightElement,
@@ -24,6 +28,7 @@ export function Header({
 }: HeaderProps) {
   const navigate = useNavigate();
   const { open: openBia } = useBiaChat();
+  const { unreadCount, openDrawer } = useNotificationContext();
   const isLight = variant === 'light';
 
   return (
@@ -79,6 +84,13 @@ export function Header({
         )}
 
         <div className="flex items-center gap-1 min-w-[48px] justify-end">
+          {showNotifications && (
+            <NotificationBell
+              unreadCount={unreadCount}
+              onClick={openDrawer}
+              variant={variant}
+            />
+          )}
           {showChat && (
             <button
               onClick={openBia}
