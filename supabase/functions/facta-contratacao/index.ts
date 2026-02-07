@@ -376,9 +376,10 @@ serve(async (req) => {
       estado: params.estado,
     };
 
-    // A Facta SEMPRE exige cpf_conjuge e nome_conjuge, mesmo para solteiros/divorciados
-    dadosFormData.cpf_conjuge = params.cpfConjuge || params.cpf;
-    dadosFormData.nome_conjuge = params.nomeConjuge || 'NAO DECLARADO';
+    // Facta exige dados do cônjuge - envia dados do próprio cliente como fallback
+    dadosFormData.cpf_conjuge = params.cpf;
+    dadosFormData.nome_conjuge = params.nome;
+    dadosFormData.data_nascimento_conjuge = params.dataNascimento;
 
     dadosFormData.nome_mae = params.nomeMae;
     dadosFormData.nome_pai = params.nomePai || 'NAO DECLARADO';
