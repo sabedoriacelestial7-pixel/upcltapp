@@ -581,10 +581,10 @@ export default function ContratacaoPage() {
               <div>
                 <Label className="text-xs text-foreground font-medium mb-1 block">Sexo *</Label>
                 <Select value={formData.sexo} onValueChange={(v) => handleChange('sexo', v)}>
-                  <SelectTrigger className="bg-white border-gray-300 text-black">
+                  <SelectTrigger className="bg-card border-border text-foreground">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-300 z-[100]">
+                  <SelectContent className="bg-card border border-border z-[100]">
                     <SelectItem value="M">Masculino</SelectItem>
                     <SelectItem value="F">Feminino</SelectItem>
                   </SelectContent>
@@ -594,10 +594,10 @@ export default function ContratacaoPage() {
               <div>
                 <Label className="text-xs text-foreground font-medium mb-1 block">Estado Civil *</Label>
                 <Select value={formData.estadoCivil} onValueChange={(v) => handleChange('estadoCivil', v)}>
-                  <SelectTrigger className="bg-white border-gray-300 text-black">
+                  <SelectTrigger className="bg-card border-border text-foreground">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-300 z-[100]">
+                  <SelectContent className="bg-card border border-border z-[100]">
                     {ESTADO_CIVIL_OPTIONS.map(opt => (
                       <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                     ))}
@@ -613,7 +613,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.rg}
                   onChange={(e) => handleChange('rg', e.target.value)}
-                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                  className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="Número do RG"
                 />
               </div>
@@ -621,10 +621,10 @@ export default function ContratacaoPage() {
               <div>
                 <Label className="text-xs text-foreground font-medium mb-1 block">Estado do RG *</Label>
                 <Select value={formData.estadoRg} onValueChange={(v) => handleChange('estadoRg', v)}>
-                  <SelectTrigger className="bg-white border-gray-300 text-black">
+                  <SelectTrigger className="bg-card border-border text-foreground">
                     <SelectValue placeholder="UF" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-300 z-[100]">
+                  <SelectContent className="bg-card border border-border z-[100]">
                     {ESTADOS.map(uf => (
                       <SelectItem key={uf} value={uf}>{uf}</SelectItem>
                     ))}
@@ -637,10 +637,10 @@ export default function ContratacaoPage() {
               <div>
                 <Label className="text-xs text-foreground font-medium mb-1 block">Órgão Emissor *</Label>
                 <Select value={formData.orgaoEmissor} onValueChange={(v) => handleChange('orgaoEmissor', v)}>
-                  <SelectTrigger className="bg-white border-gray-300 text-black">
+                  <SelectTrigger className="bg-card border-border text-foreground">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-300 z-[100] max-h-60">
+                  <SelectContent className="bg-card border border-border z-[100] max-h-60">
                     {ORGAO_EMISSOR_OPTIONS.map(org => (
                       <SelectItem key={org} value={org}>{org}</SelectItem>
                     ))}
@@ -653,7 +653,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.dataExpedicao}
                   onChange={(e) => handleChange('dataExpedicao', e.target.value)}
-                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                  className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="DD/MM/AAAA"
                 />
               </div>
@@ -663,10 +663,10 @@ export default function ContratacaoPage() {
               <div>
                 <Label className="text-xs text-foreground font-medium mb-1 block">Estado Natural *</Label>
                 <Select value={formData.estadoNatural} onValueChange={(v) => handleChange('estadoNatural', v)}>
-                  <SelectTrigger className="bg-white border-gray-300 text-black">
+                  <SelectTrigger className="bg-card border-border text-foreground">
                     <SelectValue placeholder="UF" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-300 z-[100]">
+                  <SelectContent className="bg-card border border-border z-[100]">
                     {ESTADOS.map(uf => (
                       <SelectItem key={uf} value={uf}>{uf}</SelectItem>
                     ))}
@@ -681,10 +681,10 @@ export default function ContratacaoPage() {
                   onValueChange={(v) => handleChange('cidadeNatural', v)}
                   disabled={!formData.estadoNatural || loadingCidades}
                 >
-                  <SelectTrigger className="bg-white border-gray-300 text-black">
+                  <SelectTrigger className="bg-card border-border text-foreground">
                     <SelectValue placeholder={loadingCidades ? "Carregando..." : "Selecione"} />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-300 z-[100] max-h-60">
+                  <SelectContent className="bg-card border border-border z-[100] max-h-60">
                     {cidadesNaturais.map(cidade => (
                       <SelectItem key={cidade.id} value={cidade.id.toString()}>{cidade.nome}</SelectItem>
                     ))}
@@ -698,7 +698,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.celular}
                 onChange={(e) => handleChange('celular', e.target.value)}
-                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                 placeholder="(00) 00000-0000"
               />
             </div>
@@ -708,7 +708,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
-                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                 placeholder="seu@email.com"
                 type="email"
               />
@@ -738,7 +738,7 @@ export default function ContratacaoPage() {
                 value={formData.cep}
                 onChange={(e) => handleChange('cep', e.target.value)}
                 onBlur={handleCepBlur}
-                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                 placeholder="00000-000"
                 maxLength={9}
               />
@@ -749,7 +749,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.endereco}
                 onChange={(e) => handleChange('endereco', e.target.value)}
-                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                 placeholder="Rua, Avenida..."
               />
             </div>
@@ -760,7 +760,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.numero}
                   onChange={(e) => handleChange('numero', e.target.value)}
-                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                  className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="Nº"
                 />
               </div>
@@ -770,7 +770,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.complemento}
                   onChange={(e) => handleChange('complemento', e.target.value)}
-                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                  className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="Apto, Bloco..."
                 />
               </div>
@@ -781,7 +781,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.bairro}
                 onChange={(e) => handleChange('bairro', e.target.value)}
-                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                 placeholder="Bairro"
               />
             </div>
@@ -790,10 +790,10 @@ export default function ContratacaoPage() {
               <div>
                 <Label className="text-xs text-foreground font-medium mb-1 block">Estado *</Label>
                 <Select value={formData.estado} onValueChange={(v) => handleChange('estado', v)}>
-                  <SelectTrigger className="bg-white border-gray-300 text-black">
+                  <SelectTrigger className="bg-card border-border text-foreground">
                     <SelectValue placeholder="UF" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-300 z-[100]">
+                  <SelectContent className="bg-card border border-border z-[100]">
                     {ESTADOS.map(uf => (
                       <SelectItem key={uf} value={uf}>{uf}</SelectItem>
                     ))}
@@ -808,10 +808,10 @@ export default function ContratacaoPage() {
                   onValueChange={(v) => handleChange('cidade', v)}
                   disabled={!formData.estado || loadingCidadesEndereco}
                 >
-                  <SelectTrigger className="bg-white border-gray-300 text-black">
+                  <SelectTrigger className="bg-card border-border text-foreground">
                     <SelectValue placeholder={loadingCidadesEndereco ? "Carregando..." : "Selecione"} />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-300 z-[100] max-h-60">
+                  <SelectContent className="bg-card border border-border z-[100] max-h-60">
                     {cidadesEndereco.map(cidade => (
                       <SelectItem key={cidade.id} value={cidade.id.toString()}>{cidade.nome}</SelectItem>
                     ))}
@@ -825,7 +825,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.nomeMae}
                 onChange={(e) => handleChange('nomeMae', e.target.value.toUpperCase())}
-                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                 placeholder="Nome completo da mãe"
               />
             </div>
@@ -835,7 +835,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.nomePai}
                 onChange={(e) => handleChange('nomePai', e.target.value.toUpperCase())}
-                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                 placeholder="Nome completo do pai (opcional)"
               />
             </div>
@@ -870,10 +870,10 @@ export default function ContratacaoPage() {
             <div>
               <Label className="text-xs text-foreground font-medium mb-1 block">Tipo de Conta *</Label>
               <Select value={formData.tipoConta} onValueChange={(v) => handleChange('tipoConta', v)}>
-                <SelectTrigger className="bg-white border-gray-300 text-black">
+                <SelectTrigger className="bg-card border-border text-foreground">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-white border border-gray-300 z-[100]">
+                <SelectContent className="bg-card border border-border z-[100]">
                   {TIPO_CONTA_OPTIONS.map(opt => (
                     <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                   ))}
@@ -887,7 +887,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.banco}
                   onChange={(e) => handleChange('banco', e.target.value)}
-                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                  className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="Código"
                 />
               </div>
@@ -897,7 +897,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.agencia}
                   onChange={(e) => handleChange('agencia', e.target.value)}
-                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                  className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="0000"
                 />
               </div>
@@ -907,7 +907,7 @@ export default function ContratacaoPage() {
                 <Input
                   value={formData.conta}
                   onChange={(e) => handleChange('conta', e.target.value)}
-                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                  className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="00000-0"
                 />
               </div>
@@ -916,10 +916,10 @@ export default function ContratacaoPage() {
             <div>
               <Label className="text-xs text-foreground font-medium mb-1 block">Tipo de Chave PIX *</Label>
               <Select value={formData.tipoChavePix} onValueChange={(v) => handleChange('tipoChavePix', v)}>
-                <SelectTrigger className="bg-white border-gray-300 text-black">
+                <SelectTrigger className="bg-card border-border text-foreground">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-white border border-gray-300 z-[100]">
+                <SelectContent className="bg-card border border-border z-[100]">
                   {TIPO_CHAVE_PIX_OPTIONS.map(opt => (
                     <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                   ))}
@@ -932,7 +932,7 @@ export default function ContratacaoPage() {
               <Input
                 value={formData.chavePix}
                 onChange={(e) => handleChange('chavePix', e.target.value)}
-                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+                className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                 placeholder="Sua chave PIX"
                 disabled={formData.tipoChavePix === '1'} // Disabled if CPF
               />
