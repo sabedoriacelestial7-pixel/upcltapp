@@ -49,6 +49,17 @@ const TIPO_CHAVE_PIX_OPTIONS = [
   { value: '5', label: 'Chave Aleatória' },
 ];
 
+const ORGAO_EMISSOR_OPTIONS = [
+  'SSP', 'SDS', 'SESP', 'SEJUSP', 'SEGUP', 'SEPC', 'SEDS',
+  'DETRAN', 'PCERJ', 'PCMG', 'PCSP', 'IFP', 'IIPC', 'IGP',
+  'ABNC', 'CGPI', 'CONRE', 'COREN', 'CRA', 'CREA', 'CREAI',
+  'CRAS', 'CRB', 'CRC', 'CRBIO', 'CRF', 'CRFA', 'CRECI',
+  'CREFITO', 'CRMV', 'CRM', 'CRN', 'CRO', 'CRP', 'CRPRE',
+  'CRQ', 'CRTR', 'CTPS', 'DIC', 'DIREX', 'DPF', 'DPMAF',
+  'FGTS', 'MAER', 'MEX', 'MMA', 'MTE', 'OAB', 'OMB', 'SJS',
+  'OUTROS'
+];
+
 export default function ContratacaoPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -624,13 +635,16 @@ export default function ContratacaoPage() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs text-foreground font-medium mb-1 block">Órgão Emissor *</Label>
-                <Input
-                  value={formData.orgaoEmissor}
-                  onChange={(e) => handleChange('orgaoEmissor', e.target.value.toUpperCase())}
-                  className="bg-white border-gray-300 text-black placeholder:text-gray-500"
-                  placeholder="SSP, DETRAN..."
-                  maxLength={10}
-                />
+                <Select value={formData.orgaoEmissor} onValueChange={(v) => handleChange('orgaoEmissor', v)}>
+                  <SelectTrigger className="bg-white border-gray-300 text-black">
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border border-gray-300 z-[100] max-h-60">
+                    {ORGAO_EMISSOR_OPTIONS.map(org => (
+                      <SelectItem key={org} value={org}>{org}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
