@@ -157,6 +157,7 @@ interface ContratacaoParams {
   nome: string;
   sexo: string;
   estadoCivil: string;
+  cpfConjuge?: string;
   rg: string;
   estadoRg: string;
   orgaoEmissor: string;
@@ -371,16 +372,22 @@ serve(async (req) => {
       bairro: params.bairro,
       cidade: cidadeCodigoFacta,
       estado: params.estado,
-      nome_mae: params.nomeMae,
-      nome_pai: params.nomePai || 'NAO DECLARADO',
-      valor_patrimonio: '1',
-      cliente_iletrado_impossibilitado: 'N',
-      tipo_conta: params.tipoConta,
-      matricula: params.matricula,
-      email: params.email,
-      tipo_chave_pix: params.tipoChavePix,
-      chave_pix: params.chavePix
     };
+
+    // Adiciona CPF do cônjuge se estado civil for casado(a) ou união estável
+    if (params.cpfConjuge) {
+      dadosFormData.cpf_conjuge = params.cpfConjuge;
+    }
+
+    dadosFormData.nome_mae = params.nomeMae;
+    dadosFormData.nome_pai = params.nomePai || 'NAO DECLARADO';
+    dadosFormData.valor_patrimonio = '1';
+    dadosFormData.cliente_iletrado_impossibilitado = 'N';
+    dadosFormData.tipo_conta = params.tipoConta;
+    dadosFormData.matricula = params.matricula;
+    dadosFormData.email = params.email;
+    dadosFormData.tipo_chave_pix = params.tipoChavePix;
+    dadosFormData.chave_pix = params.chavePix;
 
     if (params.complemento) dadosFormData.complemento = params.complemento;
     if (params.banco) {
