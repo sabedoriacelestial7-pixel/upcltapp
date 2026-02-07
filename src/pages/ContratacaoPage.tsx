@@ -74,8 +74,6 @@ export default function ContratacaoPage() {
     // Dados pessoais
     sexo: '',
     estadoCivil: '',
-    cpfConjuge: '',
-    nomeConjuge: '',
     rg: '',
     estadoRg: '',
     orgaoEmissor: '',
@@ -214,10 +212,7 @@ export default function ContratacaoPage() {
   const validateStep1 = () => {
     const required = ['sexo', 'estadoCivil', 'rg', 'estadoRg', 'orgaoEmissor', 'dataExpedicao', 'estadoNatural', 'cidadeNatural', 'celular', 'email'];
     const baseValid = required.every(field => formData[field as keyof typeof formData]);
-    // CPF e nome do cônjuge obrigatórios para casado(a) ou união estável
-    if (baseValid && (formData.estadoCivil === '2' || formData.estadoCivil === '5')) {
-      return formData.cpfConjuge.length === 11 && formData.nomeConjuge.length >= 3;
-    }
+    return baseValid;
     return baseValid;
   };
 
@@ -263,8 +258,6 @@ export default function ContratacaoPage() {
         nome: consulta.nome,
         sexo: formData.sexo,
         estadoCivil: formData.estadoCivil,
-        cpfConjuge: formData.cpfConjuge || undefined,
-        nomeConjuge: formData.nomeConjuge || undefined,
         rg: formData.rg,
         estadoRg: formData.estadoRg,
         orgaoEmissor: formData.orgaoEmissor,
@@ -599,30 +592,7 @@ export default function ContratacaoPage() {
                   </SelectContent>
                 </Select>
               </div>
-              
-              {(formData.estadoCivil === '2' || formData.estadoCivil === '5') && (
-                <>
-                  <div>
-                    <Label className="text-xs text-foreground font-medium mb-1 block">CPF do Cônjuge *</Label>
-                    <Input
-                      value={formData.cpfConjuge}
-                      onChange={(e) => handleChange('cpfConjuge', e.target.value.replace(/\D/g, '').slice(0, 11))}
-                      placeholder="000.000.000-00"
-                      className="bg-white border-gray-300 text-black"
-                      maxLength={11}
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-foreground font-medium mb-1 block">Nome do Cônjuge *</Label>
-                    <Input
-                      value={formData.nomeConjuge}
-                      onChange={(e) => handleChange('nomeConjuge', e.target.value.toUpperCase())}
-                      placeholder="Nome completo"
-                      className="bg-white border-gray-300 text-black"
-                    />
-                  </div>
-                </>
-              )}
+
             </div>
 
             <div className="grid grid-cols-2 gap-3">
