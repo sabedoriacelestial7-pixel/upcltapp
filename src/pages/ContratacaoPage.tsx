@@ -50,14 +50,15 @@ const TIPO_CHAVE_PIX_OPTIONS = [
 ];
 
 const ORGAO_EMISSOR_OPTIONS = [
-  'SSP', 'SDS', 'SESP', 'SEJUSP', 'SEGUP', 'SEPC', 'SEDS',
-  'DETRAN', 'PCERJ', 'PCMG', 'PCSP', 'IFP', 'IIPC', 'IGP',
-  'ABNC', 'CGPI', 'CONRE', 'COREN', 'CRA', 'CREA', 'CREAI',
-  'CRAS', 'CRB', 'CRC', 'CRBIO', 'CRF', 'CRFA', 'CRECI',
-  'CREFITO', 'CRMV', 'CRM', 'CRN', 'CRO', 'CRP', 'CRPRE',
-  'CRQ', 'CRTR', 'CTPS', 'DIC', 'DIREX', 'DPF', 'DPMAF',
-  'FGTS', 'MAER', 'MEX', 'MMA', 'MTE', 'OAB', 'OMB', 'SJS',
-  'OUTROS'
+  'SSP', 'ABNC', 'CGPI', 'CGPMAF', 'CNIG', 'CNT', 'CORECON', 'COREN',
+  'CRA', 'CRAS', 'CRB', 'CRC', 'CRE', 'CREA', 'CRECI', 'CREFIT',
+  'CRESS', 'CRF', 'CRM', 'CRMV', 'CRN', 'CRO', 'CRP', 'CRPRE',
+  'CRQ', 'CRRC', 'CSC', 'CTPS', 'DETRAN', 'DIC', 'DIREX', 'DPF',
+  'DPMAF', 'DPT', 'DST', 'FGTS', 'FIPE', 'FLS', 'GOVGO', 'IFP',
+  'IGP', 'IICCECF', 'IIMG', 'IML', 'IPC', 'IPF', 'MAE', 'MEX',
+  'MMA', 'OAB', 'OMB', 'PCMG', 'PMMG', 'POF', 'POM', 'SDS',
+  'SECC', 'SEJUSP', 'SES', 'SESP', 'SJS', 'SJTC', 'SJTS', 'SNJ',
+  'SPTC'
 ];
 
 export default function ContratacaoPage() {
