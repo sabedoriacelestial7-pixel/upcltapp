@@ -92,15 +92,15 @@ export default function PropostasPage() {
   }, [isLoggedIn, adminLoading, viewMode, isAdmin]);
 
   const getStatusIcon = (status: string | null) => {
-    if (!status) return <Clock className="text-muted-foreground" size={20} />;
+    if (!status) return <Clock className="text-muted-foreground" size={20} aria-hidden="true" />;
     
     if (status.includes('EFETIVADA') || status.includes('PAGA') || status.includes('sucesso')) {
-      return <CheckCircle className="text-green-500" size={20} />;
+      return <CheckCircle className="text-primary" size={20} aria-hidden="true" />;
     }
     if (status.includes('CANCELADO') || status.includes('erro')) {
-      return <XCircle className="text-red-500" size={20} />;
+      return <XCircle className="text-destructive" size={20} aria-hidden="true" />;
     }
-    return <Clock className="text-blue-500" size={20} />;
+    return <Clock className="text-primary" size={20} aria-hidden="true" />;
   };
 
   if (loading || adminLoading) {
@@ -206,38 +206,38 @@ export default function PropostasPage() {
           <button
             key={proposta.id}
             className={cn(
-              'w-full rounded-xl p-4 text-left shadow-card',
+              'w-full rounded-xl p-4 text-left shadow-card bg-card',
               'hover:shadow-card-hover transition-all duration-200',
               'active:scale-[0.99] touch-manipulation'
             )}
-            style={{ backgroundColor: '#ffffff', colorScheme: 'light' }}
             onClick={() => navigate(`/propostas/${proposta.id}`)}
+            aria-label={`Ver detalhes da proposta ${proposta.banco_nome} - ${formatarMoeda(proposta.valor_operacao)}`}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 {getStatusIcon(proposta.status_facta || proposta.status)}
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: '#1f2937' }}>
+                  <p className="text-sm font-semibold text-card-foreground">
                     {proposta.banco_nome}
                   </p>
-                  <p className="text-xs" style={{ color: '#4b5563' }}>
+                  <p className="text-xs text-muted-foreground">
                     {formatarData(proposta.created_at)}
                   </p>
                 </div>
               </div>
-              <ChevronRight size={20} style={{ color: '#6b7280' }} />
+              <ChevronRight size={20} className="text-muted-foreground" aria-hidden="true" />
             </div>
 
-            <div className="mt-3 pt-3 grid grid-cols-2 gap-2" style={{ borderTop: '1px solid #e5e7eb' }}>
+            <div className="mt-3 pt-3 grid grid-cols-2 gap-2 border-t border-border">
               <div>
-                <p className="text-xs" style={{ color: '#4b5563' }}>Valor</p>
-                <p className="text-sm font-semibold" style={{ color: '#1f2937' }}>
+                <p className="text-xs text-muted-foreground">Valor</p>
+                <p className="text-sm font-semibold text-card-foreground">
                   {formatarMoeda(proposta.valor_operacao)}
                 </p>
               </div>
               <div>
-                <p className="text-xs" style={{ color: '#4b5563' }}>Parcelas</p>
-                <p className="text-sm font-semibold" style={{ color: '#1f2937' }}>
+                <p className="text-xs text-muted-foreground">Parcelas</p>
+                <p className="text-sm font-semibold text-card-foreground">
                   {proposta.parcelas}x de {formatarMoeda(proposta.valor_parcela)}
                 </p>
               </div>
@@ -258,8 +258,9 @@ export default function PropostasPage() {
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   className="flex items-center gap-1 text-primary text-xs font-medium hover:underline"
+                  aria-label="Assinar contrato em nova aba"
                 >
-                  <ExternalLink size={12} />
+                  <ExternalLink size={12} aria-hidden="true" />
                   Assinar
                 </a>
               )}

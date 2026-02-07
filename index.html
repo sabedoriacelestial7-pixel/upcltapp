@@ -2,62 +2,120 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>UpCLT - Empréstimo Consignado CLT</title>
-    <meta name="description" content="Compare e contrate o empréstimo consignado CLT mais barato do Brasil. Simule agora e encontre as melhores taxas para trabalhadores CLT." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <title>UpCLT - Empréstimo Consignado CLT | Melhores Taxas</title>
+    <meta name="description" content="Compare e contrate o empréstimo consignado CLT mais barato do Brasil. Simule agora e encontre as melhores taxas para trabalhadores CLT. Aprovação em 24h." />
     <meta name="author" content="I9 Consultoria e Negócios LTDA" />
+    <meta name="keywords" content="empréstimo consignado, CLT, crédito consignado, trabalhador CLT, empréstimo descontado em folha, melhores taxas" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    
+    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#10b981" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="UpCLT" />
+    <meta name="application-name" content="UpCLT" />
+    <meta name="msapplication-TileColor" content="#10b981" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="format-detection" content="telephone=no" />
  
     <!-- Performance: Preconnect to critical origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://jcxsnyutdowkdclxdsph.supabase.co" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     
     <!-- Font loading with font-display: swap for faster FCP -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'" />
     <noscript>
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
     </noscript>
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://upclt.lovable.app/" />
-    <meta property="og:title" content="UpCLT - Empréstimo Consignado CLT" />
+    <meta property="og:url" content="https://upcltapp.lovable.app/" />
+    <meta property="og:title" content="UpCLT - Empréstimo Consignado CLT | Melhores Taxas" />
     <meta property="og:description" content="Compare e contrate o empréstimo consignado CLT mais barato do Brasil. Simule agora e encontre as melhores taxas." />
-    <meta property="og:image" content="https://upclt.lovable.app/upclt-logo.png" />
+    <meta property="og:image" content="https://upcltapp.lovable.app/upclt-logo.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
     <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="UpCLT" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://upclt.lovable.app/" />
+    <meta name="twitter:url" content="https://upcltapp.lovable.app/" />
     <meta name="twitter:title" content="UpCLT - Empréstimo Consignado CLT" />
     <meta name="twitter:description" content="Compare e contrate o empréstimo consignado CLT mais barato do Brasil." />
-    <meta name="twitter:image" content="https://upclt.lovable.app/upclt-logo.png" />
+    <meta name="twitter:image" content="https://upcltapp.lovable.app/upclt-logo.png" />
 
-    <!-- Favicon -->
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://upcltapp.lovable.app/" />
+
+    <!-- Favicon and App Icons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" href="/upclt-logo.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/pwa-192x192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/pwa-192x192.png" />
+    <link rel="mask-icon" href="/upclt-logo.png" color="#10b981" />
     
     <!-- PWA: Prevent Flash of Unstyled Content -->
     <style>
       /* Critical CSS for initial render */
       html { background-color: #0f172a; }
-      body { margin: 0; min-height: 100vh; }
-      #root { min-height: 100vh; }
+      body { margin: 0; min-height: 100vh; min-height: 100dvh; }
+      #root { min-height: 100vh; min-height: 100dvh; }
+      /* Prevent FOUC */
+      .js-loading *,
+      .js-loading *:before,
+      .js-loading *:after {
+        animation-play-state: paused !important;
+      }
     </style>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FinancialService",
+      "name": "UpCLT",
+      "description": "Compare e contrate o empréstimo consignado CLT mais barato do Brasil",
+      "url": "https://upcltapp.lovable.app",
+      "logo": "https://upcltapp.lovable.app/upclt-logo.png",
+      "sameAs": [],
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "BR"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Brazil"
+      },
+      "serviceType": "Empréstimo Consignado CLT",
+      "provider": {
+        "@type": "Organization",
+        "name": "I9 Consultoria e Negócios LTDA"
+      }
+    }
+    </script>
   </head>
 
-  <body>
+  <body class="js-loading">
     <div id="root"></div>
     <noscript>
       <div style="padding: 2rem; text-align: center; background: #0f172a; color: white; min-height: 100vh;">
         <h1>UpCLT</h1>
         <p>Para usar o UpCLT, ative o JavaScript no seu navegador.</p>
+        <p><a href="/termos-uso" style="color: #10b981;">Termos de Uso</a> | <a href="/politica-privacidade" style="color: #10b981;">Política de Privacidade</a></p>
       </div>
     </noscript>
+    <script>
+      // Remove loading class once JS is ready
+      document.body.classList.remove('js-loading');
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

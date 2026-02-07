@@ -37,6 +37,7 @@ const SugestaoPage = lazy(() => import('@/pages/SugestaoPage'));
 const TermosUsoPage = lazy(() => import('@/pages/TermosUsoPage'));
 const PoliticaPrivacidadePage = lazy(() => import('@/pages/PoliticaPrivacidadePage'));
 const AjudaPage = lazy(() => import('@/pages/AjudaPage'));
+const InstallPage = lazy(() => import('@/pages/InstallPage'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 const queryClient = new QueryClient({
@@ -73,6 +74,7 @@ function AppContent() {
           <Route path="/welcome" element={<WelcomePage />} />
           <Route path="/sobre" element={<SobrePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/install" element={<InstallPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
 

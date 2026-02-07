@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { PageTransition } from '@/components/PageTransition';
+import { LegalFooter } from '@/components/LegalFooter';
 import welcomeHero from '@/assets/welcome-hero.png';
 
 // Lazy load particle background - heavy canvas animation
@@ -152,6 +153,9 @@ export default function WelcomePage() {
             </button>
           </div>
         </main>
+
+        {/* Legal Footer */}
+        <LegalFooter variant="dark" className="pb-[env(safe-area-inset-bottom)] pb-6 px-6" />
       </PageTransition>
     </div>
   );

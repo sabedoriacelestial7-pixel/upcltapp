@@ -5,7 +5,8 @@ import { Logo } from '@/components/Logo';
 import { InputMask } from '@/components/InputMask';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
- import { PageTransition } from '@/components/PageTransition';
+import { PageTransition } from '@/components/PageTransition';
+import { LegalFooter } from '@/components/LegalFooter';
 import { useAuth } from '@/contexts/AuthContext';
 import { validarEmail, validarTelefone } from '@/utils/formatters';
 import { useToast } from '@/hooks/use-toast';
@@ -334,6 +335,9 @@ export default function LoginPage() {
             </>
           )}
         </p>
+
+        {/* Legal Footer */}
+        <LegalFooter variant="dark" className="mt-8" />
       </div>
      </PageTransition>
   );

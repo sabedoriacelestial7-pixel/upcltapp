@@ -1,4 +1,3 @@
-// Force rebuild - fixed card text colors for dark mode
 import { MessageCircle, ChevronRight } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
@@ -64,8 +63,9 @@ export default function AjudaPage() {
         <Button
           onClick={abrirWhatsAppSimples}
           className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base shadow-button mb-6"
+          aria-label="Abrir conversa no WhatsApp"
         >
-          <MessageCircle size={20} />
+          <MessageCircle size={20} aria-hidden="true" />
           Converse com a gente
         </Button>
 
@@ -75,20 +75,17 @@ export default function AjudaPage() {
             <AccordionItem 
               key={item.id} 
               value={item.id} 
-              className="rounded-xl border border-gray-200 shadow-card overflow-hidden"
-              style={{ backgroundColor: '#ffffff', colorScheme: 'light' }}
+              className="rounded-xl border border-border bg-card shadow-card overflow-hidden"
             >
               <AccordionTrigger 
-                className="px-4 py-4 text-left text-sm font-medium hover:no-underline transition-colors [&[data-state=open]>svg]:rotate-180"
-                style={{ color: '#1f2937', backgroundColor: 'transparent' }}
+                className="px-4 py-4 text-left text-sm font-medium text-card-foreground hover:no-underline transition-colors [&[data-state=open]>svg]:rotate-180"
               >
-                <span style={{ color: '#1f2937' }}>{item.question}</span>
+                <span className="text-card-foreground">{item.question}</span>
               </AccordionTrigger>
               <AccordionContent 
-                className="px-4 pb-4 text-sm leading-relaxed"
-                style={{ color: '#374151' }}
+                className="px-4 pb-4 text-sm leading-relaxed text-muted-foreground"
               >
-                <span style={{ color: '#374151' }}>{item.answer}</span>
+                {item.answer}
               </AccordionContent>
             </AccordionItem>
           ))}
