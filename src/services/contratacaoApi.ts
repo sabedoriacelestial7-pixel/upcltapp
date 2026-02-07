@@ -129,8 +129,19 @@ export async function realizarContratacao(dados: DadosPessoaisContratacao): Prom
     body: dados
   });
 
+  console.log('facta-contratacao response - data:', JSON.stringify(data), 'error:', error);
+
   if (error) {
     console.error('Error calling facta-contratacao:', error);
+    // Tenta extrair limites do contexto do erro se disponível
+    if (data && data.limites) {
+      return {
+        erro: true,
+        mensagem: data.mensagem || error.message || 'Erro ao realizar contratação',
+        limites: data.limites,
+        etapa: data.etapa
+      };
+    }
     return {
       erro: true,
       mensagem: error.message || 'Erro ao realizar contratação'

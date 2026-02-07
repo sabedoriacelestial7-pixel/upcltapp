@@ -289,6 +289,7 @@ export default function ContratacaoPage() {
       };
 
       const result = await realizarContratacao(dados);
+      console.log('Contratação result:', JSON.stringify(result));
 
       if (result.erro) {
         const mensagem = result.mensagem || '';
