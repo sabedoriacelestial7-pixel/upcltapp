@@ -36,6 +36,13 @@ export function LegalFooter({ className, variant = 'light', showDataSafety = fal
             >
               Segurança de Dados
             </Link>
+            <span>•</span>
+            <Link 
+              to="/excluir-conta" 
+              className={cn('transition-colors', linkColor)}
+            >
+              Excluir Conta
+            </Link>
           </>
         )}
       </div>
