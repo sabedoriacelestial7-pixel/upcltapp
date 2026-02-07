@@ -75,19 +75,19 @@ export default function AjudaPage() {
               key={item.id} 
               value={item.id} 
               className="rounded-xl border border-gray-200 shadow-card overflow-hidden"
-              style={{ backgroundColor: '#ffffff' }}
+              style={{ backgroundColor: '#ffffff', colorScheme: 'light' }}
             >
               <AccordionTrigger 
                 className="px-4 py-4 text-left text-sm font-medium hover:no-underline transition-colors [&[data-state=open]>svg]:rotate-180"
-                style={{ color: '#111827', backgroundColor: 'transparent' }}
+                style={{ color: '#1f2937', backgroundColor: 'transparent' }}
               >
-                {item.question}
+                <span style={{ color: '#1f2937' }}>{item.question}</span>
               </AccordionTrigger>
               <AccordionContent 
                 className="px-4 pb-4 text-sm leading-relaxed"
-                style={{ color: '#4b5563' }}
+                style={{ color: '#374151' }}
               >
-                {item.answer}
+                <span style={{ color: '#374151' }}>{item.answer}</span>
               </AccordionContent>
             </AccordionItem>
           ))}

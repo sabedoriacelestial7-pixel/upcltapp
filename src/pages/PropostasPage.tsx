@@ -210,34 +210,34 @@ export default function PropostasPage() {
               'hover:shadow-card-hover transition-all duration-200',
               'active:scale-[0.99] touch-manipulation'
             )}
-            style={{ backgroundColor: '#ffffff' }}
+            style={{ backgroundColor: '#ffffff', colorScheme: 'light' }}
             onClick={() => navigate(`/propostas/${proposta.id}`)}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 {getStatusIcon(proposta.status_facta || proposta.status)}
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: '#111827' }}>
+                  <p className="text-sm font-semibold" style={{ color: '#1f2937' }}>
                     {proposta.banco_nome}
                   </p>
-                  <p className="text-xs" style={{ color: '#6b7280' }}>
+                  <p className="text-xs" style={{ color: '#4b5563' }}>
                     {formatarData(proposta.created_at)}
                   </p>
                 </div>
               </div>
-              <ChevronRight size={20} style={{ color: '#9ca3af' }} />
+              <ChevronRight size={20} style={{ color: '#6b7280' }} />
             </div>
 
-            <div className="mt-3 pt-3 grid grid-cols-2 gap-2" style={{ borderTopWidth: '1px', borderTopColor: '#e5e7eb' }}>
+            <div className="mt-3 pt-3 grid grid-cols-2 gap-2" style={{ borderTop: '1px solid #e5e7eb' }}>
               <div>
-                <p className="text-xs" style={{ color: '#6b7280' }}>Valor</p>
-                <p className="text-sm font-semibold" style={{ color: '#111827' }}>
+                <p className="text-xs" style={{ color: '#4b5563' }}>Valor</p>
+                <p className="text-sm font-semibold" style={{ color: '#1f2937' }}>
                   {formatarMoeda(proposta.valor_operacao)}
                 </p>
               </div>
               <div>
-                <p className="text-xs" style={{ color: '#6b7280' }}>Parcelas</p>
-                <p className="text-sm font-semibold" style={{ color: '#111827' }}>
+                <p className="text-xs" style={{ color: '#4b5563' }}>Parcelas</p>
+                <p className="text-sm font-semibold" style={{ color: '#1f2937' }}>
                   {proposta.parcelas}x de {formatarMoeda(proposta.valor_parcela)}
                 </p>
               </div>
