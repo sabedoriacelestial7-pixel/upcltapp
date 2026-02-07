@@ -74,7 +74,7 @@ export default function PropostaDetalhePage() {
         {/* Status Card */}
         <div className="bg-card border border-border rounded-xl p-4 shadow-card">
           <div className="flex items-center justify-between mb-3">
-            <span className={`px-3 py-1.5 rounded-full text-xs font-medium text-white ${statusInfo.color}`}>
+            <span className={`px-3 py-1.5 rounded-full text-xs font-medium text-primary-foreground ${statusInfo.color}`}>
               {statusInfo.label}
             </span>
             {proposta.codigo_af && (
@@ -94,7 +94,7 @@ export default function PropostaDetalhePage() {
               href={`https://${proposta.url_formalizacao}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 w-full flex items-center justify-center gap-2 bg-[#22c55e] hover:bg-[#16a34a] text-white py-3 rounded-lg font-medium transition-colors"
+              className="mt-4 w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground py-3 rounded-lg font-medium transition-colors"
             >
               <ExternalLink size={18} />
               Assinar Contrato
