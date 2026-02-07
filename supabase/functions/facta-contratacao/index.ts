@@ -237,7 +237,8 @@ serve(async (req) => {
       prazo: params.prazo.toString(),
       valor_operacao: params.valorOperacao.toString(),
       valor_parcela: params.valorParcela.toString(),
-      coeficiente: params.coeficiente
+      coeficiente: params.coeficiente,
+      matricula: params.matricula
     };
 
     const simuladorResult = await proxyPost(
