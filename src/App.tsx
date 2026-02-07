@@ -15,6 +15,7 @@ import { OfflineBanner } from "@/components/OfflineBanner";
 // Lazy loaded components for code splitting
 const BiaChatDrawer = lazy(() => import('@/components/BiaChatDrawer').then(m => ({ default: m.BiaChatDrawer })));
 const BiaFAB = lazy(() => import('@/components/BiaFAB').then(m => ({ default: m.BiaFAB })));
+const NotificationDrawer = lazy(() => import('@/components/NotificationDrawer').then(m => ({ default: m.NotificationDrawer })));
 
 // Lazy loaded pages - reduces initial bundle size significantly
 const LoginPage = lazy(() => import('@/pages/LoginPage'));
@@ -65,6 +66,7 @@ function AppContent() {
       <Toaster />
       <Sonner />
       <BiaGlobalDrawer />
+      <NotificationGlobalDrawer />
       <Suspense fallback={<PageLoader />}>
         <Routes>
           {/* Public Routes */}
@@ -101,6 +103,7 @@ function AppContent() {
 }
 
 import { useBiaChat } from '@/contexts/BiaChatContext';
+import { useNotificationContext } from '@/contexts/NotificationContext';
 
 function BiaGlobalDrawer() {
   const { isOpen, close } = useBiaChat();
@@ -108,6 +111,30 @@ function BiaGlobalDrawer() {
     <Suspense fallback={null}>
       <BiaChatDrawer open={isOpen} onClose={close} />
       <BiaFAB />
+    </Suspense>
+  );
+}
+
+function NotificationGlobalDrawer() {
+  const {
+    isDrawerOpen,
+    closeDrawer,
+    notifications,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+  } = useNotificationContext();
+  
+  return (
+    <Suspense fallback={null}>
+      <NotificationDrawer
+        open={isDrawerOpen}
+        onClose={closeDrawer}
+        notifications={notifications}
+        onMarkAsRead={markAsRead}
+        onMarkAllAsRead={markAllAsRead}
+        onDelete={deleteNotification}
+      />
     </Suspense>
   );
 }

@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { useNotifications, Notification } from '@/hooks/useNotifications';
-import { NotificationDrawer } from '@/components/NotificationDrawer';
 
 interface NotificationContextType {
   notifications: Notification[];
   unreadCount: number;
   loading: boolean;
+  isDrawerOpen: boolean;
   openDrawer: () => void;
   closeDrawer: () => void;
   markAsRead: (id: string) => void;
@@ -35,6 +35,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         notifications,
         unreadCount,
         loading,
+        isDrawerOpen,
         openDrawer,
         closeDrawer,
         markAsRead,
@@ -43,14 +44,6 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-      <NotificationDrawer
-        open={isDrawerOpen}
-        onClose={closeDrawer}
-        notifications={notifications}
-        onMarkAsRead={markAsRead}
-        onMarkAllAsRead={markAllAsRead}
-        onDelete={deleteNotification}
-      />
     </NotificationContext.Provider>
   );
 }
