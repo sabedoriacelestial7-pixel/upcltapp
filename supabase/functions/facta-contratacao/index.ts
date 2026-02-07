@@ -266,18 +266,38 @@ serve(async (req) => {
         api_response: simuladorResult
       });
 
-      // Detecta se é rejeição por política de crédito com limites informados
-      const isPolicyLimit = simuladorResult.prestacao_maxima || simuladorResult.prazo_maximo;
+      // Extrai limites - campos diretos OU parseando da mensagem de texto
+      const msg = simuladorResult.mensagem || '';
+      let prestacaoMaxima: number | null = parseFloat(simuladorResult.prestacao_maxima) || null;
+      let prazoMaximo: number | null = parseInt(simuladorResult.prazo_maximo) || null;
+      let prazoMinimo: number | null = null;
+
+      // Tenta extrair limites da mensagem quando não vêm em campos separados
+      if (!prestacaoMaxima) {
+        const matchValor = msg.match(/R\$\s*([\d.,]+)/i);
+        if (matchValor) prestacaoMaxima = parseFloat(matchValor[1].replace(/\./g, '').replace(',', '.')) || null;
+      }
+      if (!prazoMaximo) {
+        const matchPrazoMax = msg.match(/prazo\s*m[áa]ximo\s*(?:[ée]\s*(?:de\s*)?)(\d+)/i);
+        if (matchPrazoMax) prazoMaximo = parseInt(matchPrazoMax[1]) || null;
+      }
+      if (!prazoMinimo) {
+        const matchPrazoMin = msg.match(/prazo\s*m[ií]nimo\s*(?:[ée]\s*(?:de\s*)?)(\d+)/i);
+        if (matchPrazoMin) prazoMinimo = parseInt(matchPrazoMin[1]) || null;
+      }
+
+      const hasLimits = prestacaoMaxima || prazoMaximo || prazoMinimo;
       
       return new Response(
         JSON.stringify({ 
           erro: true, 
-          mensagem: simuladorResult.mensagem || "Erro ao criar simulação",
+          mensagem: msg || "Erro ao criar simulação",
           etapa: 'simulador',
-          ...(isPolicyLimit && {
+          ...(hasLimits && {
             limites: {
-              prestacaoMaxima: parseFloat(simuladorResult.prestacao_maxima) || null,
-              prazoMaximo: parseInt(simuladorResult.prazo_maximo) || null
+              prestacaoMaxima,
+              prazoMaximo,
+              prazoMinimo
             }
           })
         }),

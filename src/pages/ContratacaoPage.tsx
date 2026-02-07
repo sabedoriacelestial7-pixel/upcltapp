@@ -67,7 +67,7 @@ export default function ContratacaoPage() {
   const [loadingCidadesEndereco, setLoadingCidadesEndereco] = useState(false);
   const [propostaUrl, setPropostaUrl] = useState<string | null>(null);
   const [creditPolicyError, setCreditPolicyError] = useState(false);
-  const [policyLimits, setPolicyLimits] = useState<{ prestacaoMaxima: number | null; prazoMaximo: number | null } | null>(null);
+  const [policyLimits, setPolicyLimits] = useState<{ prestacaoMaxima: number | null; prazoMaximo: number | null; prazoMinimo: number | null } | null>(null);
 
   // Form data
   const [formData, setFormData] = useState({
@@ -298,7 +298,7 @@ export default function ContratacaoPage() {
         const matchParcela = mensagem.match(/valor Máximo de Prestação disponível é de R\$ ([\d.,]+)/i);
         
         // Verifica se a Facta retornou limites de política de crédito
-        const hasLimits = result.limites && (result.limites.prestacaoMaxima || result.limites.prazoMaximo);
+        const hasLimits = result.limites && (result.limites.prestacaoMaxima || result.limites.prazoMaximo || result.limites.prazoMinimo);
         
         // Verifica se é erro genérico de política de crédito sem limites
         const isPoliticaCredito = !hasLimits && (
@@ -363,7 +363,7 @@ export default function ContratacaoPage() {
 
   // Tela de erro de política de crédito - amigável para o usuário
   if (creditPolicyError) {
-    const hasLimitsToShow = policyLimits && (policyLimits.prestacaoMaxima || policyLimits.prazoMaximo);
+    const hasLimitsToShow = policyLimits && (policyLimits.prestacaoMaxima || policyLimits.prazoMaximo || policyLimits.prazoMinimo);
     
     return (
       <PageTransition className="min-h-screen min-h-[100dvh] bg-background">
@@ -378,12 +378,12 @@ export default function ContratacaoPage() {
                 </div>
                 
                 <h2 className="text-xl font-bold text-foreground mb-3">
-                  Valor acima do permitido
+                  Ajuste necessário
                 </h2>
                 
                 <p className="text-muted-foreground text-sm mb-5 leading-relaxed">
-                  O valor solicitado excede o limite da política de crédito para este CPF. 
-                  Mas não se preocupe, você ainda pode contratar dentro dos limites abaixo:
+                  O banco informou alguns limites para esta operação. 
+                  Ajuste os valores e tente novamente:
                 </p>
 
                 <div className="bg-muted/50 rounded-xl p-4 mb-5 space-y-3">
@@ -391,6 +391,12 @@ export default function ContratacaoPage() {
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Valor máximo da operação</span>
                       <span className="text-lg font-bold text-primary">{formatarMoeda(policyLimits.prestacaoMaxima)}</span>
+                    </div>
+                  )}
+                  {policyLimits.prazoMinimo && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Prazo mínimo</span>
+                      <span className="text-lg font-bold text-primary">{policyLimits.prazoMinimo}x</span>
                     </div>
                   )}
                   {policyLimits.prazoMaximo && (
