@@ -219,6 +219,7 @@ serve(async (req) => {
     const params: ContratacaoParams = await req.json();
 
     console.log(`Starting contracting process for CPF: ${params.cpf.substring(0, 3)}...`);
+    console.log(`Estado civil: ${params.estadoCivil}, CPF conjuge: ${params.cpfConjuge || 'N/A'}`);
     console.log(`Data nascimento received: ${params.dataNascimento}`);
 
     const token = await getFactaToken();
