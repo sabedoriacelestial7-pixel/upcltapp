@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { X, Send, Bot, User, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -117,7 +117,7 @@ interface BiaChatDrawerProps {
   onClose: () => void;
 }
 
-export function BiaChatDrawer({ open, onClose }: BiaChatDrawerProps) {
+export const BiaChatDrawer = memo(function BiaChatDrawer({ open, onClose }: BiaChatDrawerProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -365,4 +365,4 @@ export function BiaChatDrawer({ open, onClose }: BiaChatDrawerProps) {
       )}
     </AnimatePresence>
   );
-}
+});

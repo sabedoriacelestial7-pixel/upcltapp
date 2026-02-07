@@ -1,10 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
-import { ParticleBackground } from '@/components/ParticleBackground';
 import { PageTransition } from '@/components/PageTransition';
 import welcomeHero from '@/assets/welcome-hero.png';
+
+// Lazy load particle background - heavy canvas animation
+const ParticleBackground = lazy(() => 
+  import('@/components/ParticleBackground').then(m => ({ default: m.ParticleBackground }))
+);
 
 export default function WelcomePage() {
   const navigate = useNavigate();
@@ -30,8 +34,10 @@ export default function WelcomePage() {
 
   return (
     <div className="theme-dark min-h-screen min-h-[100dvh] bg-background flex flex-col overflow-hidden relative">
-      {/* Particle Background */}
-      <ParticleBackground />
+      {/* Particle Background - loaded after splash */}
+      <Suspense fallback={null}>
+        {!showSplash && <ParticleBackground />}
+      </Suspense>
 
       {/* Splash Screen */}
       {showSplash && (

@@ -1,18 +1,23 @@
 import { Home, FileText, HelpCircle, Settings } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { memo, useCallback } from 'react';
 
 const navItems = [
   { path: '/', icon: Home, label: 'Início' },
   { path: '/propostas', icon: FileText, label: 'Operações' },
   { path: '/ajuda', icon: HelpCircle, label: 'Ajuda' },
   { path: '/perfil', icon: Settings, label: 'Ajustes' }
-];
+] as const;
 
-export function BottomNav() {
+// Memoized to prevent re-renders on route changes in parent
+export const BottomNav = memo(function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleNavClick = useCallback((path: string) => {
+    navigate(path);
+  }, [navigate]);
 
   return (
     <nav 
@@ -26,43 +31,40 @@ export function BottomNav() {
             (path === '/propostas' && location.pathname.startsWith('/propostas'));
           
           return (
-            <motion.button
+            <button
               key={path}
-              onClick={() => navigate(path)}
+              onClick={() => handleNavClick(path)}
               aria-label={label}
               aria-current={isActive ? 'page' : undefined}
-              whileTap={{ scale: 0.9 }}
               className={cn(
                 'flex flex-col items-center justify-center gap-0.5 min-w-[72px] min-h-[52px] py-2 px-3',
                 'transition-colors duration-150',
-                'touch-manipulation',
+                'touch-manipulation active:scale-90',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg',
                 isActive 
                   ? 'text-primary' 
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
-              <motion.div
-                initial={false}
-                animate={isActive ? { scale: [1, 1.2, 1], y: [0, -2, 0] } : { scale: 1 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
-              >
-                <Icon 
-                  size={24} 
-                  strokeWidth={isActive ? 2.5 : 2}
-                  aria-hidden="true"
-                />
-              </motion.div>
+              <Icon 
+                size={24} 
+                strokeWidth={isActive ? 2.5 : 2}
+                aria-hidden="true"
+                className={cn(
+                  'transition-transform duration-150',
+                  isActive && 'scale-110 -translate-y-0.5'
+                )}
+              />
               <span className={cn(
                 'text-[10px] leading-none mt-0.5',
                 isActive ? 'font-semibold' : 'font-medium'
               )}>
                 {label}
               </span>
-            </motion.button>
+            </button>
           );
         })}
       </div>
     </nav>
   );
-}
+});
