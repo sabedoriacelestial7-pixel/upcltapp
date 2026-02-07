@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Trophy, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatarMoeda } from '@/utils/formatters';
@@ -11,6 +12,8 @@ interface BankCardProps {
 }
 
 export function BankCard({ banco, isFirst = false, onContratar }: BankCardProps) {
+  const [logoError, setLogoError] = useState(false);
+
   return (
     <div
       className={cn(
@@ -36,16 +39,21 @@ export function BankCard({ banco, isFirst = false, onContratar }: BankCardProps)
               'transition-all duration-300 group-hover:scale-110 group-hover:rotate-3'
             )}
           >
-            <img 
-              src={banco.logo} 
-              alt={banco.nome} 
-              className="w-full h-full object-contain p-1"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                target.parentElement!.innerHTML = `<span class="font-bold text-sm" style="color: ${banco.cor}">${banco.sigla}</span>`;
-              }}
-            />
+            {!logoError ? (
+              <img 
+                src={banco.logo} 
+                alt={banco.nome} 
+                className="w-full h-full object-contain p-1"
+                onError={() => setLogoError(true)}
+              />
+            ) : (
+              <span 
+                className="font-bold text-sm"
+                style={{ color: banco.cor }}
+              >
+                {banco.sigla}
+              </span>
+            )}
           </div>
           <div>
             <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
