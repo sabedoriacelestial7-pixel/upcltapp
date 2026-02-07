@@ -383,7 +383,15 @@ serve(async (req) => {
             orgaoEmissorCodigo = match[0];
             console.log(`Mapped orgao emissor "${params.orgaoEmissor}" -> code "${orgaoEmissorCodigo}"`);
           } else {
-            console.log(`WARNING: orgao emissor "${params.orgaoEmissor}" not found in Facta combos. Available keys: ${Object.keys(orgaoData.orgao_emissor).join(', ')}`);
+            console.log(`WARNING: orgao emissor "${params.orgaoEmissor}" not found in Facta combos.`);
+            return new Response(
+              JSON.stringify({ 
+                erro: true, 
+                mensagem: `Órgão emissor "${params.orgaoEmissor}" não é válido. Por favor, recarregue a página e selecione um órgão emissor válido da lista.`,
+                etapa: 'dados-pessoais'
+              }),
+              { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            );
           }
         }
       }
