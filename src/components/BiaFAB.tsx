@@ -4,20 +4,18 @@ import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Páginas onde o FAB não deve aparecer (têm o ícone no header ou são públicas)
+// Páginas onde o FAB não deve aparecer (rotas públicas/auth)
 const HIDDEN_ROUTES = ['/welcome', '/login', '/forgot-password', '/reset-password', '/sobre'];
 
-// Páginas que já têm o ícone de chat no header
-const HAS_HEADER_CHAT = ['/consulta', '/resultado', '/resultado/detalhes', '/simulacoes', '/contratacao'];
+// O FAB agora aparece em todas as rotas protegidas para facilitar o acesso à Bia
+// Removida a lista HAS_HEADER_CHAT para garantir visibilidade máxima da assistente
 
 export function BiaFAB() {
   const { open, isOpen } = useBiaChat();
   const location = useLocation();
 
   // Não mostra em rotas ocultas ou quando o drawer já está aberto
-  const shouldHide = HIDDEN_ROUTES.some(route => location.pathname.startsWith(route)) || 
-                     HAS_HEADER_CHAT.some(route => location.pathname === route) ||
-                     isOpen;
+  const shouldHide = HIDDEN_ROUTES.some(route => location.pathname.startsWith(route)) || isOpen;
 
   return (
     <AnimatePresence>
