@@ -266,11 +266,20 @@ serve(async (req) => {
         api_response: simuladorResult
       });
 
+      // Detecta se é rejeição por política de crédito com limites informados
+      const isPolicyLimit = simuladorResult.prestacao_maxima || simuladorResult.prazo_maximo;
+      
       return new Response(
         JSON.stringify({ 
           erro: true, 
           mensagem: simuladorResult.mensagem || "Erro ao criar simulação",
-          etapa: 'simulador'
+          etapa: 'simulador',
+          ...(isPolicyLimit && {
+            limites: {
+              prestacaoMaxima: parseFloat(simuladorResult.prestacao_maxima) || null,
+              prazoMaximo: parseInt(simuladorResult.prazo_maximo) || null
+            }
+          })
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );

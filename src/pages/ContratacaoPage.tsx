@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, User, Phone, Mail, MapPin, CreditCard, FileText, AlertCircle, CheckCircle, Loader2, MessageCircle, HeadphonesIcon } from 'lucide-react';
+import { ArrowLeft, User, Phone, Mail, MapPin, CreditCard, FileText, AlertCircle, CheckCircle, Loader2, MessageCircle, HeadphonesIcon, RefreshCw } from 'lucide-react';
 import { abrirWhatsAppSimples } from '@/utils/whatsapp';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
@@ -67,6 +67,7 @@ export default function ContratacaoPage() {
   const [loadingCidadesEndereco, setLoadingCidadesEndereco] = useState(false);
   const [propostaUrl, setPropostaUrl] = useState<string | null>(null);
   const [creditPolicyError, setCreditPolicyError] = useState(false);
+  const [policyLimits, setPolicyLimits] = useState<{ prestacaoMaxima: number | null; prazoMaximo: number | null } | null>(null);
 
   // Form data
   const [formData, setFormData] = useState({
@@ -292,15 +293,20 @@ export default function ContratacaoPage() {
       if (result.erro) {
         const mensagem = result.mensagem || '';
         
-        // Verifica se o erro é sobre parcela máxima excedida
+        // Verifica se o erro é sobre parcela máxima excedida (margem volatilidade)
         const matchParcela = mensagem.match(/valor Máximo de Prestação disponível é de R\$ ([\d.,]+)/i);
         
-        // Verifica se é erro de política de crédito (código interno: POLICY_REJECTED)
-        const isPoliticaCredito = mensagem.toLowerCase().includes('política de crédito') || 
-                                   mensagem.toLowerCase().includes('politica de credito') ||
-                                   mensagem.toLowerCase().includes('fora da política') ||
-                                   mensagem.toLowerCase().includes('reprovado') ||
-                                   mensagem.toLowerCase().includes('crivo');
+        // Verifica se a Facta retornou limites de política de crédito
+        const hasLimits = result.limites && (result.limites.prestacaoMaxima || result.limites.prazoMaximo);
+        
+        // Verifica se é erro genérico de política de crédito sem limites
+        const isPoliticaCredito = !hasLimits && (
+          mensagem.toLowerCase().includes('política de crédito') || 
+          mensagem.toLowerCase().includes('politica de credito') ||
+          mensagem.toLowerCase().includes('fora da política') ||
+          mensagem.toLowerCase().includes('reprovado') ||
+          mensagem.toLowerCase().includes('crivo')
+        );
         
         if (matchParcela) {
           const parcelaMaxReal = matchParcela[1];
@@ -310,17 +316,21 @@ export default function ContratacaoPage() {
             variant: 'destructive',
           });
           setTimeout(() => navigate('/consulta'), 3000);
+        } else if (hasLimits) {
+          // Política de crédito COM limites - mostrar tela com valores permitidos
+          console.warn('[POLICY_LIMIT]', {
+            cpf: consulta?.cpf,
+            limites: result.limites,
+            mensagemOriginal: mensagem,
+          });
+          setPolicyLimits(result.limites!);
+          setCreditPolicyError(true);
         } else if (isPoliticaCredito) {
-          // Log técnico para admins (código: POLICY_REJECTED)
+          // Política de crédito SEM limites - tela genérica
           console.error('[POLICY_REJECTED]', {
             cpf: consulta?.cpf,
-            nome: consulta?.nome,
             mensagemOriginal: mensagem,
-            timestamp: new Date().toISOString(),
-            dados: { banco: banco?.nome, valor: banco?.valorLiberado, parcelas: banco?.parcelas }
           });
-          
-          // Mostra tela de erro amigável para o usuário
           setCreditPolicyError(true);
         } else {
           toast({
@@ -352,47 +362,102 @@ export default function ContratacaoPage() {
 
   // Tela de erro de política de crédito - amigável para o usuário
   if (creditPolicyError) {
+    const hasLimitsToShow = policyLimits && (policyLimits.prestacaoMaxima || policyLimits.prazoMaximo);
+    
     return (
       <PageTransition className="min-h-screen min-h-[100dvh] bg-background">
         <Header title="Contratação" showBack />
         
         <main className="max-w-md mx-auto px-5 py-8">
           <div className="bg-card rounded-2xl p-6 text-center animate-fade-in shadow-card border border-border">
-            <div className="w-20 h-20 rounded-full bg-amber-100 mx-auto mb-5 flex items-center justify-center">
-              <HeadphonesIcon size={40} className="text-amber-600" />
-            </div>
-            
-            <h2 className="text-xl font-bold text-foreground mb-3">
-              Ops! Consulta não processada
-            </h2>
-            
-            <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-              Não se preocupe! Nossa equipe está pronta para ajudar você a descobrir 
-              o valor disponível para seu empréstimo. Clique no botão abaixo e fale 
-              diretamente com um de nossos consultores especializados.
-            </p>
-            
-            <div className="space-y-3">
-              <Button
-                onClick={() => abrirWhatsAppSimples()}
-                className="w-full h-14 bg-[#25D366] hover:bg-[#20BD5A] text-white font-semibold text-base gap-2"
-              >
-                <MessageCircle size={22} />
-                Falar com Consultor Agora
-              </Button>
-              
-              <Button
-                onClick={() => navigate('/consulta')}
-                variant="outline"
-                className="w-full h-12 border-border text-foreground hover:bg-muted"
-              >
-                Fazer Nova Consulta
-              </Button>
-            </div>
-            
-            <p className="text-muted-foreground text-xs mt-6">
-              Atendimento rápido via WhatsApp • Segunda a Sexta, 8h às 18h
-            </p>
+            {hasLimitsToShow ? (
+              <>
+                <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto mb-5 flex items-center justify-center">
+                  <AlertCircle size={40} className="text-primary" />
+                </div>
+                
+                <h2 className="text-xl font-bold text-foreground mb-3">
+                  Valor acima do permitido
+                </h2>
+                
+                <p className="text-muted-foreground text-sm mb-5 leading-relaxed">
+                  O valor solicitado excede o limite da política de crédito para este CPF. 
+                  Mas não se preocupe, você ainda pode contratar dentro dos limites abaixo:
+                </p>
+
+                <div className="bg-muted/50 rounded-xl p-4 mb-5 space-y-3">
+                  {policyLimits.prestacaoMaxima && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Valor máximo da operação</span>
+                      <span className="text-lg font-bold text-primary">{formatarMoeda(policyLimits.prestacaoMaxima)}</span>
+                    </div>
+                  )}
+                  {policyLimits.prazoMaximo && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Prazo máximo</span>
+                      <span className="text-lg font-bold text-primary">{policyLimits.prazoMaximo}x</span>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="space-y-3">
+                  <Button
+                    onClick={() => navigate('/resultado')}
+                    className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base gap-2"
+                  >
+                    <RefreshCw size={20} />
+                    Refazer Simulação com Novo Valor
+                  </Button>
+                  
+                  <Button
+                    onClick={() => abrirWhatsAppSimples()}
+                    variant="outline"
+                    className="w-full h-12 border-border text-foreground hover:bg-muted gap-2"
+                  >
+                    <MessageCircle size={18} />
+                    Falar com Consultor
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="w-20 h-20 rounded-full bg-amber-100 mx-auto mb-5 flex items-center justify-center">
+                  <HeadphonesIcon size={40} className="text-amber-600" />
+                </div>
+                
+                <h2 className="text-xl font-bold text-foreground mb-3">
+                  Ops! Consulta não processada
+                </h2>
+                
+                <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
+                  Não se preocupe! Nossa equipe está pronta para ajudar você a descobrir 
+                  o valor disponível para seu empréstimo. Clique no botão abaixo e fale 
+                  diretamente com um de nossos consultores especializados.
+                </p>
+                
+                <div className="space-y-3">
+                  <Button
+                    onClick={() => abrirWhatsAppSimples()}
+                    className="w-full h-14 bg-[#25D366] hover:bg-[#20BD5A] text-white font-semibold text-base gap-2"
+                  >
+                    <MessageCircle size={22} />
+                    Falar com Consultor Agora
+                  </Button>
+                  
+                  <Button
+                    onClick={() => navigate('/consulta')}
+                    variant="outline"
+                    className="w-full h-12 border-border text-foreground hover:bg-muted"
+                  >
+                    Fazer Nova Consulta
+                  </Button>
+                </div>
+                
+                <p className="text-muted-foreground text-xs mt-6">
+                  Atendimento rápido via WhatsApp • Segunda a Sexta, 8h às 18h
+                </p>
+              </>
+            )}
           </div>
         </main>
       </PageTransition>

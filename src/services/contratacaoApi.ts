@@ -112,6 +112,10 @@ export interface ContratacaoResult {
   erro: boolean;
   mensagem: string;
   etapa?: string;
+  limites?: {
+    prestacaoMaxima: number | null;
+    prazoMaximo: number | null;
+  };
   proposta?: {
     id: string;
     codigoAf: string;
