@@ -368,14 +368,23 @@ serve(async (req) => {
       console.log("Orgao emissor combos:", JSON.stringify(orgaoData).substring(0, 500));
       
       if (orgaoData.orgao_emissor) {
-        // Procura o código correspondente à sigla informada
-        const entries = Object.entries(orgaoData.orgao_emissor);
-        const match = entries.find(([_, nome]) => 
-          (nome as string).toUpperCase().includes(params.orgaoEmissor.toUpperCase())
-        );
-        if (match) {
-          orgaoEmissorCodigo = match[0];
-          console.log(`Mapped orgao emissor "${params.orgaoEmissor}" -> code "${orgaoEmissorCodigo}"`);
+        const siglaUpper = params.orgaoEmissor.toUpperCase().trim();
+        // Primeiro verifica se a sigla já é uma chave válida
+        if (orgaoData.orgao_emissor[siglaUpper] || orgaoData.orgao_emissor[params.orgaoEmissor]) {
+          orgaoEmissorCodigo = orgaoData.orgao_emissor[siglaUpper] ? siglaUpper : params.orgaoEmissor;
+          console.log(`Orgao emissor "${params.orgaoEmissor}" is already a valid key: "${orgaoEmissorCodigo}"`);
+        } else {
+          // Fallback: procura nas values
+          const entries = Object.entries(orgaoData.orgao_emissor);
+          const match = entries.find(([key, nome]) => 
+            key.toUpperCase() === siglaUpper || (nome as string).toUpperCase().includes(siglaUpper)
+          );
+          if (match) {
+            orgaoEmissorCodigo = match[0];
+            console.log(`Mapped orgao emissor "${params.orgaoEmissor}" -> code "${orgaoEmissorCodigo}"`);
+          } else {
+            console.log(`WARNING: orgao emissor "${params.orgaoEmissor}" not found in Facta combos. Available keys: ${Object.keys(orgaoData.orgao_emissor).join(', ')}`);
+          }
         }
       }
     } catch (e) {
