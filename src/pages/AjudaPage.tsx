@@ -1,3 +1,4 @@
+// Force rebuild - fixed card text colors for dark mode
 import { MessageCircle, ChevronRight } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
