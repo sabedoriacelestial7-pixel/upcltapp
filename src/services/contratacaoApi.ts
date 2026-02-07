@@ -115,6 +115,7 @@ export interface ContratacaoResult {
   limites?: {
     prestacaoMaxima: number | null;
     prazoMaximo: number | null;
+    prazoMinimo: number | null;
   };
   proposta?: {
     id: string;
