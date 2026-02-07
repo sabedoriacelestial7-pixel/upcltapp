@@ -77,8 +77,11 @@ async function getFactaToken(): Promise<string> {
 
   console.log("Fetching new Facta token...");
   
+  // Garantir que o header tenha o prefixo "Basic "
+  const authHeader = authBasic.startsWith('Basic ') ? authBasic : `Basic ${authBasic}`;
+  
   const response = await callFactaApi('GET', `${FACTA_BASE_URL}/gera-token`, {
-    'Authorization': authBasic
+    'Authorization': authHeader
   });
 
   const contentType = response.headers.get('content-type') || '';

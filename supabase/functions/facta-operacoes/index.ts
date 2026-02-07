@@ -34,11 +34,14 @@ async function getFactaToken(): Promise<string> {
   console.log("→ Buscando novo token via proxy...");
   console.log("→ Proxy URL:", proxyUrl);
   
+  // Garantir que o header tenha o prefixo "Basic "
+  const authHeader = authBasic.startsWith('Basic ') ? authBasic : `Basic ${authBasic}`;
+  
   const requestBody = {
     method: 'GET',
     url: `${FACTA_BASE_URL}/gera-token`,
     headers: { 
-      'Authorization': authBasic,
+      'Authorization': authHeader,
       'Accept': 'application/json'
     }
   };
