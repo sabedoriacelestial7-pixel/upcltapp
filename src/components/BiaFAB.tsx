@@ -31,7 +31,7 @@ export function BiaFAB() {
           aria-label="Falar com a Bia"
           className={cn(
             'fixed z-40',
-            'bottom-[88px] right-4',
+            'bottom-[160px] right-4',
             'w-14 h-14 rounded-full',
             'bg-primary text-primary-foreground',
             'flex items-center justify-center',
