@@ -12,14 +12,17 @@ export function formatarTelefone(value: string): string {
   if (cleaned.length <= 2) {
     return cleaned.length > 0 ? `(${cleaned}` : '';
   }
-  if (cleaned.length <= 7) {
+  
+  // Telefone fixo ou celular antigo: 10 dígitos (DDD + 8 dígitos) = (XX) XXXX-XXXX
+  if (cleaned.length <= 6) {
     return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
   }
-  // Celular: 11 dígitos (DDD + 9 dígitos)
-  if (cleaned.length <= 11) {
-    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
+  if (cleaned.length <= 10) {
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
   }
-  return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`;
+  
+  // Celular com 9: 11 dígitos (DDD + 9 dígitos) = (XX) 9XXXX-XXXX
+  return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
 }
 
 export function formatarMoeda(valor: number): string {
