@@ -34,8 +34,9 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
           return {
             inputMode: 'tel' as const,
             autoComplete: 'tel',
-            maxLength: 16, // (99) 99999-9999 = 15 chars, +1 for safety
+            maxLength: 16,
             enterKeyHint: 'next' as const,
+            pattern: '[\\(\\)\\d\\s\\-]+',
           };
         default:
           return {};
