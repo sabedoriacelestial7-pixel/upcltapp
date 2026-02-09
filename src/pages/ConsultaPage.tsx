@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
  import { PageTransition } from '@/components/PageTransition';
 import { Header } from '@/components/Header';
@@ -50,13 +50,20 @@ export default function ConsultaPage() {
   const [tentativas, setTentativas] = useState(0);
   const [pollingActive, setPollingActive] = useState(false);
 
-  // Load profile on mount
+  // Track if profile was already loaded to prevent overwriting user input
+  const profileLoadedRef = useRef(false);
+
+  // Load profile on mount (only once)
   useEffect(() => {
+    if (profileLoadedRef.current) return;
+
     async function loadProfile() {
       if (!user) {
         setLoadingProfile(false);
         return;
       }
+
+      profileLoadedRef.current = true;
 
       const [profile, adminStatus] = await Promise.all([
         getProfile(user.id),
@@ -95,6 +102,10 @@ export default function ConsultaPage() {
   const isCpfBloqueado = !isAdmin && cpfVinculado && cpfLimpo !== cpfVinculado;
   const isFormValid = isValidCPF && isTelefoneValido && isNomeValido && isDataNascimentoValida && !isCpfBloqueado;
 
+  // Keep a ref to the latest telefone to avoid stale closures
+  const telefoneRef = useRef(telefone);
+  telefoneRef.current = telefone;
+
   // Request authorization via SMS/WhatsApp
   const handleSolicitarAutorizacao = async (canal: 'S' | 'W') => {
     if (!user) {
@@ -103,13 +114,16 @@ export default function ConsultaPage() {
       return;
     }
 
+    // Capture current telefone value immediately
+    const currentTelefone = telefoneRef.current;
+
     setIsRequesting(true);
     setCanalEnvio(canal);
 
     try {
       // Pass user name for Facta API
       const nomeUsuario = usuario?.nome || user.email?.split('@')[0] || 'Cliente';
-      const result = await solicitarAutorizacao(cpf, telefone, canal, nomeUsuario);
+      const result = await solicitarAutorizacao(cpf, currentTelefone, canal, nomeUsuario);
 
       if (result.sucesso) {
         // Check if already authorized - go directly to verification
