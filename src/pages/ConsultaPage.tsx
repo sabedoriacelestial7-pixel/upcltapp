@@ -18,8 +18,9 @@ import { toast } from 'sonner';
 type ConsultaStep = 'cpf' | 'authorization' | 'loading' | 'error';
 type ErrorType = 'not-found' | 'ineligible' | 'error' | 'cpf-blocked';
 
-const MAX_TENTATIVAS = 10;
-const POLLING_INTERVAL = 5000; // 5 seconds
+const MAX_TENTATIVAS = 20;
+const POLLING_INTERVAL = 6000; // 6 seconds
+const POLLING_INITIAL_DELAY = 15000; // 15 seconds before first poll
 
 export default function ConsultaPage() {
   const navigate = useNavigate();
@@ -83,18 +84,7 @@ export default function ConsultaPage() {
     loadProfile();
   }, [user]);
 
-  // Polling for authorization
-  useEffect(() => {
-    if (!pollingActive || tentativas >= MAX_TENTATIVAS) {
-      return;
-    }
-
-    const interval = setInterval(async () => {
-      await checkAuthorization();
-    }, POLLING_INTERVAL);
-
-    return () => clearInterval(interval);
-  }, [pollingActive, tentativas, cpf, telefone]);
+  
 
   const isValidCPF = validarCPF(cpf);
   const cpfLimpo = cpf.replace(/\D/g, '');
@@ -201,8 +191,12 @@ export default function ConsultaPage() {
         return;
       }
 
-      // Token expired - need to request new authorization
+      // Token expired - if early attempts, treat as pending (user may not have responded yet)
       if (result.status === 'expired') {
+        if (tentativas <= 3) {
+          // Still early - don't kick user out, keep waiting
+          return;
+        }
         setPollingActive(false);
         setAuthRequested(false);
         setTentativas(0);
@@ -226,7 +220,10 @@ export default function ConsultaPage() {
         return;
       }
 
-      // Other errors
+      // Other errors - in early attempts keep polling
+      if (tentativas <= 3) {
+        return;
+      }
       setPollingActive(false);
       setErrorType('error');
       setErrorMessage(result.mensagem);
@@ -236,7 +233,21 @@ export default function ConsultaPage() {
     } finally {
       setIsChecking(false);
     }
-  }, [cpf, telefone, user, isAdmin, cpfVinculado, tentativas, navigate, setConsulta]);
+  }, [cpf, telefone, user, isAdmin, cpfVinculado, cpfLimpo, tentativas, navigate, setConsulta, isChecking]);
+
+  // Polling for authorization - with initial delay to give user time
+  useEffect(() => {
+    if (!pollingActive || tentativas >= MAX_TENTATIVAS) {
+      return;
+    }
+
+    const delay = tentativas === 0 ? POLLING_INITIAL_DELAY : POLLING_INTERVAL;
+    const timeout = setTimeout(async () => {
+      await checkAuthorization();
+    }, delay);
+
+    return () => clearTimeout(timeout);
+  }, [pollingActive, tentativas, checkAuthorization]);
 
   // Proceed to authorization step
   const handleProsseguir = async () => {
