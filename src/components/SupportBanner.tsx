@@ -22,7 +22,7 @@ export function SupportBanner() {
         'touch-manipulation'
       )}
     >
-      <MessageSquare size={14} className="text-primary shrink-0" />
+      <MessageSquare size={14} className="text-primary shrink-0" aria-hidden="true" />
       <span>Dúvidas ou precisa de suporte? <strong className="text-primary">Fale conosco</strong></span>
     </button>
   );
