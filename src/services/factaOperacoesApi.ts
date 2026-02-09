@@ -77,7 +77,7 @@ export function agruparTabelasPorPrazo(tabelas: TabelaFacta[]): Map<number, Tabe
 // Retorna os prazos disponíveis ordenados
 export function getPrazosDisponiveis(tabelas: TabelaFacta[]): number[] {
   const prazos = [...new Set(tabelas.map(t => t.prazo))];
-  return prazos.sort((a, b) => a - b);
+  return prazos.sort((a, b) => b - a);
 }
 
 // Encontra a melhor tabela COM SEGURO para um prazo específico (maior comissão)
