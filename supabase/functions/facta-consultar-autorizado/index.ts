@@ -224,7 +224,7 @@ serve(async (req) => {
 
     console.log("Facta authorization check response:", JSON.stringify(factaData));
 
-    // Check if token expired
+    // "Token expirado" from Facta means user hasn't responded to SMS yet - treat as pending
     const isTokenExpired = factaData.erro && (
       factaData.mensagem?.includes('Token expirado') || 
       factaData.mensagem?.includes('solicita-autorizacao')
@@ -234,8 +234,8 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           sucesso: false, 
-          mensagem: "Código de autorização expirado. Solicite um novo código.",
-          status: 'expired'
+          mensagem: "Aguardando autorização do usuário via SMS/WhatsApp.",
+          status: 'pending'
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
