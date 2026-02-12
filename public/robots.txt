@@ -13,6 +13,27 @@ Allow: /
 # Updated
 User-agent: *
 Allow: /
+Allow: /welcome
+Allow: /sobre
+Allow: /install
+Allow: /termos-uso
+Allow: /politica-privacidade
+Allow: /seguranca-dados
+Disallow: /home
+Disallow: /consulta
+Disallow: /resultado
+Disallow: /propostas
+Disallow: /proposta/
+Disallow: /contratacao
+Disallow: /perfil
+Disallow: /simulacoes
+Disallow: /dados-trabalhistas
+Disallow: /ajuda
+Disallow: /sugestao
+Disallow: /login
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /excluir-conta
 Disallow: /api/
 Disallow: /*.json$
 
