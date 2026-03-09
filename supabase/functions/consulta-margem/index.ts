@@ -19,9 +19,14 @@ async function getFactaToken(): Promise<string> {
     return tokenCache.token;
   }
 
-  const authBasic = Deno.env.get('FACTA_AUTH_BASIC');
+  let authBasic = Deno.env.get('FACTA_AUTH_BASIC');
   if (!authBasic) {
     throw new Error("FACTA_AUTH_BASIC not configured");
+  }
+
+  // Normalizar: garantir prefixo "Basic "
+  if (!authBasic.startsWith('Basic ')) {
+    authBasic = `Basic ${authBasic}`;
   }
 
   console.log("Fetching new Facta token from offline API...");
