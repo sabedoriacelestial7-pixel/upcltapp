@@ -277,53 +277,7 @@ export default function ConsultaPage() {
       return;
     }
 
-    // If admin, skip authorization and use legacy flow
-    if (isAdmin) {
-      setStep('loading');
-      // For admin, use the old direct consultation
-      const { consultarMargem } = await import('@/services/factaApi');
-      
-      const messages = [
-        'Buscando as melhores taxas...',
-        'Avaliando redução de taxas',
-        'Finalizando análise...'
-      ];
-      let messageIndex = 0;
-      const messageInterval = setInterval(() => {
-        messageIndex = (messageIndex + 1) % messages.length;
-        setLoadingMessage(messages[messageIndex]);
-      }, 2000);
-
-      try {
-        const result = await consultarMargem(cpf);
-        clearInterval(messageInterval);
-
-        if (result.sucesso && result.dados) {
-          setConsulta(result.dados);
-          navigate('/resultado');
-        } else if (result.mensagem.includes('não encontrado')) {
-          setErrorType('not-found');
-          setErrorMessage(result.mensagem);
-          setStep('error');
-        } else if (result.dados && !result.dados.elegivel) {
-          setErrorType('ineligible');
-          setErrorMessage(result.mensagem);
-          setStep('error');
-        } else {
-          setErrorType('error');
-          setErrorMessage(result.mensagem);
-          setStep('error');
-        }
-      } catch (error) {
-        clearInterval(messageInterval);
-        setErrorType('error');
-        setErrorMessage('Erro ao consultar. Tente novamente.');
-        setStep('error');
-      }
-      return;
-    }
-
-    // Regular users go through authorization flow
+    // All users (including admin) go through authorization flow
     setStep('authorization');
   };
 
