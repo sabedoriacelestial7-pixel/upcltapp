@@ -147,8 +147,14 @@ export default function ConsultaLotePage() {
   const [resumo, setResumo] = useState<Resumo | null>(null);
   const [progress, setProgress] = useState(0);
   const [textInput, setTextInput] = useState('');
+  const [filtroStatus, setFiltroStatus] = useState<string>('todos');
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const resultadosFiltrados = useMemo(() => {
+    if (filtroStatus === 'todos') return resultados;
+    return resultados.filter(r => r.status === filtroStatus);
+  }, [resultados, filtroStatus]);
 
   const loadCpfs = useCallback((parsed: string[], source: string) => {
     if (parsed.length === 0) {
