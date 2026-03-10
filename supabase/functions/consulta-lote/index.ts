@@ -147,7 +147,6 @@ async function consultarSimulacaoReal(
     }
 
     // Filtrar tabelas COM seguro (prioridade) e pegar o maior prazo disponível
-    const tabelas = result.dados;
     
     // Log first table to see field names
     if (tabelas.length > 0) {
