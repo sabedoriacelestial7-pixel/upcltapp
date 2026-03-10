@@ -35,21 +35,66 @@ interface Resumo {
   erros: number;
 }
 
-function parseCsvCpfs(text: string): string[] {
-  const lines = text.split(/[\r\n]+/).filter(l => l.trim());
+function parseCpfsFromText(text: string): string[] {
   const cpfs: string[] = [];
-  for (const line of lines) {
-    // Try to extract CPF from each line (first column or whole line)
+  const lines = text.split(/[\r\n]+/).filter(l => l.trim());
+
+  // Try to detect header row and CPF column index
+  let cpfColIndex = -1;
+  const firstLine = lines[0]?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') || '';
+  const firstParts = firstLine.split(/[;,\t]/);
+
+  for (let i = 0; i < firstParts.length; i++) {
+    const col = firstParts[i].trim();
+    if (col === 'cpf' || col.startsWith('cpf') || col.includes('cpf')) {
+      cpfColIndex = i;
+      break;
+    }
+  }
+
+  const startLine = cpfColIndex >= 0 ? 1 : 0; // skip header if found
+
+  for (let li = startLine; li < lines.length; li++) {
+    const line = lines[li];
     const parts = line.split(/[;,\t]/);
-    for (const part of parts) {
-      const cleaned = part.trim().replace(/\D/g, '');
+
+    // If we know the CPF column, use it; otherwise scan all columns
+    const columnsToScan = cpfColIndex >= 0 ? [parts[cpfColIndex]] : parts;
+
+    for (const part of columnsToScan) {
+      if (!part) continue;
+      const cleaned = part.trim().replace(/[\.\-\/\s]/g, '').replace(/\D/g, '');
       if (cleaned.length === 11) {
         cpfs.push(cleaned);
-        break; // Take first valid CPF per line
+        break;
+      }
+      // Handle CPFs stored as numbers (may lose leading zeros)
+      if (/^\d{9,11}$/.test(cleaned)) {
+        const padded = cleaned.padStart(11, '0');
+        if (padded.length === 11) {
+          cpfs.push(padded);
+          break;
+        }
       }
     }
   }
-  return [...new Set(cpfs)]; // Remove duplicates
+
+  // Also extract CPFs from free text (regex pattern for formatted CPFs)
+  if (cpfs.length === 0) {
+    const allText = text.replace(/[\r\n]+/g, ' ');
+    const cpfPattern = /\d{3}[\.\s]?\d{3}[\.\s]?\d{3}[\-\s]?\d{2}/g;
+    const matches = allText.match(cpfPattern) || [];
+    for (const m of matches) {
+      const cleaned = m.replace(/\D/g, '');
+      if (cleaned.length === 11) cpfs.push(cleaned);
+    }
+    // Also try raw 11-digit sequences
+    const rawPattern = /\b\d{11}\b/g;
+    const rawMatches = allText.match(rawPattern) || [];
+    for (const m of rawMatches) cpfs.push(m);
+  }
+
+  return [...new Set(cpfs)];
 }
 
 function formatCpf(cpf: string): string {
