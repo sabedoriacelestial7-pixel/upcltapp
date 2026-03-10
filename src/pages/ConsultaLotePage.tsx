@@ -396,7 +396,9 @@ export default function ConsultaLotePage() {
                       <th className="text-left p-3 font-medium">Status</th>
                       <th className="text-left p-3 font-medium">Nome</th>
                       <th className="text-left p-3 font-medium">Empregador</th>
-                      <th className="text-right p-3 font-medium">Margem</th>
+                      <th className="text-right p-3 font-medium">Margem (Parcela)</th>
+                      <th className="text-right p-3 font-medium">Valor Liberado</th>
+                      <th className="text-center p-3 font-medium">Parcelas</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -415,7 +417,13 @@ export default function ConsultaLotePage() {
                           <td className="p-3 truncate max-w-[200px]">{r.dados?.nome || '-'}</td>
                           <td className="p-3 truncate max-w-[200px]">{r.dados?.nomeEmpregador || '-'}</td>
                           <td className="p-3 text-right font-medium">
-                            {r.dados?.valorMargemDisponivel ? formatCurrency(r.dados.valorMargemDisponivel) : '-'}
+                            {r.dados?.valorMargemDisponivel ? formatCurrency(r.dados.valorMargemDisponivel / 100) : '-'}
+                          </td>
+                          <td className="p-3 text-right font-medium text-primary">
+                            {r.dados?.valorLiberado ? formatCurrency(r.dados.valorLiberado / 100) : '-'}
+                          </td>
+                          <td className="p-3 text-center text-muted-foreground">
+                            {r.dados?.parcelas ? `${r.dados.parcelas}x` : '-'}
                           </td>
                         </tr>
                       );
