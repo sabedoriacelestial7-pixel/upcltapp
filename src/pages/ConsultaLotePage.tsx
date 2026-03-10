@@ -35,21 +35,66 @@ interface Resumo {
   erros: number;
 }
 
-function parseCsvCpfs(text: string): string[] {
-  const lines = text.split(/[\r\n]+/).filter(l => l.trim());
+function parseCpfsFromText(text: string): string[] {
   const cpfs: string[] = [];
-  for (const line of lines) {
-    // Try to extract CPF from each line (first column or whole line)
+  const lines = text.split(/[\r\n]+/).filter(l => l.trim());
+
+  // Try to detect header row and CPF column index
+  let cpfColIndex = -1;
+  const firstLine = lines[0]?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') || '';
+  const firstParts = firstLine.split(/[;,\t]/);
+
+  for (let i = 0; i < firstParts.length; i++) {
+    const col = firstParts[i].trim();
+    if (col === 'cpf' || col.startsWith('cpf') || col.includes('cpf')) {
+      cpfColIndex = i;
+      break;
+    }
+  }
+
+  const startLine = cpfColIndex >= 0 ? 1 : 0; // skip header if found
+
+  for (let li = startLine; li < lines.length; li++) {
+    const line = lines[li];
     const parts = line.split(/[;,\t]/);
-    for (const part of parts) {
-      const cleaned = part.trim().replace(/\D/g, '');
+
+    // If we know the CPF column, use it; otherwise scan all columns
+    const columnsToScan = cpfColIndex >= 0 ? [parts[cpfColIndex]] : parts;
+
+    for (const part of columnsToScan) {
+      if (!part) continue;
+      const cleaned = part.trim().replace(/[\.\-\/\s]/g, '').replace(/\D/g, '');
       if (cleaned.length === 11) {
         cpfs.push(cleaned);
-        break; // Take first valid CPF per line
+        break;
+      }
+      // Handle CPFs stored as numbers (may lose leading zeros)
+      if (/^\d{9,11}$/.test(cleaned)) {
+        const padded = cleaned.padStart(11, '0');
+        if (padded.length === 11) {
+          cpfs.push(padded);
+          break;
+        }
       }
     }
   }
-  return [...new Set(cpfs)]; // Remove duplicates
+
+  // Also extract CPFs from free text (regex pattern for formatted CPFs)
+  if (cpfs.length === 0) {
+    const allText = text.replace(/[\r\n]+/g, ' ');
+    const cpfPattern = /\d{3}[\.\s]?\d{3}[\.\s]?\d{3}[\-\s]?\d{2}/g;
+    const matches = allText.match(cpfPattern) || [];
+    for (const m of matches) {
+      const cleaned = m.replace(/\D/g, '');
+      if (cleaned.length === 11) cpfs.push(cleaned);
+    }
+    // Also try raw 11-digit sequences
+    const rawPattern = /\b\d{11}\b/g;
+    const rawMatches = allText.match(rawPattern) || [];
+    for (const m of rawMatches) cpfs.push(m);
+  }
+
+  return [...new Set(cpfs)];
 }
 
 function formatCpf(cpf: string): string {
@@ -101,8 +146,24 @@ export default function ConsultaLotePage() {
   const [resultados, setResultados] = useState<ResultadoLote[]>([]);
   const [resumo, setResumo] = useState<Resumo | null>(null);
   const [progress, setProgress] = useState(0);
+  const [textInput, setTextInput] = useState('');
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const loadCpfs = useCallback((parsed: string[], source: string) => {
+    if (parsed.length === 0) {
+      toast({ title: 'Nenhum CPF encontrado', description: 'Nenhum CPF válido (11 dígitos) foi detectado.', variant: 'destructive' });
+      return;
+    }
+    if (parsed.length > 500) {
+      toast({ title: 'Limite excedido', description: 'Máximo de 500 CPFs por lote.', variant: 'destructive' });
+      return;
+    }
+    setCpfs(parsed);
+    setResultados([]);
+    setResumo(null);
+    toast({ title: `${parsed.length} CPFs carregados`, description: source });
+  }, [toast]);
 
   const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -111,24 +172,20 @@ export default function ConsultaLotePage() {
     const reader = new FileReader();
     reader.onload = (event) => {
       const text = event.target?.result as string;
-      const parsed = parseCsvCpfs(text);
-      if (parsed.length === 0) {
-        toast({ title: 'Nenhum CPF encontrado', description: 'O arquivo não contém CPFs válidos (11 dígitos).', variant: 'destructive' });
-        return;
-      }
-      if (parsed.length > 500) {
-        toast({ title: 'Limite excedido', description: 'Máximo de 500 CPFs por lote.', variant: 'destructive' });
-        return;
-      }
-      setCpfs(parsed);
+      const parsed = parseCpfsFromText(text);
+      loadCpfs(parsed, `Arquivo: ${file.name}`);
       setFileName(file.name);
-      setResultados([]);
-      setResumo(null);
-      toast({ title: `${parsed.length} CPFs carregados`, description: `Arquivo: ${file.name}` });
     };
     reader.readAsText(file);
     e.target.value = '';
-  }, [toast]);
+  }, [loadCpfs]);
+
+  const handleTextSubmit = useCallback(() => {
+    if (!textInput.trim()) return;
+    const parsed = parseCpfsFromText(textInput);
+    loadCpfs(parsed, 'Colado manualmente');
+    setFileName('');
+  }, [textInput, loadCpfs]);
 
   const handleConsultar = async () => {
     if (cpfs.length === 0) return;
@@ -184,7 +241,7 @@ export default function ConsultaLotePage() {
 
         <div>
           <h1 className="text-2xl font-bold text-foreground">Consulta em Lote</h1>
-          <p className="text-muted-foreground">Upload de CSV com CPFs para consulta na base offline Facta</p>
+          <p className="text-muted-foreground">Upload de CSV ou cole CPFs para consulta na base offline Facta</p>
         </div>
 
         {/* Upload Area */}
@@ -200,7 +257,7 @@ export default function ConsultaLotePage() {
                   {fileName || 'Clique para enviar arquivo CSV'}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  CSV com uma coluna de CPFs (até 500)
+                  CSV ou TXT — aceita CPFs com pontos/traços (até 500)
                 </p>
               </div>
               {cpfs.length > 0 && (
@@ -217,6 +274,19 @@ export default function ConsultaLotePage() {
                 onChange={handleFileUpload}
               />
             </label>
+
+            <div className="mt-4">
+              <p className="text-sm font-medium text-foreground mb-2">Ou cole os CPFs aqui:</p>
+              <textarea
+                className="w-full h-28 rounded-lg border border-border bg-background p-3 text-sm font-mono placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                placeholder={"021.669.719-03\n238.871.388-99\n12345678901\n..."}
+                value={textInput}
+                onChange={(e) => setTextInput(e.target.value)}
+              />
+              <Button variant="secondary" size="sm" className="mt-2" onClick={handleTextSubmit} disabled={!textInput.trim()}>
+                Carregar CPFs do texto
+              </Button>
+            </div>
 
             {cpfs.length > 0 && (
               <div className="mt-4 flex gap-3">
