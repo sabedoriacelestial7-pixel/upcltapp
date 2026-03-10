@@ -95,6 +95,17 @@ function calcularParcelaMaxima(margemCentavos: number): number {
 const PRAZOS_PRIORIDADE = [36, 30, 24, 20, 18, 15, 14, 12, 10, 8, 6, 5];
 
 // Consulta operações disponíveis na API real da Facta (webservice)
+// Converte data de YYYY-MM-DD para DD/MM/YYYY (formato Facta WS)
+function formatDateForFacta(dateStr: string): string {
+  if (!dateStr) return '';
+  // Se já está em DD/MM/YYYY
+  if (dateStr.includes('/')) return dateStr;
+  // Converter de YYYY-MM-DD
+  const parts = dateStr.split('-');
+  if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  return dateStr;
+}
+
 async function consultarSimulacaoReal(
   token: string,
   cpf: string,
@@ -103,6 +114,8 @@ async function consultarSimulacaoReal(
   valorParcela: number
 ): Promise<{ valorLiberado: number; valorParcela: number; parcelas: number; codigoTabela: number | null; coeficiente: string | null; nomeTabela: string | null } | null> {
   try {
+    const dataNascFormatada = formatDateForFacta(dataNascimento);
+    
     const queryParams = new URLSearchParams({
       produto: 'D',
       tipo_operacao: '13',
@@ -110,10 +123,12 @@ async function consultarSimulacaoReal(
       convenio: '3',
       opcao_valor: '2', // por valor da parcela
       cpf: cpf,
-      data_nascimento: dataNascimento,
+      data_nascimento: dataNascFormatada,
       valor_renda: valorRenda.toFixed(2),
       valor_parcela: valorParcela.toFixed(2),
     });
+
+    console.log(`→ Simulação real para CPF ${cpf.substring(0, 3)}... dataNasc=${dataNascFormatada} renda=${valorRenda.toFixed(2)} parcela=${valorParcela.toFixed(2)}`);
 
     const result = await proxyRequest('GET',
       `${FACTA_WS_URL}/proposta/operacoes-disponiveis?${queryParams}`,
@@ -123,8 +138,10 @@ async function consultarSimulacaoReal(
       }
     );
 
+    console.log(`→ Resultado simulação: erro=${result.erro}, dados=${Array.isArray(result.dados) ? result.dados.length + ' tabelas' : 'null'}, msg=${result.mensagem || ''}`);
+
     if (result.erro || !result.dados || !Array.isArray(result.dados) || result.dados.length === 0) {
-      console.log(`Simulação sem resultado para CPF ${cpf.substring(0, 3)}...: ${result.mensagem || 'sem dados'}`);
+      console.log(`Simulação sem resultado para CPF ${cpf.substring(0, 3)}...: ${result.mensagem || JSON.stringify(result)}`);
       return null;
     }
 
