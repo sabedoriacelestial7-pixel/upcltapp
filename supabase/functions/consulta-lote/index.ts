@@ -149,6 +149,11 @@ serve(async (req) => {
         const t = factaData.dados[0];
         const elegivel = t.elegivel === "S" || t.elegivel === "SIM" || t.elegivel === "1" || t.elegivel === true;
 
+        const margem = parseValor(t.valorMargemDisponivel);
+        // valorMargemDisponivel da API = valor máximo da parcela
+        const valorParcela36 = margem > 0 ? Math.round(margem * 100) / 100 : 0;
+        const valorLiberado36 = margem > 0 ? calcularValorLiberado(margem, 36) : 0;
+
         resultados.push({
           cpf: cpfLimpo,
           status: elegivel ? 'elegivel' : 'inelegivel',
@@ -156,9 +161,12 @@ serve(async (req) => {
           dados: {
             nome: t.nome,
             matricula: t.matricula,
-            valorMargemDisponivel: parseValor(t.valorMargemDisponivel),
+            valorMargemDisponivel: margem,
             valorBaseMargem: parseValor(t.valorBaseMargem),
             valorTotalVencimentos: parseValor(t.valorTotalVencimentos),
+            valorLiberado: valorLiberado36,
+            valorParcela: valorParcela36,
+            parcelas: 36,
             nomeEmpregador: t.nomeEmpregador,
             cnpjEmpregador: t.numeroInscricaoEmpregador,
             dataAdmissao: t.dataAdmissao,
