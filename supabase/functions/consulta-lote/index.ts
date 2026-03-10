@@ -1,5 +1,5 @@
-// Edge function for bulk offline margin consultation
-// Accepts array of CPFs, queries Facta offline base, returns results
+// Edge function for bulk offline margin consultation + real Facta simulation
+// Accepts array of CPFs, queries Facta offline base, then simulates for eligible ones
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -8,9 +8,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const FACTA_BASE_URL = "https://cltoff.facta.com.br";
+const FACTA_OFFLINE_URL = "https://cltoff.facta.com.br";
+const FACTA_WS_URL = "https://webservice.facta.com.br";
 
-let tokenCache: { token: string; expira: Date } | null = null;
+let tokenCacheOffline: { token: string; expira: Date } | null = null;
+let tokenCacheWs: { token: string; expira: Date } | null = null;
 
 async function getProxyUrl(): Promise<string> {
   const proxyUrl = Deno.env.get('FACTA_API_URL');
@@ -37,20 +39,38 @@ async function proxyRequest(method: string, url: string, headers: Record<string,
   }
 }
 
-async function getFactaToken(): Promise<string> {
-  if (tokenCache && new Date() < tokenCache.expira) return tokenCache.token;
+async function getFactaTokenOffline(): Promise<string> {
+  if (tokenCacheOffline && new Date() < tokenCacheOffline.expira) return tokenCacheOffline.token;
 
   let authBasic = Deno.env.get('FACTA_AUTH_BASIC');
   if (!authBasic) throw new Error("FACTA_AUTH_BASIC not configured");
   if (!authBasic.startsWith('Basic ')) authBasic = `Basic ${authBasic}`;
 
-  const data = await proxyRequest('GET', `${FACTA_BASE_URL}/gera-token`, {
+  const data = await proxyRequest('GET', `${FACTA_OFFLINE_URL}/gera-token`, {
     'Authorization': authBasic
   });
 
-  if (data.erro) throw new Error(data.mensagem || "Failed to get token");
+  if (data.erro) throw new Error(data.mensagem || "Failed to get offline token");
 
-  tokenCache = { token: data.token, expira: new Date(Date.now() + 55 * 60 * 1000) };
+  tokenCacheOffline = { token: data.token, expira: new Date(Date.now() + 55 * 60 * 1000) };
+  return data.token;
+}
+
+async function getFactaTokenWs(): Promise<string> {
+  if (tokenCacheWs && new Date() < tokenCacheWs.expira) return tokenCacheWs.token;
+
+  let authBasic = Deno.env.get('FACTA_AUTH_BASIC');
+  if (!authBasic) throw new Error("FACTA_AUTH_BASIC not configured");
+  if (!authBasic.startsWith('Basic ')) authBasic = `Basic ${authBasic}`;
+
+  const data = await proxyRequest('GET', `${FACTA_WS_URL}/gera-token`, {
+    'Authorization': authBasic,
+    'Accept': 'application/json'
+  });
+
+  if (data.erro) throw new Error(data.mensagem || "Failed to get WS token");
+
+  tokenCacheWs = { token: data.token, expira: new Date(Date.now() + 55 * 60 * 1000) };
   return data.token;
 }
 
@@ -60,25 +80,130 @@ function parseValor(valor: string | number | undefined): number {
   return parseFloat(valor.toString().replace(/\./g, '').replace(',', '.')) || 0;
 }
 
-// Coeficientes Facta CLT NOVO GOLD (parcela / valor_liberado)
-const COEFICIENTES: Record<number, number> = {
-  5: 0.258812, 6: 0.258812, 8: 0.205558, 10: 0.173927,
-  12: 0.153060, 14: 0.138306, 15: 0.132458, 18: 0.119019,
-  20: 0.112470, 24: 0.102963, 30: 0.083036, 36: 0.077260,
-};
-
-// Prioridade de prazos: maior primeiro
-const PRAZOS_PRIORIDADE = [36, 24, 12, 6];
-
-function calcularValorLiberado(valorParcela: number, parcelas: number = 36): number {
-  const coef = COEFICIENTES[parcelas] || COEFICIENTES[36];
-  return Math.round((valorParcela / coef) * 100) / 100;
+// Converte centavos para reais
+function centavosToReais(centavos: number): number {
+  return Math.round((centavos / 100) * 100) / 100;
 }
 
-// Converte centavos para reais e aplica 97% da margem (regra de parcela máxima)
+// Aplica 97% da margem e trunca para 1 casa decimal
 function calcularParcelaMaxima(margemCentavos: number): number {
   const margemReais = margemCentavos / 100;
   return Math.floor(margemReais * 0.97 * 10) / 10;
+}
+
+// Prioridade de prazos: maior primeiro
+const PRAZOS_PRIORIDADE = [36, 30, 24, 20, 18, 15, 14, 12, 10, 8, 6, 5];
+
+// Consulta operações disponíveis na API real da Facta (webservice)
+// Converte data de YYYY-MM-DD para DD/MM/YYYY (formato Facta WS)
+function formatDateForFacta(dateStr: string): string {
+  if (!dateStr) return '';
+  // Se já está em DD/MM/YYYY
+  if (dateStr.includes('/')) return dateStr;
+  // Converter de YYYY-MM-DD
+  const parts = dateStr.split('-');
+  if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  return dateStr;
+}
+
+async function consultarSimulacaoReal(
+  token: string,
+  cpf: string,
+  dataNascimento: string,
+  valorRenda: number,
+  valorParcela: number
+): Promise<{ valorLiberado: number; valorParcela: number; parcelas: number; codigoTabela: number | null; coeficiente: string | null; nomeTabela: string | null } | null> {
+  try {
+    const dataNascFormatada = formatDateForFacta(dataNascimento);
+    
+    const queryParams = new URLSearchParams({
+      produto: 'D',
+      tipo_operacao: '13',
+      averbador: '10010',
+      convenio: '3',
+      opcao_valor: '2', // por valor da parcela
+      cpf: cpf,
+      data_nascimento: dataNascFormatada,
+      valor_renda: valorRenda.toFixed(2),
+      valor_parcela: valorParcela.toFixed(2),
+    });
+
+    console.log(`→ Simulação real para CPF ${cpf.substring(0, 3)}... dataNasc=${dataNascFormatada} renda=${valorRenda.toFixed(2)} parcela=${valorParcela.toFixed(2)}`);
+
+    const result = await proxyRequest('GET',
+      `${FACTA_WS_URL}/proposta/operacoes-disponiveis?${queryParams}`,
+      {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+      }
+    );
+
+    // A API retorna os dados no campo 'tabelas' ou 'dados'
+    const tabelas = result.tabelas || result.dados;
+    
+    if (result.erro || !tabelas || !Array.isArray(tabelas) || tabelas.length === 0) {
+      console.log(`Simulação sem resultado para CPF ${cpf.substring(0, 3)}...: ${result.mensagem || 'sem tabelas'}`);
+      return null;
+    }
+
+    // Filtrar tabelas COM seguro (prioridade) e pegar o maior prazo disponível
+    
+    // Log first table to see field names
+    if (tabelas.length > 0) {
+      console.log(`→ Campos da tabela: ${Object.keys(tabelas[0]).join(', ')}`);
+      console.log(`→ Primeira tabela: ${JSON.stringify(tabelas[0])}`);
+    }
+
+    // Priorizar tabelas com seguro (valor_seguro > 0 ou nome contém "seguro")
+    const tabelasComSeguro = tabelas.filter((t: any) =>
+      (t.valor_seguro && parseFloat(t.valor_seguro) > 0) ||
+      (t.tabela || t.nome_tabela || '').toLowerCase().includes('seguro')
+    );
+
+    const tabelasParaUsar = tabelasComSeguro.length > 0 ? tabelasComSeguro : tabelas;
+
+    // Encontrar a tabela com o maior prazo
+    let melhorTabela: any = null;
+    let melhorPrazo = 0;
+
+    for (const tabela of tabelasParaUsar) {
+      const prazo = parseInt(tabela.prazo) || 0;
+      if (prazo > melhorPrazo) {
+        melhorPrazo = prazo;
+        melhorTabela = tabela;
+      }
+    }
+
+    if (!melhorTabela) {
+      for (const prazoDesejado of PRAZOS_PRIORIDADE) {
+        melhorTabela = tabelasParaUsar.find((t: any) => parseInt(t.prazo) === prazoDesejado);
+        if (melhorTabela) break;
+      }
+    }
+
+    if (!melhorTabela) {
+      melhorTabela = tabelasParaUsar[0];
+    }
+
+    // Mapear campos (API retorna: valor_liquido, parcela, prazo, coeficiente, codigo_tabela, tabela, valor_seguro, taxa)
+    const valorLiberadoReal = parseFloat(melhorTabela.valor_liquido || melhorTabela.valor_operacao || '0');
+    const valorParcelaReal = parseFloat(melhorTabela.parcela || melhorTabela.valor_parcela || '0');
+    const prazoReal = parseInt(melhorTabela.prazo) || 36;
+
+    console.log(`→ Melhor tabela: prazo=${prazoReal}, liberado=${valorLiberadoReal}, parcela=${valorParcelaReal}, tabela=${melhorTabela.tabela || melhorTabela.nome_tabela}`);
+
+    return {
+      valorLiberado: Math.round(valorLiberadoReal * 100) / 100,
+      valorParcela: Math.round(valorParcelaReal * 100) / 100,
+      parcelas: prazoReal,
+      codigoTabela: parseInt(melhorTabela.codigo_tabela || melhorTabela.codigoTabela) || null,
+      coeficiente: (melhorTabela.coeficiente || '').toString(),
+      nomeTabela: melhorTabela.tabela || melhorTabela.nome_tabela || null,
+    };
+  } catch (err) {
+    console.error(`Erro na simulação real para CPF ${cpf.substring(0, 3)}...:`, err);
+    return null;
+  }
 }
 
 serve(async (req) => {
@@ -118,7 +243,7 @@ serve(async (req) => {
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const { cpfs } = await req.json();
+    const { cpfs, simular = true } = await req.json();
     if (!Array.isArray(cpfs) || cpfs.length === 0) {
       return new Response(JSON.stringify({ erro: true, mensagem: 'Lista de CPFs é obrigatória' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -129,7 +254,18 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const token = await getFactaToken();
+    const tokenOffline = await getFactaTokenOffline();
+    let tokenWs: string | null = null;
+    
+    // Só obtém token WS se simulação estiver habilitada
+    if (simular) {
+      try {
+        tokenWs = await getFactaTokenWs();
+      } catch (err) {
+        console.error("Erro ao obter token WS, simulação desabilitada:", err);
+      }
+    }
+
     const resultados: any[] = [];
 
     for (const cpfRaw of cpfs) {
@@ -140,9 +276,10 @@ serve(async (req) => {
       }
 
       try {
+        // ETAPA 1: Consulta base offline
         const factaData = await proxyRequest('GET',
-          `${FACTA_BASE_URL}/clt/base-offline/debug?cpf=${cpfLimpo}`,
-          { 'Authorization': `Bearer ${token}` }
+          `${FACTA_OFFLINE_URL}/clt/base-offline/debug?cpf=${cpfLimpo}`,
+          { 'Authorization': `Bearer ${tokenOffline}` }
         );
 
         if (factaData.erro || !factaData.dados || factaData.dados.length === 0) {
@@ -159,14 +296,48 @@ serve(async (req) => {
         const elegivel = t.elegivel === "S" || t.elegivel === "SIM" || t.elegivel === "1" || t.elegivel === true;
 
         const margemRaw = parseValor(t.valorMargemDisponivel);
-        // Converter centavos → reais e aplicar 97%
         const parcelaMaxima = margemRaw > 0 ? calcularParcelaMaxima(margemRaw) : 0;
-        
-        // Usar maior prazo disponível: 36x → 24x → 12x → 6x
-        let prazoEscolhido = PRAZOS_PRIORIDADE[0];
-        // (todos os prazos estão nos coeficientes, usar 36x por padrão)
-        
-        const valorLiberado = parcelaMaxima > 0 ? calcularValorLiberado(parcelaMaxima, prazoEscolhido) : 0;
+        const rendaReais = centavosToReais(parseValor(t.valorTotalVencimentos));
+
+        // Valores padrão (estimados localmente)
+        let valorLiberado = 0;
+        let valorParcela = parcelaMaxima;
+        let parcelas = 36;
+        let codigoTabela: number | null = null;
+        let coeficiente: string | null = null;
+        let nomeTabela: string | null = null;
+        let simulacaoReal = false;
+
+        // ETAPA 2: Simulação real via API Facta (só para elegíveis com margem > 0)
+        if (elegivel && parcelaMaxima > 0 && tokenWs && t.dataNascimento) {
+          const simResult = await consultarSimulacaoReal(
+            tokenWs,
+            cpfLimpo,
+            t.dataNascimento,
+            rendaReais,
+            parcelaMaxima
+          );
+
+          if (simResult) {
+            valorLiberado = simResult.valorLiberado;
+            valorParcela = simResult.valorParcela;
+            parcelas = simResult.parcelas;
+            codigoTabela = simResult.codigoTabela;
+            coeficiente = simResult.coeficiente;
+            nomeTabela = simResult.nomeTabela;
+            simulacaoReal = true;
+          }
+        }
+
+        // Se não teve simulação real, calcular estimativa local
+        if (!simulacaoReal && parcelaMaxima > 0) {
+          // Coeficiente local para fallback
+          const COEF_LOCAL: Record<number, number> = {
+            6: 0.258812, 12: 0.153060, 24: 0.102963, 36: 0.077260,
+          };
+          const coef = COEF_LOCAL[36];
+          valorLiberado = Math.round((parcelaMaxima / coef) * 100) / 100;
+        }
 
         resultados.push({
           cpf: cpfLimpo,
@@ -175,17 +346,21 @@ serve(async (req) => {
           dados: {
             nome: t.nome,
             matricula: t.matricula,
-            valorMargemDisponivel: Math.round((margemRaw / 100) * 100) / 100,
-            valorBaseMargem: Math.round((parseValor(t.valorBaseMargem) / 100) * 100) / 100,
-            valorTotalVencimentos: Math.round((parseValor(t.valorTotalVencimentos) / 100) * 100) / 100,
+            valorMargemDisponivel: centavosToReais(margemRaw),
+            valorBaseMargem: centavosToReais(parseValor(t.valorBaseMargem)),
+            valorTotalVencimentos: rendaReais,
             valorLiberado,
-            valorParcela: parcelaMaxima,
-            parcelas: prazoEscolhido,
+            valorParcela,
+            parcelas,
+            codigoTabela,
+            coeficiente,
+            nomeTabela,
             nomeEmpregador: t.nomeEmpregador,
             cnpjEmpregador: t.numeroInscricaoEmpregador,
             dataAdmissao: t.dataAdmissao,
             dataNascimento: t.dataNascimento,
-            elegivel
+            elegivel,
+            simulacaoReal
           }
         });
       } catch (err) {

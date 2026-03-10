@@ -22,11 +22,15 @@ interface ResultadoLote {
     valorLiberado: number;
     valorParcela: number;
     parcelas: number;
+    codigoTabela: number | null;
+    coeficiente: string | null;
+    nomeTabela: string | null;
     nomeEmpregador: string;
     cnpjEmpregador: string;
     dataAdmissao: string;
     dataNascimento: string;
     elegivel: boolean;
+    simulacaoReal: boolean;
   } | null;
 }
 
@@ -109,7 +113,7 @@ function formatCurrency(value: number): string {
 }
 
 function exportCsv(resultados: ResultadoLote[]) {
-  const headers = ['CPF', 'Status', 'Nome', 'Empregador', 'CNPJ Empregador', 'Margem (Parcela Máx)', 'Valor Liberado (36x)', 'Parcelas', 'Base Margem', 'Total Vencimentos', 'Data Admissão', 'Data Nascimento', 'Matrícula', 'Mensagem'];
+  const headers = ['CPF', 'Status', 'Nome', 'Empregador', 'CNPJ Empregador', 'Parcela Máx', 'Valor Liberado', 'Parcelas', 'Tabela', 'Simulação Real', 'Base Margem', 'Total Vencimentos', 'Data Admissão', 'Data Nascimento', 'Matrícula', 'Mensagem'];
   const rows = resultados.map(r => [
     formatCpf(r.cpf),
     r.status,
@@ -119,8 +123,10 @@ function exportCsv(resultados: ResultadoLote[]) {
     r.dados?.valorParcela?.toFixed(2).replace('.', ',') || '',
     r.dados?.valorLiberado?.toFixed(2).replace('.', ',') || '',
     r.dados?.parcelas?.toString() || '',
-    r.dados?.valorBaseMargem?.toString().replace('.', ',') || '',
-    r.dados?.valorTotalVencimentos?.toString().replace('.', ',') || '',
+    r.dados?.nomeTabela || '',
+    r.dados?.simulacaoReal ? 'Sim' : 'Estimativa',
+    r.dados?.valorBaseMargem?.toFixed(2).replace('.', ',') || '',
+    r.dados?.valorTotalVencimentos?.toFixed(2).replace('.', ',') || '',
     r.dados?.dataAdmissao || '',
     r.dados?.dataNascimento || '',
     r.dados?.matricula || '',
@@ -420,7 +426,15 @@ export default function ConsultaLotePage() {
                             {r.dados?.valorParcela ? formatCurrency(r.dados.valorParcela) : '-'}
                           </td>
                           <td className="p-3 text-right font-medium text-primary">
-                            {r.dados?.valorLiberado ? formatCurrency(r.dados.valorLiberado) : '-'}
+                            <div className="flex flex-col items-end">
+                              <span>{r.dados?.valorLiberado ? formatCurrency(r.dados.valorLiberado) : '-'}</span>
+                              {r.dados?.simulacaoReal && (
+                                <span className="text-[10px] text-green-600 font-normal">✓ Real</span>
+                              )}
+                              {r.dados && !r.dados.simulacaoReal && r.dados.valorLiberado > 0 && (
+                                <span className="text-[10px] text-muted-foreground font-normal">≈ Estimativa</span>
+                              )}
+                            </div>
                           </td>
                           <td className="p-3 text-center text-muted-foreground">
                             {r.dados?.parcelas ? `${r.dados.parcelas}x` : '-'}
