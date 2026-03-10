@@ -60,6 +60,18 @@ function parseValor(valor: string | number | undefined): number {
   return parseFloat(valor.toString().replace(/\./g, '').replace(',', '.')) || 0;
 }
 
+// Coeficientes Facta CLT NOVO GOLD (parcela / valor_liberado)
+const COEFICIENTES: Record<number, number> = {
+  5: 0.258812, 6: 0.258812, 8: 0.205558, 10: 0.173927,
+  12: 0.153060, 14: 0.138306, 15: 0.132458, 18: 0.119019,
+  20: 0.112470, 24: 0.102963, 30: 0.083036, 36: 0.077260,
+};
+
+function calcularValorLiberado(valorParcela: number, parcelas: number = 36): number {
+  const coef = COEFICIENTES[parcelas] || COEFICIENTES[36];
+  return Math.round((valorParcela / coef) * 100) / 100;
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
