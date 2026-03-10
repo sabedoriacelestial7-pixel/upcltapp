@@ -176,7 +176,7 @@ const statusConfig = {
 };
 
 export default function ConsultaLotePage() {
-  const [cpfs, setCpfs] = useState<string[]>([]);
+  const [entries, setEntries] = useState<ParsedCpfEntry[]>([]);
   const [fileName, setFileName] = useState('');
   const [loading, setLoading] = useState(false);
   const [resultados, setResultados] = useState<ResultadoLote[]>([]);
@@ -187,12 +187,19 @@ export default function ConsultaLotePage() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  const cpfs = useMemo(() => entries.map(e => e.cpf), [entries]);
+  const telefoneMap = useMemo(() => {
+    const map = new Map<string, string>();
+    entries.forEach(e => { if (e.telefone) map.set(e.cpf, e.telefone); });
+    return map;
+  }, [entries]);
+
   const resultadosFiltrados = useMemo(() => {
     if (filtroStatus === 'todos') return resultados;
     return resultados.filter(r => r.status === filtroStatus);
   }, [resultados, filtroStatus]);
 
-  const loadCpfs = useCallback((parsed: string[], source: string) => {
+  const loadEntries = useCallback((parsed: ParsedCpfEntry[], source: string) => {
     if (parsed.length === 0) {
       toast({ title: 'Nenhum CPF encontrado', description: 'Nenhum CPF válido (11 dígitos) foi detectado.', variant: 'destructive' });
       return;
@@ -201,10 +208,12 @@ export default function ConsultaLotePage() {
       toast({ title: 'Limite excedido', description: 'Máximo de 500 CPFs por lote.', variant: 'destructive' });
       return;
     }
-    setCpfs(parsed);
+    setEntries(parsed);
     setResultados([]);
     setResumo(null);
-    toast({ title: `${parsed.length} CPFs carregados`, description: source });
+    const telCount = parsed.filter(p => p.telefone).length;
+    const desc = telCount > 0 ? `${source} (${telCount} telefones detectados)` : source;
+    toast({ title: `${parsed.length} CPFs carregados`, description: desc });
   }, [toast]);
 
   const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -215,19 +224,19 @@ export default function ConsultaLotePage() {
     reader.onload = (event) => {
       const text = event.target?.result as string;
       const parsed = parseCpfsFromText(text);
-      loadCpfs(parsed, `Arquivo: ${file.name}`);
+      loadEntries(parsed, `Arquivo: ${file.name}`);
       setFileName(file.name);
     };
     reader.readAsText(file);
     e.target.value = '';
-  }, [loadCpfs]);
+  }, [loadEntries]);
 
   const handleTextSubmit = useCallback(() => {
     if (!textInput.trim()) return;
     const parsed = parseCpfsFromText(textInput);
-    loadCpfs(parsed, 'Colado manualmente');
+    loadEntries(parsed, 'Colado manualmente');
     setFileName('');
-  }, [textInput, loadCpfs]);
+  }, [textInput, loadEntries]);
 
   const resultadosRef = useCallback((node: HTMLDivElement | null) => {
     if (node && resultados.length > 0 && !loading) {
@@ -257,7 +266,12 @@ export default function ConsultaLotePage() {
         if (error) throw error;
         if (data.erro) throw new Error(data.mensagem);
 
-        allResults.push(...data.resultados);
+        // Pre-fill telefone from uploaded data
+        const resultsWithTel = (data.resultados as ResultadoLote[]).map(r => ({
+          ...r,
+          telefone: r.telefone || telefoneMap.get(r.cpf) || ''
+        }));
+        allResults.push(...resultsWithTel);
       }
 
       setResultados(allResults);
