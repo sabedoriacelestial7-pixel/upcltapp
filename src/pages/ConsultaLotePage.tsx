@@ -407,6 +407,7 @@ export default function ConsultaLotePage() {
                       <th className="text-right p-3 font-medium">Margem (Parcela)</th>
                       <th className="text-right p-3 font-medium">Valor Liberado</th>
                       <th className="text-center p-3 font-medium">Parcelas</th>
+                      <th className="text-left p-3 font-medium">Telefone</th>
                     </tr>
                   </thead>
                   <tbody>
