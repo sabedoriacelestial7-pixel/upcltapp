@@ -257,7 +257,7 @@ export default function ConsultaLotePage() {
                   {fileName || 'Clique para enviar arquivo CSV'}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  CSV com uma coluna de CPFs (até 500)
+                  CSV ou TXT — aceita CPFs com pontos/traços (até 500)
                 </p>
               </div>
               {cpfs.length > 0 && (
