@@ -442,6 +442,23 @@ export default function ConsultaLotePage() {
                           <td className="p-3 text-center text-muted-foreground">
                             {r.dados?.parcelas ? `${r.dados.parcelas}x` : '-'}
                           </td>
+                          <td className="p-3">
+                            <input
+                              type="tel"
+                              className="w-[130px] rounded border border-border bg-background px-2 py-1 text-xs font-mono placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/40"
+                              placeholder="(00) 00000-0000"
+                              value={r.telefone || ''}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setResultados(prev => prev.map((item, idx) => {
+                                  if (item.cpf === r.cpf && resultados.indexOf(item) === resultados.indexOf(r)) {
+                                    return { ...item, telefone: val };
+                                  }
+                                  return item;
+                                }));
+                              }}
+                            />
+                          </td>
                         </tr>
                       );
                     })}
