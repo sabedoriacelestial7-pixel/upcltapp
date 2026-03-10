@@ -327,32 +327,32 @@ export default function ConsultaLotePage() {
 
         {/* Summary */}
         {resumo && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <Card>
+          <div ref={resultadosRef} className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <Card className={`cursor-pointer transition-all ${filtroStatus === 'todos' ? 'ring-2 ring-primary' : ''}`} onClick={() => setFiltroStatus('todos')}>
               <CardContent className="p-4 text-center">
                 <p className="text-2xl font-bold text-foreground">{resumo.total}</p>
                 <p className="text-xs text-muted-foreground">Total</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className={`cursor-pointer transition-all ${filtroStatus === 'elegivel' ? 'ring-2 ring-primary' : ''}`} onClick={() => setFiltroStatus('elegivel')}>
               <CardContent className="p-4 text-center">
                 <p className="text-2xl font-bold text-green-600">{resumo.elegiveis}</p>
                 <p className="text-xs text-muted-foreground">Elegíveis</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className={`cursor-pointer transition-all ${filtroStatus === 'inelegivel' ? 'ring-2 ring-primary' : ''}`} onClick={() => setFiltroStatus('inelegivel')}>
               <CardContent className="p-4 text-center">
                 <p className="text-2xl font-bold text-orange-600">{resumo.inelegiveis}</p>
                 <p className="text-xs text-muted-foreground">Inelegíveis</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className={`cursor-pointer transition-all ${filtroStatus === 'nao_encontrado' ? 'ring-2 ring-primary' : ''}`} onClick={() => setFiltroStatus('nao_encontrado')}>
               <CardContent className="p-4 text-center">
                 <p className="text-2xl font-bold text-muted-foreground">{resumo.naoEncontrados}</p>
                 <p className="text-xs text-muted-foreground">Não encontrados</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className={`cursor-pointer transition-all ${filtroStatus === 'erro' ? 'ring-2 ring-primary' : ''}`} onClick={() => setFiltroStatus('erro')}>
               <CardContent className="p-4 text-center">
                 <p className="text-2xl font-bold text-destructive">{resumo.erros}</p>
                 <p className="text-xs text-muted-foreground">Erros</p>
@@ -363,7 +363,13 @@ export default function ConsultaLotePage() {
 
         {/* Export */}
         {resultados.length > 0 && (
-          <div className="flex justify-end">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              Mostrando {resultadosFiltrados.length} de {resultados.length} resultados
+              {filtroStatus !== 'todos' && (
+                <button onClick={() => setFiltroStatus('todos')} className="ml-2 text-primary underline">Limpar filtro</button>
+              )}
+            </p>
             <Button variant="outline" onClick={() => exportCsv(resultados)}>
               <Download className="mr-2 h-4 w-4" /> Exportar CSV
             </Button>
