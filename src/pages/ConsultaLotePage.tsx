@@ -241,7 +241,7 @@ export default function ConsultaLotePage() {
 
         <div>
           <h1 className="text-2xl font-bold text-foreground">Consulta em Lote</h1>
-          <p className="text-muted-foreground">Upload de CSV com CPFs para consulta na base offline Facta</p>
+          <p className="text-muted-foreground">Upload de CSV ou cole CPFs para consulta na base offline Facta</p>
         </div>
 
         {/* Upload Area */}
