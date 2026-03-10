@@ -275,6 +275,19 @@ export default function ConsultaLotePage() {
               />
             </label>
 
+            <div className="mt-4">
+              <p className="text-sm font-medium text-foreground mb-2">Ou cole os CPFs aqui:</p>
+              <textarea
+                className="w-full h-28 rounded-lg border border-border bg-background p-3 text-sm font-mono placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                placeholder={"021.669.719-03\n238.871.388-99\n12345678901\n..."}
+                value={textInput}
+                onChange={(e) => setTextInput(e.target.value)}
+              />
+              <Button variant="secondary" size="sm" className="mt-2" onClick={handleTextSubmit} disabled={!textInput.trim()}>
+                Carregar CPFs do texto
+              </Button>
+            </div>
+
             {cpfs.length > 0 && (
               <div className="mt-4 flex gap-3">
                 <Button
