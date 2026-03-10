@@ -450,12 +450,10 @@ export default function ConsultaLotePage() {
                               value={r.telefone || ''}
                               onChange={(e) => {
                                 const val = e.target.value;
-                                setResultados(prev => prev.map((item, idx) => {
-                                  if (item.cpf === r.cpf && resultados.indexOf(item) === resultados.indexOf(r)) {
-                                    return { ...item, telefone: val };
-                                  }
-                                  return item;
-                                }));
+                                const originalIdx = resultados.indexOf(r);
+                                setResultados(prev => prev.map((item, idx) =>
+                                  idx === originalIdx ? { ...item, telefone: val } : item
+                                ));
                               }}
                             />
                           </td>
