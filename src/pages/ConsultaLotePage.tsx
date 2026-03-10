@@ -146,8 +146,24 @@ export default function ConsultaLotePage() {
   const [resultados, setResultados] = useState<ResultadoLote[]>([]);
   const [resumo, setResumo] = useState<Resumo | null>(null);
   const [progress, setProgress] = useState(0);
+  const [textInput, setTextInput] = useState('');
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const loadCpfs = useCallback((parsed: string[], source: string) => {
+    if (parsed.length === 0) {
+      toast({ title: 'Nenhum CPF encontrado', description: 'Nenhum CPF válido (11 dígitos) foi detectado.', variant: 'destructive' });
+      return;
+    }
+    if (parsed.length > 500) {
+      toast({ title: 'Limite excedido', description: 'Máximo de 500 CPFs por lote.', variant: 'destructive' });
+      return;
+    }
+    setCpfs(parsed);
+    setResultados([]);
+    setResumo(null);
+    toast({ title: `${parsed.length} CPFs carregados`, description: source });
+  }, [toast]);
 
   const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -156,24 +172,20 @@ export default function ConsultaLotePage() {
     const reader = new FileReader();
     reader.onload = (event) => {
       const text = event.target?.result as string;
-      const parsed = parseCsvCpfs(text);
-      if (parsed.length === 0) {
-        toast({ title: 'Nenhum CPF encontrado', description: 'O arquivo não contém CPFs válidos (11 dígitos).', variant: 'destructive' });
-        return;
-      }
-      if (parsed.length > 500) {
-        toast({ title: 'Limite excedido', description: 'Máximo de 500 CPFs por lote.', variant: 'destructive' });
-        return;
-      }
-      setCpfs(parsed);
+      const parsed = parseCpfsFromText(text);
+      loadCpfs(parsed, `Arquivo: ${file.name}`);
       setFileName(file.name);
-      setResultados([]);
-      setResumo(null);
-      toast({ title: `${parsed.length} CPFs carregados`, description: `Arquivo: ${file.name}` });
     };
     reader.readAsText(file);
     e.target.value = '';
-  }, [toast]);
+  }, [loadCpfs]);
+
+  const handleTextSubmit = useCallback(() => {
+    if (!textInput.trim()) return;
+    const parsed = parseCpfsFromText(textInput);
+    loadCpfs(parsed, 'Colado manualmente');
+    setFileName('');
+  }, [textInput, loadCpfs]);
 
   const handleConsultar = async () => {
     if (cpfs.length === 0) return;
