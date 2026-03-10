@@ -395,7 +395,7 @@ export default function ConsultaLotePage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {resultados.map((r, i) => {
+                    {resultadosFiltrados.map((r, i) => {
                       const config = statusConfig[r.status];
                       const Icon = config.icon;
                       return (
