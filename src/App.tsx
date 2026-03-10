@@ -42,6 +42,7 @@ const AjudaPage = lazy(() => import('@/pages/AjudaPage'));
 const InstallPage = lazy(() => import('@/pages/InstallPage'));
 const SegurancaDadosPage = lazy(() => import('@/pages/SegurancaDadosPage'));
 const ExcluirContaPage = lazy(() => import('@/pages/ExcluirContaPage'));
+const ConsultaLotePage = lazy(() => import('@/pages/ConsultaLotePage'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 const queryClient = new QueryClient({
