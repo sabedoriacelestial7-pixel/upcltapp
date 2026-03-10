@@ -114,7 +114,7 @@ function formatCurrency(value: number): string {
 }
 
 function exportCsv(resultados: ResultadoLote[]) {
-  const headers = ['CPF', 'Status', 'Nome', 'Empregador', 'CNPJ Empregador', 'Parcela Máx', 'Valor Liberado', 'Parcelas', 'Tabela', 'Simulação Real', 'Base Margem', 'Total Vencimentos', 'Data Admissão', 'Data Nascimento', 'Matrícula', 'Mensagem'];
+  const headers = ['CPF', 'Status', 'Nome', 'Empregador', 'CNPJ Empregador', 'Parcela Máx', 'Valor Liberado', 'Parcelas', 'Tabela', 'Simulação Real', 'Base Margem', 'Total Vencimentos', 'Data Admissão', 'Data Nascimento', 'Matrícula', 'Telefone', 'Mensagem'];
   const rows = resultados.map(r => [
     formatCpf(r.cpf),
     r.status,
@@ -131,6 +131,7 @@ function exportCsv(resultados: ResultadoLote[]) {
     r.dados?.dataAdmissao || '',
     r.dados?.dataNascimento || '',
     r.dados?.matricula || '',
+    r.telefone || '',
     r.mensagem
   ]);
 
